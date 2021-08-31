@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="sys_partition">
+
+    <resultMap id="sysPartition" class="com.sy599.game.db.bean.SysPartition">
+        <result property="keyId" column="keyId"/>
+        <result property="type" column="type"/>
+        <result property="seq" column="seq"/>
+        <result property="isHash" column="isHash"/>
+        <result property="ids" column="ids"/>
+    </resultMap>
+
+    <select id="loadAllSysPartition" resultMap="sysPartition">
+		/*FORCE_MASTER*/ SELECT * FROM sys_partition;
+	</select>
+
+</sqlMap>

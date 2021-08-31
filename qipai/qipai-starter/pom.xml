@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>qipai-all</artifactId>
+        <groupId>com.sy.game.qipai</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>war</packaging>
+    <artifactId>game-starter</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <parent.version>1.0-SNAPSHOT</parent.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.compiler>1.8</project.build.compiler>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+            <version>3.4.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>4.0.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.3.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.11.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.2.0</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>5.1.0.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--麻将-->
+        <dependency>
+            <groupId>com.sy.game.qipai</groupId>
+            <artifactId>game-hzmj</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sy.game.qipai</groupId>
+            <artifactId>game-zzmj</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sy.game.qipai</groupId>
+            <artifactId>game-csmj</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-mj-daozmj</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-mj-yzwdmj</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-mj-symj</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-mj-nymj</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--麻将-->
+
+        <!--字牌-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-zzzp</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-lyzp</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>com.sy.game.qipai</groupId>
+            <artifactId>game-ldfpf</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-zp-hylhq</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-zp-ldsphz</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-zp-hyshk</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-zp-yzphz</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-zp-pengHuzi</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-sypaohuzi</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-zp-honggwpaohuzi</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-zp-hjphz281</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-zp-glphz</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--字牌-->
+
+        <!--扑克-->
+        <dependency>
+            <groupId>com.sy.game.qipai</groupId>
+            <artifactId>game-pdkuai</artifactId>
+            <version>${parent.version}</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-pk-hsth</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-pk-2renddz</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-dtz</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>com.sy.game.qipai</groupId>-->
+            <!--<artifactId>game-pk-sandh</artifactId>-->
+            <!--<version>${parent.version}</version>-->
+        <!--</dependency>-->
+        <!--扑克-->
+
+
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-xxgaohuzi</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-xxpaohuzi</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-xtpaohuzi</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-ahpaohuzi</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-266-wcphz</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-smpaohuzi</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-xppaohuzi521</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-yzlc</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-zjmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-bsmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-nxmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-xplp</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-tjmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-chaosmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-265-yymj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-zhz</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-xx2710</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-dzbp</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-nxghz</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-yiyangwhz</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-tdhmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-yywhz</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-hyshk</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-ahmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-nxphz</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-hsphz</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-pk-diantuo</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-254axphz</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-hbgzp</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-lszp</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-cxmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-yjmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-yjghz</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-pk-yyqf</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-tcmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-pk-niushibie</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-nxkwmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-pk-xtbp</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-dehmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-tcpfmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-zp-cdepaohuzi</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-pk-yybs</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-pk-tcgd</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-tcdpmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-nanxmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-cqxzmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-jingzhoumj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-pk-cdtlj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-pk-zzpdk</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-mj-253zhengzmj</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+        <!--棋类-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.sy.game.qipai</groupId>-->
+        <!--            <artifactId>game-qi-wzq</artifactId>-->
+        <!--            <version>${parent.version}</version>-->
+        <!--        </dependency>-->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                    <forkMode>once</forkMode>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>${project.build.compiler}</source>
+                    <target>${project.build.compiler}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <!--  复制qipai-lib下的所有jar包  -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includeScope>system</includeScope>
+                    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/lib</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

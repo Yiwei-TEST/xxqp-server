@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="statistics">
+
+    <select id="all_group_id_gold" resultClass="java.lang.Long">
+		select groupId from t_group
+		where
+		    parentGroup = 0
+		    and isCredit = 2
+	</select>
+
+    <select id="all_group_user_admin" resultClass="com.sy.sanguo.game.bean.group.GroupUser" parameterClass="java.lang.Long">
+        select
+            *
+        from
+            t_group_user
+        where
+            groupId = #groupId#
+            AND userRole not in (2,90000)
+        ORDER BY
+            userRole asc , promoterLevel asc
+    </select>
+
+    <select id="group_max_promoterLevel" resultClass="java.lang.Integer" parameterClass="java.lang.Long">
+        SELECT COALESCE ( MAX( promoterLevel ), 0) FROM t_group_user
+        WHERE
+            groupId = #groupId#
+    </select>
+
+    <select id="group_gold_win_statistics_master" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            COALESCE ( SUM( log.selfJsCount ),0) AS jsCount,
+            COALESCE ( SUM( CASE WHEN log.selfWin <![CDATA[ > ]]> 0 THEN log.selfWin ELSE 0 END ), 0 ) AS win,
+            COALESCE ( SUM( CASE WHEN log.selfWin <![CDATA[ < ]]> 0 THEN log.selfWin ELSE 0 END ), 0 ) AS lose
+        FROM
+            t_group_user gu
+            LEFT JOIN log_group_gold_win log
+            ON
+                log.groupId = gu.groupId
+                AND log.userId = gu.userId
+                AND log.dataDate = #dataDate#
+        WHERE
+            gu.groupId = #groupId#
+    </select>
+
+    <select id="group_gold_win_statistics_next_level" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            $groupBySql$ as userId,
+            COALESCE ( SUM( log.selfJsCount ),0) AS jsCount,
+            COALESCE ( SUM( CASE WHEN log.selfWin <![CDATA[ > ]]> 0 THEN log.selfWin ELSE 0 END ), 0 ) AS win,
+            COALESCE ( SUM( CASE WHEN log.selfWin <![CDATA[ < ]]> 0 THEN log.selfWin ELSE 0 END ), 0 ) AS lose
+        FROM
+            t_group_user gu
+            LEFT JOIN log_group_gold_win log
+            ON
+                log.groupId = gu.groupId
+                AND log.userId = gu.userId
+                AND log.dataDate = #dataDate#
+        WHERE
+            gu.groupId = #groupId#
+            $andSql$
+        GROUP BY
+            $groupBySql$
+    </select>
+
+    <select id="group_gold_win_statistics_self" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            COALESCE ( SUM( log.selfJsCount ),0) AS selfGroupJsCount,
+            COALESCE ( SUM( CASE WHEN log.selfWin <![CDATA[ > ]]> 0 THEN log.selfWin ELSE 0 END ), 0 ) AS selfGroupWin,
+            COALESCE ( SUM( CASE WHEN log.selfWin <![CDATA[ < ]]> 0 THEN log.selfWin ELSE 0 END ), 0 ) AS selfGroupLose
+        FROM
+            t_group_user gu
+            LEFT JOIN log_group_gold_win log
+            ON
+                log.groupId = gu.groupId
+                AND log.userId = gu.userId
+                AND log.dataDate = #dataDate#
+        WHERE
+            gu.groupId = #groupId#
+            $andSql$
+    </select>
+
+    <update id="save_log_group_gold_win" parameterClass="java.util.HashMap">
+		insert into log_group_gold_win
+		    (
+                dataDate,
+                groupId,
+                userId,
+                win,
+                lose,
+                jsCount,
+                selfGroupWin,
+                selfGroupLose,
+                selfGroupJsCount
+		    )
+		VALUES
+		    (
+		        #dataDate#,
+		        #groupId#,
+		        #userId#,
+		        #win#,
+		        #lose#,
+		        #jsCount#,
+		        #selfGroupWin#,
+		        #selfGroupLose#,
+		        #selfGroupJsCount#
+		    )
+		ON
+		duplicate key update
+            win = #win#,
+            lose = #lose#,
+            jsCount = #jsCount#,
+            selfGroupWin = #selfGroupWin#,
+            selfGroupLose = #selfGroupLose#,
+            selfGroupJsCount = #selfGroupJsCount#
+	</update>
+
+
+
+</sqlMap>
+
+
+
+
+
+
+

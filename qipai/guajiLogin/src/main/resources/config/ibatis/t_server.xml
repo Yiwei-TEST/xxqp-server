@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="server">
+
+	<resultMap class="com.sy.sanguo.game.bean.ServerConfig" id="serverConfig">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="host" column="host"/>
+		<result property="chathost" column="chathost"/>
+		<result property="intranet" column="intranet"/>
+		<result property="gameType" column="gameType"/>
+		<result property="matchType" column="matchType"/>
+		<result property="onlineCount" column="onlineCount"/>
+		<result property="extend" column="extend"/>
+		<result property="serverType" column="serverType"/>
+	</resultMap>
+
+	<update id="updateServerConfig" parameterClass="java.util.HashMap">
+		insert into
+		server_config
+		(id, name, host, chathost, intranet, gameType, matchType,
+		onlineCount, extend,serverType)
+		values
+		(#id#, #name#, #host#, #chathost#,
+		#intranet#, #gameType#, #matchType#, #onlineCount#, #extend#,#serverType#)
+		on
+		duplicate key update
+		id = #id#, name = #name#, host = #host#, chathost
+		= #chathost#, intranet = #intranet#, gameType = #gameType#, matchType
+		= #matchType#, onlineCount = #onlineCount#, extend = #extend#, serverType = #serverType#
+	</update>
+
+	<update id="updateServerByMap" parameterClass="java.util.HashMap">
+		UPDATE server_config
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="name">
+				name=#name#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="host">
+				host=#host#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="chathost">
+				chathost=#chathost#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="intranet">
+				intranet=#intranet#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="gameType">
+				gameType=#gameType#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="matchType">
+				matchType=#matchType#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="onlineCount">
+				onlineCount=#onlineCount#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="extend">
+				extend=#extend#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="serverType">
+				serverType=#serverType#
+			</isPropertyAvailable>
+		</dynamic>
+		WHERE id=#id#
+	</update>
+
+	<delete id="clearServerConfig">
+		DELETE from server_config;
+	</delete>
+
+	<select id="queryAllServer" resultMap="serverConfig">
+		select * from server_config
+	</select>
+
+	<select id="queryServer" resultClass="com.sy.sanguo.game.bean.ServerConfig" parameterClass="java.lang.String">
+		select * from server_config WHERE id=#id#
+	</select>
+
+</sqlMap>
+
+
+
+
+
+
+

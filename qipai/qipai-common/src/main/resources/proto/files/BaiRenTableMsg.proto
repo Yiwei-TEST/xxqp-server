@@ -1,0 +1,60 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+
+//百人玩法房间信息
+message BaiRenTableRes {
+	required string tableId = 1;//牌桌id
+	required int32 wanfa = 2;// 玩法ID
+	optional int32 renshu= 3;//人数
+    required TopInfo sszPlayer = 4;// 神算子信息
+    repeated int32 sszBetRecords = 5;//神算子下注点
+    repeated TopInfo topFivePlayers = 6;//前5富豪玩家信息
+    required TrendInfo trend = 7;//走势信息
+    required TopInfo self = 8;//个人信息
+    required GameBetInfo gameBetInfo = 9;//牌桌下注信息
+    repeated int32 ext = 10;//额外整形参数
+    repeated string extStr = 11;//额外字符串参数
+    optional TopInfo bankUser = 12;//庄家玩家信息
+    repeated TopInfo lzUsers = 13;//轮庄玩家信息列表
+}
+
+// 玩家个人信息
+message TopInfo {
+    required int32 userId = 1;// 玩家ID
+    required string userName = 2;// 玩家名
+    required int32 level = 3;// 等级
+    required int32 vipLevel = 4;// VIP等级
+    required string provice = 5;// 省份
+    required int32 gold = 6;// 金币数
+    required int32 winNum = 7;// 获胜局数
+    required int32 betNum = 8;// 下注总金额
+    required int32 number = 9;// 名次（富豪名次）    
+} 
+
+// 走势信息
+message TrendInfo {
+	repeated int32 recentRececords = 1;// 近20场记录
+	repeated int32 rececords = 2;// 记录
+	repeated int32 ext = 3;//额外整形参数
+}
+
+// 牌桌下注信息
+message GameBetInfo {
+ 	repeated UserBetInfo totalBets = 1;// 当前玩家总押注信息
+    repeated UserBetInfo curBets = 2;// 当前押注时间段总押注信息
+    repeated int32 ext = 3;//额外整形参数
+}
+
+// 玩家下注信息
+message UserBetInfo {
+    required int32 userId = 1;// 玩家ID
+	repeated BetInfo betInfos = 2;// 押注信息
+}
+
+// 押注信息
+message BetInfo {
+	required int32 betType = 1;// 押注类型
+	required int32 betNum = 2;// 押注金额
+}
+
+

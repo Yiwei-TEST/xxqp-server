@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="lotteryStatistics">
+	<resultMap class="com.sy.sanguo.game.bean.UserLotteryStatistics" id="LotteryStatistics">
+		<result property="recordDate" column="recordDate" />
+		<result property="userId" column="userId" />
+		<result property="userName" column="userName" />
+		<result property="record1" column="record1" />
+		<result property="record2" column="record2" />
+		<result property="record3" column="record3" />
+	</resultMap>
+	<insert id="saveUserLotteryStatistics" parameterClass="com.sy.sanguo.game.bean.UserLotteryStatistics">
+		INSERT INTO
+		t_lottery_statistics
+		(recordDate,userId,userName,record1,record2,record3)
+		values
+		(#recordDate#,#userId#,#userName#,#record1#,#record2#,#record3#)
+		on duplicate key update
+		recordDate=#recordDate#,userId=#userId#,userName=#userName#,record1=record1+#record1#,record2=record2+#record2#,record3=record3+#record3#
+	</insert>
+</sqlMap>

@@ -1,0 +1,1191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+		PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="t_competition">
+
+	<cacheModel id="code-CacheModel" type="LRU" readOnly="true"
+				serialize="false">
+		<flushInterval minutes="10"/>
+		<property name="cache-size" value="10000"/>
+	</cacheModel>
+
+	<!-- 报名 -->
+	<select id="apply_selectByCount" resultClass="java.lang.Integer" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionApplyDB">
+		/*FORCE_MASTER*/ select count(id) from t_competition_apply
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="userId"> userId=#userId# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="playingId"> playingId=#playingId# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="status"> `status`=#status# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="createTime"> datediff(`createTime`, #createTime#) = 0 </isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="apply_selectByList" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionApplyDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionApplyDB">
+		/*FORCE_MASTER*/ select * from t_competition_apply
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="userId"> userId=#userId# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="playingId"> playingId=#playingId# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="status"> `status`=#status# </isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="apply_selectBySingle" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionApplyDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionApplyDB">
+		/*FORCE_MASTER*/ select * from t_competition_apply
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="userId"> userId=#userId# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="playingId"> playingId=#playingId# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="status"> `status`=#status# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="signShow"> `signShow`=#signShow# </isNotEmpty>
+		</dynamic>
+		order by id desc limit 1;
+	</select>
+
+	<select id="apply_selectByUserPlay" resultClass="java.lang.Long" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionApplyDB">
+		/*FORCE_MASTER*/ select playingId from t_competition_apply
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="userId"> userId=#userId# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="playingId"> playingId=#playingId# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="play"> `play`=#play# </isNotEmpty>
+		</dynamic>
+		order by id desc
+		limit 1
+	</select>
+
+	<!--30s内同一系列赛事不允许重复报名-->
+	<select id="apply_selectByListForType" resultClass="java.lang.Integer" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionApplyDB">
+		/*FORCE_MASTER*/ SELECT COUNT(1) c FROM t_competition_apply ta, t_competition_playing tp
+		WHERE ta.playingId=tp.id AND userId=#userId# AND ta.`status`=1 AND tp.status IN (0,1,2) AND tp.playingConfigId=#playingConfigId#
+		AND TIME_TO_SEC(TIMEDIFF(NOW(),ta.createTime)) <![CDATA[<=]]> 30
+		ORDER BY ta.id DESC LIMIT 1;
+	</select>
+
+	<select id="apply_selectByPlayingId" resultClass="java.lang.Long" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionApplyDB">
+		/*FORCE_MASTER*/ select userId from t_competition_apply
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="playingId"> playingId=#playingId# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="status"> `status`=#status# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="signShow"> `signShow`=#signShow# </isNotEmpty>
+		</dynamic>
+	</select>
+
+	<insert id="apply_insert"
+			parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionApplyDB">
+		insert into
+		t_competition_apply(userId,consumerId,consumerVal,shareFreeSign,playingId,status,push)
+		values (#userId#,#consumerId#,#consumerVal#,#shareFreeSign#,#playingId#,#status#,#push#);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS ID
+		</selectKey>
+	</insert>
+
+
+	<update id="apply_update_status"
+			parameterClass="java.util.Map">
+		update t_competition_apply set `status`=#status# where `status`=#default_status# and `id`=#id#;
+	</update>
+
+	<update id="apply_update_play"
+			parameterClass="java.util.Map">
+		update t_competition_apply set `play`=#play# where playingId=#playingId#
+		<isNotEmpty prepend=" and " property="userIds">
+			userId in ($userIds$)
+		</isNotEmpty>
+		;
+	</update>
+
+	<update id="apply_updateSignShow"
+			parameterClass="java.util.Map">
+		update t_competition_apply set `signShow`=#signShow# where playingId=#playingId# and userId=#userId# and `status`=1
+	</update>
+
+	<update id="apply_update"
+			parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionApplyDB">
+		update t_competition_apply
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="userId">
+				userId=#userId#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="consumerId">
+				consumerId=#consumerId#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="consumerVal">
+				consumerVal=#consumerVal#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="playingId">
+				playingId=#playingId#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="status">
+				`status`=#status#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="push">
+				push=#push#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="deleteTime">
+				deleteTime=#deleteTime#
+			</isNotEmpty>
+		</dynamic>
+		where id=#id#;
+	</update>
+
+	<!-- 赛事 -->
+	<insert id="playing_insert"
+			parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		insert into
+		t_competition_playing(
+		`playingConfigId`,
+		`bindServerId`,
+		`titleType`,
+		`type`,
+		`category`,
+		`entrance`,
+		`consumerId`,
+		`consumerVal`,
+		`shareFreeSign`,
+		`initScore`,
+		`curHuman`,
+		`beginHuman`,
+		`maxHuman`,
+		`endHuman`,
+		`titleCode`,
+		`desc`,
+		`status`,
+		`applyBeforeMin`,
+		`applyBefore`,
+		`applyAfter`,
+		`matchBefore`,
+		`matchAfter`,
+		`upStep`,
+		`upRound`,
+		`curStep`,
+		`curRound`,
+		`iteration`,
+		`logo`,
+		`disableStartTime`,
+		`disableEndTime`,
+		`orderField`
+		)
+		values (
+		#playingConfigId#,
+		#bindServerId#,
+		#titleType#,
+		#type#,
+		#category#,
+		#entrance#,
+		#consumerId#,
+		#consumerVal#,
+		#shareFreeSign#,
+		#initScore#,
+		#curHuman#,
+		#beginHuman#,
+		#maxHuman#,
+		#endHuman#,
+		#titleCode#,
+		#desc#,
+		#status#,
+		#applyBeforeMin#,
+		#applyBefore#,
+		#applyAfter#,
+		#matchBefore#,
+		#matchAfter#,
+		#upStep#,
+		#upRound#,
+		#curStep#,
+		#curRound#,
+		#iteration#,
+		#logo#,
+		#disableStartTime#,
+		#disableEndTime#,
+		#orderField#
+		);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS ID
+		</selectKey>
+	</insert>
+
+	<select id="playing_selectByCount" resultClass="java.lang.Integer" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		/*FORCE_MASTER*/ select count(id) from t_competition_playing
+		<dynamic prepend="where">
+			<isGreaterThan prepend = "and" property = "id" compareValue="0">`id`=#id#</isGreaterThan>
+			<isNotEmpty prepend=" and " property="playingConfigId"> `playingConfigId`=#playingConfigId# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="titleType"> `titleType`=#titleType# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="type"> `type`=#type# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="category"> `category`=#category# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="entrance"> `entrance`=#entrance# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="status"> `status`=#status# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="applyBefore"> `applyBefore`=#applyBefore# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="applyAfter"> `applyAfter`=#applyAfter# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="matchBefore"> `matchBefore`=#matchBefore# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="matchAfter"> `matchAfter`=#matchAfter# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="shardingTakeOver"> `shardingTakeOver`=0 </isNotEmpty>
+			<isNotEmpty prepend=" and " property="deleteTime"> deleteTime is null </isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="playing_selectByList" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		/*FORCE_MASTER*/ select * from t_competition_playing
+		<dynamic prepend="where">
+			<isGreaterThan prepend = "and" property = "id" compareValue="0">`id`=#id#</isGreaterThan>
+			<isNotEmpty prepend=" and " property="titleType"> `titleType`=#titleType# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="type"> `type`=#type# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="category"> `category`=#category# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="entrance"> `entrance`=#entrance# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="status"> `status`=#status# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="applyBefore"> `applyBefore`<![CDATA[<=]]>#applyBefore# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="applyAfter"> `applyAfter`<![CDATA[>=]]>#applyAfter# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="matchBefore"> `matchBefore`<![CDATA[<=]]>#matchBefore# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="matchAfter"> `matchAfter`<![CDATA[>=]]>#matchAfter# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="shardingTakeOver"> `shardingTakeOver`=0 </isNotEmpty>
+			<isNotEmpty prepend=" and " property="deleteTime"> deleteTime is null </isNotEmpty>
+		</dynamic>
+		order by id desc ;
+	</select>
+
+	<select id="playing_selectBySingle" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		/*FORCE_MASTER*/ select * from t_competition_playing
+		<dynamic prepend="where">
+			<isGreaterThan prepend = "and" property = "id" compareValue="0">`id`=#id#</isGreaterThan>
+			<isNotEmpty prepend=" and " property="titleType"> `titleType`=#titleType# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="type"> `type`=#type# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="category"> `category`=#category# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="entrance"> `entrance`=#entrance# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="status"> `status`=#status# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="applyBefore"> `applyBefore`<![CDATA[<=]]>#applyBefore# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="applyAfter"> `applyAfter`<![CDATA[>=]]>#applyAfter# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="matchBefore"> `matchBefore`<![CDATA[<=]]>#matchBefore# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="matchAfter"> `matchAfter`<![CDATA[>=]]>#matchAfter# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="shardingTakeOver"> `shardingTakeOver`=0 </isNotEmpty>
+			<isNotEmpty prepend=" and " property="deleteTime"> deleteTime is null </isNotEmpty>
+		</dynamic>
+		order by matchBefore , id  limit 1;
+	</select>
+
+	<select id="playing_selectByMaxEndHuman" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		/*FORCE_MASTER*/ select * from t_competition_playing where `curHuman` <![CDATA[<]]> `maxHuman` and deleteTime is null
+			<isGreaterThan prepend = "and" property = "id" compareValue="0">`id`=#id#</isGreaterThan>
+			<isNotEmpty prepend=" and " property="status"> `status`=#status# </isNotEmpty>
+	</select>
+
+	<select id="playing_selectByLastApply" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		/*FORCE_MASTER*/ SELECT `id`,
+		`bindServerId`,
+		`playingConfigId`,
+		`titleType`,
+		`type`,
+		`category`,
+		`entrance`,
+		`consumerId`,
+		`consumerVal`,
+		`shareFreeSign`,
+		`initScore`,
+		`curHuman`,
+		`beginHuman`,
+		`maxHuman`,
+		`endHuman`,
+		`titleCode`,
+		`desc`,
+		`status`,
+		`applyBefore`,
+		`matchBefore`,
+		`curStep`,
+		`curRound`,
+		`iteration`,
+		`disableStartTime`,
+		`disableEndTime`,
+		`openTime`,
+		`logo`,
+		`orderField`,
+		`applyBeforeMin`,
+		`signStatus`,
+		`openSign`,
+		`logo`,
+		`openTime`
+		FROM (
+		SELECT if(b.userId is null,0,1) signStatus,DATE_SUB(IFNULL(matchBefore,NOW()),INTERVAL IFNULL(applyBeforeMin,0) MINUTE)<![CDATA[<=]]>NOW() openSign,a.* FROM t_competition_playing a LEFT JOIN (SELECT * FROM t_competition_apply WHERE userId=#userId# AND `status`=1) b ON a.id=b.playingId
+		WHERE ((`curHuman` <![CDATA[<]]> `maxHuman` and `type`=1) OR (`type`=2))
+		<isGreaterThan prepend = " and " property = "id" compareValue="0">a.`id`=#id#</isGreaterThan>
+		<isNotEmpty prepend=" and " property="titleType"> `titleType`=#titleType# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="type"> `type`=#type# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="category"> `category`=#category# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="entrance"> `entrance`=#entrance# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="status"> a.`status`=#status# </isNotEmpty>
+		ORDER BY matchBefore,id ASC
+		LIMIT 9999999999
+		)a GROUP BY playingConfigId ORDER BY matchBefore,orderField DESC,id ASC
+	</select>
+<!-- LIMIT 1;-->
+
+	<select id="playing_select_config_max_id" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB" parameterClass="java.lang.Long">
+		/*FORCE_MASTER*/ SELECT * FROM t_competition_playing WHERE id = (SELECT MAX(id) FROM t_competition_playing WHERE playingConfigId=#playingConfigId# ORDER BY id DESC LIMIT 1)
+	</select>
+
+	<update id="playing_update_playing_curStepRound" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		update t_competition_playing
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="curStep">upStep=curStep , upRound=curRound, `curStep`=`curStep`+#curStep#,`curRound`=1</isNotEmpty>
+			<isNotEmpty prepend="," property="curRound">upStep=curStep , upRound=curRound, `curRound`=`curRound`+#curRound#</isNotEmpty>
+		</dynamic>
+		WHERE id=#id#;
+	</update>
+
+
+
+
+<!--	<select id="playing_selectByParam" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">-->
+<!--		select * from t_competition_playing where deleteTime is null-->
+<!--		<isNotEmpty prepend=" and " property="status"> `status`=#status# </isNotEmpty>-->
+<!--		<isNotEmpty prepend=" and " property="applyBefore"> `applyBefore`<![CDATA[<=]]>#applyBefore# </isNotEmpty>-->
+<!--		<isNotEmpty prepend=" and " property="applyAfter"> `applyAfter`<![CDATA[>=]]>#applyAfter# </isNotEmpty>-->
+<!--		<isNotEmpty prepend=" and " property="matchBefore"> `matchBefore`<![CDATA[<=]]>#matchBefore# </isNotEmpty>-->
+<!--		<isNotEmpty prepend=" and " property="matchAfter"> `matchAfter`<![CDATA[>=]]>#matchAfter# </isNotEmpty>-->
+<!--&lt;!&ndash;		<isNotEmpty prepend=" and " property="sharingTakeOver"> `sharingTakeOver`=0 </isNotEmpty>&ndash;&gt;-->
+<!--	</select>-->
+
+	<update id="playing_update_sharding"
+			parameterClass="java.util.Map">
+		update t_competition_playing
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="status">
+				shardingTakeOver=#status#
+			</isNotEmpty>
+		</dynamic>
+		where id=#id# and shardingTakeOver=#defaultStatus#;
+	</update>
+
+	<update id="playing_update_sharding_release_lock"
+			parameterClass="java.util.Map">
+		update t_competition_playing set shardingTakeOver=#status# where shardingTakeOver=#defaultStatus#;
+	</update>
+
+<!--	<update id="playing_update_status"-->
+<!--			parameterClass="java.util.Map">-->
+<!--		update t_competition_playing-->
+<!--		<dynamic prepend="SET">-->
+<!--			<isNotEmpty prepend="," property="shardingTakeOver">`status`=#status#</isNotEmpty>-->
+<!--		</dynamic>-->
+
+<!--		<dynamic prepend="where">-->
+<!--			<isNotEmpty prepend="," property="id">`id`=#id#</isNotEmpty>-->
+<!--			<isNotEmpty prepend="," property="default_status">status=#default_status#;</isNotEmpty>-->
+<!--		</dynamic>-->
+<!--	</update>-->
+
+	<!--状态为6报废时,校验匹配开始时间-->
+	<update id="playing_update_batch_clearingEnd_status" parameterClass="java.util.Map">
+		update t_competition_playing set `status`=#status#
+		<isEqual prepend = " , " property = "status" compareValue="7">`openTime`=now(),`curStep`=1 </isEqual>
+		<isEqual prepend = " , " property = "status" compareValue="4">`deleteTime`=now() </isEqual>
+		<isEqual prepend = " , " property = "status" compareValue="6">`deleteTime`=now() </isEqual>
+
+		 where status=#default_status#
+		<isGreaterThan prepend = " and " property = "id" compareValue="0">`id`=#id#</isGreaterThan>
+		<isGreaterThan prepend = " and " property = "type" compareValue="0">`type`=#type# </isGreaterThan>
+		<isEqual prepend = " and " property = "status" compareValue="6">`matchBefore`<![CDATA[<]]>now() </isEqual>
+		<isEqual prepend = " and " property = "status" compareValue="7"> `beginHuman`<![CDATA[<=]]>`curHuman` </isEqual>
+		<isNotEqual prepend = " and " property = "beginHuman" compareValue="0">`curHuman` <![CDATA[<]]> `beginHuman`</isNotEqual>
+	</update>
+
+	<!--状态为6报废时,校验匹配开始时间-->
+	<delete id="playing_delete" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		DELETE FROM t_competition_playing WHERE id=#id#
+	</delete>
+
+	<update id="playing_update"
+			parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		update t_competition_playing
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="shardingTakeOver">shardingTakeOver=#shardingTakeOver# </isNotEmpty>
+			<isNotEmpty prepend="," property="curStep">curStep=#curStep# </isNotEmpty>
+			<isNotEmpty prepend="," property="curRound">curRound=#curRound# </isNotEmpty>
+			<isNotEmpty prepend="," property="iteration">`iteration`=#iteration# </isNotEmpty>
+			<isNotEmpty prepend="," property="disableStartTime">disableStartTime=#disableStartTime# </isNotEmpty>
+			<isNotEmpty prepend="," property="disableEndTime">disableEndTime=#disableEndTime# </isNotEmpty>
+			<isNotEmpty prepend="," property="deleteTime">deleteTime=#deleteTime# </isNotEmpty>
+			<isNotEmpty prepend="," property="matchBefore">matchBefore=#matchBefore# </isNotEmpty>
+			<isNotEmpty prepend="," property="matchAfter">matchAfter=#matchAfter# </isNotEmpty>
+			<isNotEmpty prepend="," property="applyBefore">applyBefore=#applyBefore# </isNotEmpty>
+			<isNotEmpty prepend="," property="applyAfter">applyAfter=#applyAfter# </isNotEmpty>
+			<isNotEmpty prepend="," property="status">`status`=#status# </isNotEmpty>
+			<isNotEmpty prepend="," property="titleCode">titleCode=#titleCode# </isNotEmpty>
+			<isNotEmpty prepend="," property="beginHuman">beginHuman=#beginHuman# </isNotEmpty>
+			<isNotEmpty prepend="," property="endHuman">endHuman=#endHuman# </isNotEmpty>
+			<isNotEmpty prepend="," property="initScore">initScore=#initScore# </isNotEmpty>
+			<isNotEmpty prepend="," property="consumerId">consumerId=#consumerId# </isNotEmpty>
+			<isNotEmpty prepend="," property="curHuman">curHuman=#curHuman# </isNotEmpty>
+			<isNotEmpty prepend="," property="desc">`desc`=#desc# </isNotEmpty>
+			<isNotEmpty prepend="," property="beginPlayingPushStatus">`beginPlayingPushStatus`=#beginPlayingPushStatus# </isNotEmpty>
+			<isNotEmpty prepend="," property="beginPlayingRHLPushStatus">`beginPlayingRHLPushStatus`=#beginPlayingRHLPushStatus# </isNotEmpty>
+			<isNotEmpty prepend="," property="ext">`ext`=#ext# </isNotEmpty>
+		</dynamic>
+		 where id=#id#;
+	</update>
+
+	<!--			<isNotEmpty prepend="," property="matchBefore">matchBefore=#matchBefore# </isNotEmpty>-->
+	<!--			<isNotEmpty prepend="," property="matchAfter">matchAfter=#matchAfter# </isNotEmpty>-->
+	<!--			<isNotEmpty prepend="," property="applyBefore">applyBefore=#applyBefore# </isNotEmpty>-->
+	<!--			<isNotEmpty prepend="," property="applyAfter">applyAfter=#applyAfter# </isNotEmpty>-->
+	<!--			<isNotEmpty prepend="," property="status">`status`=#status# </isNotEmpty>-->
+	<!--			<isNotEmpty prepend="," property="beginHuman">beginHuman=#beginHuman# </isNotEmpty>-->
+	<!--			<isNotEmpty prepend="," property="endHuman">endHuman=#endHuman# </isNotEmpty>-->
+	<update id="playing_updateByType"
+			parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		update t_competition_playing
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="curStep">curStep=#curStep# </isNotEmpty>
+			<isNotEmpty prepend="," property="curRound">curRound=#curRound# </isNotEmpty>
+			<isNotEmpty prepend="," property="iteration">`iteration`=#iteration# </isNotEmpty>
+			<isNotEmpty prepend="," property="disableStartTime">disableStartTime=#disableStartTime# </isNotEmpty>
+			<isNotEmpty prepend="," property="disableEndTime">disableEndTime=#disableEndTime# </isNotEmpty>
+			<isNotEmpty prepend="," property="deleteTime">deleteTime=#deleteTime# </isNotEmpty>
+			<isNotEmpty prepend="," property="titleCode">titleCode=#titleCode# </isNotEmpty>
+			<isNotEmpty prepend="," property="initScore">initScore=#initScore# </isNotEmpty>
+			<isNotEmpty prepend="," property="consumerId">consumerId=#consumerId# </isNotEmpty>
+			<isNotEmpty prepend="," property="consumerVal">consumerVal=#consumerVal# </isNotEmpty>
+			<isNotEmpty prepend="," property="beginHuman">beginHuman=#beginHuman# </isNotEmpty>
+			<isNotEmpty prepend="," property="maxHuman">maxHuman=#maxHuman# </isNotEmpty>
+			<isNotEmpty prepend="," property="endHuman">`endHuman`=#endHuman# </isNotEmpty>
+			<isNotEmpty prepend="," property="ext">`ext`=#ext# </isNotEmpty>
+			<isNotEmpty prepend="," property="logo">`logo`=#logo# </isNotEmpty>
+			<isNotEmpty prepend="," property="orderField">`orderField`=#orderField# </isNotEmpty>
+			<isNotEmpty prepend="," property="applyBeforeMin">`applyBeforeMin`=#applyBeforeMin# </isNotEmpty>
+		</dynamic>
+		 where titleType=#titleType# and `type`=#type# and `category`=#category# and `entrance`=#entrance#;
+	</update>
+
+	<!--开赛定时赛-->
+	<update id="playing_update_status_byApplyTime"
+			parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		update t_competition_playing set `status`=1 where `status`=0 and `applyBefore`<![CDATA[<=]]>now() and `type`=2;
+	</update>
+
+	<!--开赛报名赛-->
+	<select id="playing_select_notExistsStatus1" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		/*FORCE_MASTER*/ SELECT id,playingConfigId FROM `t_competition_playing` WHERE `status`=0 AND `type`=1 AND playingConfigId NOT IN
+		(SELECT playingConfigId FROM `t_competition_playing` WHERE ( `status`=1 AND curHuman <![CDATA[<]]> beginHuman) AND `type`=1 GROUP BY playingConfigId)
+		GROUP BY playingConfigId ORDER BY id ASC
+	</select>
+
+	<!--当前类型比赛没有报名中状态(1)的比赛,更新一条初始状态0为报名中1-->
+	<update id="playing_update_status_byMaxHuman"
+			parameterClass="java.lang.String">
+		UPDATE t_competition_playing t set `status`=1 where id in ($id$);
+	</update>
+
+	<update id="playing_update_curHuman" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		update t_competition_playing set curHuman=curHuman+#curHuman# where id=#id#
+		<isEqual prepend=" and " property="curHuman" compareValue="1">curHuman <![CDATA[<]]> maxHuman</isEqual>
+		<isNotEmpty prepend=" and " property="status">`status`=#status#</isNotEmpty>
+	</update>
+
+	<update id="playing_update_aliveHuman" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingDB">
+		update t_competition_playing set aliveHuman=aliveHuman+#aliveHuman# where id=#id#
+	</update>
+
+	<update id="playing_set_aliveHuman" parameterClass="java.util.Map">
+		update t_competition_playing set aliveHuman=#newValue# where id=#playingId# and aliveHuman<![CDATA[>]]>#defaultValue#
+	</update>
+
+	<select id="playing_select_curHuman" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		/*FORCE_MASTER*/ select curHuman from t_competition_playing where `type` =#type# and `category`=#category# and `entrance`=#entrance# ;
+	</select>
+
+	<select id="playing_select_aliveHuman" resultClass="java.lang.Integer" parameterClass="java.lang.Long">
+		/*FORCE_MASTER*/ select aliveHuman from t_competition_playing where `id`=#id# ;
+	</select>
+
+	<select id="playing_select_curPlayingTableCount" resultClass="java.lang.Integer" parameterClass="java.lang.Long">
+		/*FORCE_MASTER*/ select curPlayingTableCount from t_competition_playing where id = #playingId#;
+	</select>
+
+	<!--赛场配置-->
+	<insert id="playing_config_insert"
+			parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingConfigDB">
+		INSERT INTO `t_competition_playing_config` (
+		`titleType`,
+		`type`,
+		`category`,
+		`entrance`,
+		`iterationType`,
+		`iterationMin`,
+		`consumerId`,
+		`consumerVal`,
+		`shareFreeSign`,
+		`initScore`,
+		`beginHuman`,
+		`maxHuman`,
+		`endHuman`,
+		`titleCode`,
+		`beforeXMinPushTitle`,
+		`desc`,
+		`applyBeforeMin`,
+		`applyBefore`,
+		`applyAfter`,
+		`matchBefore`,
+		`matchAfter`,
+		`stepRoundDesc`,
+		`iteration`,
+		`stepRate`,
+		`stepConvertRate`,
+		`roomConfigIds`,
+		`awards`,
+		`loginCallBackUrl`,
+		`logo`,
+		`startBeforeNotifyExt`,
+		`orderField`,
+		`extModel`,
+		`createTime`,
+		`updateTime`,
+		`deleteTime`
+		)
+		VALUES
+		(
+		#titleType#,
+		#type#,
+		#category#,
+		#entrance#,
+		#iterationType#,
+		#iterationMin#,
+		#consumerId#,
+		#consumerVal#,
+		#shareFreeSign#,
+		#initScore#,
+		#beginHuman#,
+		#maxHuman#,
+		#endHuman#,
+		#titleCode#,
+		#beforeXMinPushTitle#,
+		#desc#,
+		#applyBeforeMin#,
+		#applyBefore#,
+		#applyAfter#,
+		#matchBefore#,
+		#matchAfter#,
+		#stepRoundDesc#,
+		#iteration#,
+		#stepRate#,
+		#stepConvertRate#,
+		#roomConfigIds#,
+		#awards#,
+		#loginCallBackUrl#,
+		#logo#,
+		#startBeforeNotifyExt#,
+		#orderField#,
+		#extModel#,
+		#createTime#,
+		#updateTime#,
+		#deleteTime#
+		);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS ID
+		</selectKey>
+	</insert>
+
+	<update id="playing_config_update" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingConfigDB">
+		update t_competition_playing_config set `titleType`=#titleType#,
+		`type`=#type#,
+		`category`=#category#,
+		`entrance`=#entrance#,
+		`iterationType`=#iterationType#,
+		`iterationMin`=#iterationMin#,
+		`consumerId`=#consumerId#,
+		`consumerVal`=#consumerVal#,
+		`shareFreeSign`=#shareFreeSign#,
+		`initScore`=#initScore#,
+		`beginHuman`=#beginHuman#,
+		`maxHuman`=#maxHuman#,
+		`endHuman`=#endHuman#,
+		`titleCode`=#titleCode#,
+		`beforeXMinPushTitle`=#beforeXMinPushTitle#,
+		`desc`=#desc#,
+		`applyBeforeMin`=#applyBeforeMin#,
+		`applyBefore`=#applyBefore#,
+		`applyAfter`=#applyAfter#,
+		`matchBefore`=#matchBefore#,
+		`matchAfter`=#matchAfter#,
+		`stepRoundDesc`=#stepRoundDesc#,
+		`iteration`=#iteration#,
+		`stepRate`=#stepRate#,
+		`stepConvertRate`=#stepConvertRate#,
+		`roomConfigIds`=#roomConfigIds#,
+		`awards`=#awards#,
+		`loginCallBackUrl`=#loginCallBackUrl#,
+		`logo`=#logo#,
+		`startBeforeNotifyExt`=#startBeforeNotifyExt#,
+		`orderField`=#orderField#,
+		`extModel`=#extModel#
+		WHERE id=#id#;
+	</update>
+	
+	<select id="playing_config_selectByCount" resultClass="java.lang.Integer" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingConfigDB">
+		/*FORCE_MASTER*/ select count(id) from t_competition_playing_config
+		<dynamic prepend="where">
+			<isGreaterThan prepend = "and" property = "id" compareValue="0">`id`=#id#</isGreaterThan>
+			<isNotEmpty prepend=" and " property="titleType"> `titleType`=#titleType# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="type"> `type`=#type# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="category"> `category`=#category# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="entrance"> `entrance`=#entrance# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="applyBefore"> `applyBefore`=#applyBefore# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="applyAfter"> `applyAfter`=#applyAfter# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="matchBefore"> `matchBefore`=#matchBefore# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="matchAfter"> `matchAfter`=#matchAfter# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="shardingTakeOver"> `shardingTakeOver`=0 </isNotEmpty>
+			<isNotEmpty prepend=" and " property="consumerId"> `consumerId`=#consumerId# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="consumerVal"> `consumerVal`=#consumerVal# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="beginHuman"> `beginHuman`=#beginHuman# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="endHuman"> `endHuman`=#endHuman# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="titleCode"> `titleCode`=#titleCode# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="iteration"> `iteration`=#iteration# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="deleteTime"> deleteTime is null </isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="playing_config_selectByList" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingConfigDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingConfigDB">
+		/*FORCE_MASTER*/ select * from t_competition_playing_config
+		<dynamic prepend="where">
+		<isGreaterThan prepend = "and" property = "id" compareValue="0">`id`=#id#</isGreaterThan>
+		<isNotEmpty prepend=" and " property="titleType"> `titleType`=#titleType# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="type"> `type`=#type# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="category"> `category`=#category# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="entrance"> `entrance`=#entrance# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="applyBefore"> `applyBefore`=#applyBefore# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="applyAfter"> `applyAfter`=#applyAfter# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="matchBefore"> `matchBefore`=#matchBefore# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="matchAfter"> `matchAfter`=#matchAfter# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="shardingTakeOver"> `shardingTakeOver`=0 </isNotEmpty>
+		<isNotEmpty prepend=" and " property="consumerId"> `consumerId`=#consumerId# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="consumerVal"> `consumerVal`=#consumerVal# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="beginHuman"> `beginHuman`=#beginHuman# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="endHuman"> `endHuman`=#endHuman# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="titleCode"> `titleCode`=#titleCode# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="iteration"> `iteration`=#iteration# </isNotEmpty>
+		<isNotEmpty prepend=" and " property="deleteTime"> deleteTime is null </isNotEmpty>
+	</dynamic>
+	</select>
+
+	<update id="playing_config_close"
+			parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingConfigDB">
+		update t_competition_playing_config set deleteTime=#deleteTime# where titleType=#titleType# and `type`=#type# and category=#category# and entrance=#entrance#
+	</update>
+
+	<delete id="playing_config_del"
+			parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionPlayingConfigDB">
+		delete t_competition_playing_config where titleType=#titleType# and `type`=#type# and category=#category# and entrance=#entrance#;
+		delete t_competition_playing where where titleType=#titleType# and `type`=#type# and category=#category# and entrance=#entrance#;
+	</delete>
+
+	<update id="playing_config_update_sharding"
+			parameterClass="java.util.Map">
+		update t_competition_playing_config
+		<dynamic prepend="SET">
+			<isNotEmpty prepend="," property="status">
+				shardingTakeOver=#status#
+			</isNotEmpty>
+		</dynamic>
+		where id=#id# and shardingTakeOver=#defaultStatus#;
+	</update>
+
+	<update id="playing_config_update_sharding_release_lock"
+			parameterClass="java.util.Map">
+		update t_competition_playing_config set shardingTakeOver=#status# where shardingTakeOver=#defaultStatus#;
+	</update>
+
+	<!-- 赛事积分流水,提取上一步结束的榜单 -->
+	<select id="score_detail_selectByOrderRank" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreDetailDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreDetailDB">
+		/*FORCE_MASTER*/ SELECT * FROM(
+			SELECT * FROM (
+			SELECT sd.*,IFNULL(ui.`name`,CONCAT('',sd.`userId`)) userName FROM t_competition_score_detail sd left join user_inf ui on sd.userId=ui.userId
+			,(SELECT upStep curStep,upRound curRound FROM t_competition_playing WHERE id=#playingId# )t
+			WHERE sd.playingId=#playingId# AND sd.`lastStep`=t.curStep AND sd.`lastRound`=t.curRound
+			ORDER BY lastStep DESC,lastRound DESC,sd.id DESC LIMIT 999999
+			)a GROUP BY userId ORDER BY lastStep DESC,lastRound DESC,lastRank ASC
+		)b
+		<dynamic prepend="WHERE">
+			<isNotEmpty property="userId" prepend=" and ">
+				userId=#userId#
+			</isNotEmpty>
+		</dynamic>
+		LIMIT #limit#
+	</select>
+
+	<!-- 赛事积分流水,提取上一步结束的榜单 -->
+	<select id="score_detail_selectByOrderRankSimple" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreTotalDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreDetailDB">
+		/*FORCE_MASTER*/ SELECT
+		IFNULL(lastRank,1) rank,
+		(
+		SELECT COUNT(1) FROM t_competition_score_detail a,
+		(SELECT id,upStep,upRound FROM t_competition_playing WHERE id=#playingId#)t1 WHERE a.playingId=t1.id AND a.lastStep=t1.upStep AND a.lastRound=t1.upRound AND a.lastStatus=1
+		 ) total
+		FROM(
+		SELECT id,userId,playingId,lastStep,lastRound,lastRank FROM t_competition_score_detail WHERE playingId=#playingId# AND userId=#userId# ORDER BY id DESC LIMIT 999999
+		)a
+		,
+		(SELECT id,upStep,upRound FROM t_competition_playing WHERE id=#playingId#)t1 WHERE a.lastStep=t1.upStep AND a.lastRound=t1.upRound
+		GROUP BY a.playingId ORDER BY a.id DESC LIMIT 1;
+	</select>
+
+	<!-- 赛事积分流水,提取数量 -->
+	<select id="score_detail_selectByCount" resultClass="java.lang.Integer" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreDetailDB">
+		/*FORCE_MASTER*/ SELECT COUNT(id) FROM (
+		SELECT *  FROM (
+		SELECT * FROM t_competition_score_detail
+		<dynamic prepend="where">
+			<isGreaterThan prepend="and" property="id" compareValue="0">`id`=#id#</isGreaterThan>
+			<isNotEmpty prepend=" and " property="userId"> `userId`=#userId# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="playingId"> `playingId`=#playingId# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="lastScore"> `lastScore`=#lastScore# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="lastRank"> `lastRank`=#type# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="lastTableRank"> `lastTableRank`=#lastTableRank# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="lastStep"> `lastStep`=#lastStep# </isNotEmpty>
+			<isNotEmpty prepend=" and " property="lastRound"> `lastRound`=#lastRound# </isNotEmpty>
+		</dynamic>
+		ORDER BY id DESC LIMIT 99999
+		)a
+		GROUP BY userId
+		ORDER BY id DESC
+		)b
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="lastStatus"> `lastStatus`=#lastStatus# </isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 赛事积分流水,提取List -->
+	<select id="score_detail_selectByList" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreDetailDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreDetailDB">
+		/*FORCE_MASTER*/ SELECT * FROM (
+			SELECT * FROM (
+				SELECT * FROM t_competition_score_detail
+				<dynamic prepend="where">
+					<isGreaterThan prepend="and" property="id" compareValue="0">`id`=#id#</isGreaterThan>
+					<isNotEmpty prepend=" and " property="userId"> `userId`=#userId# </isNotEmpty>
+					<isNotEmpty prepend=" and " property="playingId"> `playingId`=#playingId# </isNotEmpty>
+					<isNotEmpty prepend=" and " property="lastScore"> `lastScore`=#lastScore# </isNotEmpty>
+					<isNotEmpty prepend=" and " property="lastRank"> `lastRank`=#lastRank# </isNotEmpty>
+					<isNotEmpty prepend=" and " property="lastTableRank"> `lastTableRank`=#lastTableRank# </isNotEmpty>
+					<isNotEmpty prepend=" and " property="lastStep"> `lastStep`=#lastStep# </isNotEmpty>
+					<isNotEmpty prepend=" and " property="lastRound"> `lastRound`=#lastRound# </isNotEmpty>
+				</dynamic>
+				ORDER BY id DESC LIMIT 99999
+			)a
+			GROUP BY userId ORDER BY id DESC
+		)b
+		<dynamic prepend="where">
+			<isNotEmpty prepend=" and " property="lastStatus"> `lastStatus`=#lastStatus# </isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!--
+		赛事积分流水,淘汰低于n名的玩家
+		UPDATE t_competition_score_detail SET `lastStatus`=2 WHERE playingId=#playingId# ;
+		UPDATE t_competition_score_detail SET lastStatus=2
+		WHERE id NOT IN (
+			SELECT id FROM (
+				SELECT * FROM (
+					SELECT * FROM t_competition_score_detail
+					<dynamic prepend="where">
+						<isNotEmpty prepend=" and " property="playingId"> `playingId`=#playingId# </isNotEmpty>
+						<isNotEmpty prepend=" and " property="lastStep"> `lastStep`=#curStep# </isNotEmpty>
+						<isNotEmpty prepend=" and " property="lastRound"> `lastRound`=#curRound# </isNotEmpty>
+					</dynamic>
+					ORDER BY id DESC LIMIT 99999
+				)a
+				GROUP BY userId ORDER BY id DESC
+			)b WHERE lastRank <![CDATA[<=]]> #limit#
+		)
+	-->
+	<update id="score_detail_updateTopNByPlayingId" parameterClass="java.util.Map">
+		UPDATE t_competition_score_detail SET `lastStatus`=2 WHERE playingId=#playingId# AND lastStep=#curStep# AND lastRound=#curRound# AND `lastRank` <![CDATA[>]]> #limit#
+	</update>
+
+	<!--
+		UPDATE t_competition_score_detail SET lastStatus=2
+			WHERE id NOT IN (
+				SELECT id FROM (
+					SELECT * FROM (
+					SELECT * FROM t_competition_score_detail
+					<dynamic prepend="where">
+						<isNotEmpty prepend=" and " property="playingId"> `playingId`=#playingId# </isNotEmpty>
+						<isNotEmpty prepend=" and " property="lastStep"> `lastStep`=#curStep# </isNotEmpty>
+						<isNotEmpty prepend=" and " property="lastRound"> `lastRound`=#curRound# </isNotEmpty>
+					</dynamic>
+					ORDER BY id DESC LIMIT 99999
+				)a
+				GROUP BY userId ORDER BY id DESC
+			)b WHERE lastTableRank <![CDATA[<=]]> #limit#
+		)-->
+	<update id="score_detail_updateTableTopNByPlayingId" parameterClass="java.util.Map">
+		UPDATE t_competition_score_detail SET `lastStatus`=2 WHERE playingId=#playingId# AND lastStep=#curStep# AND lastRound=#curRound# AND `lastTableRank` <![CDATA[>]]> #limit#
+	</update>
+
+	<!-- 更新赛事积分流水上的个人排名,以轮次和回合作为一个单位-->
+	<update id="score_detail_updateRankByPlayingId" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreDetailDB">
+		UPDATE t_competition_score_detail a,(SELECT @sdi$randomVal$:=$lastRank$) ir,
+		(
+			SELECT (@sdi$randomVal$:=@sdi$randomVal$+1) i,b.* FROM(
+			SELECT * FROM (
+			SELECT * FROM t_competition_score_detail
+			WHERE playingId=#playingId# AND lastStep=#lastStep# AND lastRound=#lastRound#
+			ORDER BY id DESC LIMIT 999999
+			)a GROUP BY userId ORDER BY lastScore DESC
+			)b
+			<dynamic prepend="where">
+				<isNotEmpty prepend=" and " property="lastStatus"> `lastStatus`=#lastStatus# </isNotEmpty>
+			</dynamic>
+			ORDER BY lastScore DESC, lastTableRank ASC
+		) i SET a.`lastRank`=i.i WHERE a.id=i.id
+	</update>
+
+<!-- 更新赛事积分流水上的个人排名,以轮次和回合作为一个单位-->
+	<update id="score_total_updateInRoom" parameterClass="java.util.Map">
+		UPDATE t_competition_score_total a SET inRoom=#inRoom# WHERE playingId=#playingId#
+		<isNotEmpty property="userIds">
+			AND userId in($userIds$);
+		</isNotEmpty>
+	</update>
+
+	<!-- 更新赛事积分流水上的个人排名,以轮次和回合作为一个单位-->
+	<update id="score_total_updatePlayStatus" parameterClass="java.util.Map">
+		UPDATE t_competition_score_total a SET `status`=2 WHERE playingId=#playingId# AND userId not in ($userIds$);
+	</update>
+
+
+	<!-- 赛事积分流水,批量初始化生成 -->
+<!--	<update id="score_detail_batchInsertScoreDetail" parameterClass="java.util.Map">-->
+<!--		INSERT INTO t_competition_score_detail(userId,playingId,lastRank,lastScore,lastStep,lastRound,lastStatus,remark,createTime,updateTime)-->
+<!--		SELECT userId,playingId,@aply$playingId$:=@aply$playingId$+1,#defaultScore#,0,0,1,'开始玩家匹配',now(),now() FROM t_competition_apply,(SELECT @aply$playingId$:=0)b  where `status`=1 and playingId=#playingId#-->
+<!--	</update>	-->
+
+	<!-- 赛事积分流水,批量初始化生成 -->
+	<update id="score_detail_batchInsertScoreDetail" parameterClass="java.util.Map">
+		INSERT INTO t_competition_score_detail(userId,playingId,lastRank,lastScore,lastStep,lastRound,lastStatus,remark,createTime,updateTime)
+		SELECT userId,playingId,@aply$playingId$:=@aply$playingId$+1,#defaultScore#,0,0,1,'开始玩家匹配',now(),now() FROM t_competition_apply,(SELECT @aply$playingId$:=0)b  where `status`=1 and signShow=1 and playingId=#playingId# and userId in ($userIds$)
+	</update>
+
+	<!-- 赛事结算流水 -->
+	<update id="score_detail_insert_batch"
+			parameterClass="java.util.List">
+		<![CDATA[
+			insert into t_competition_score_detail(
+			`userId`,
+			  `playingId`,
+			  `lastScore`,
+			  `lastRank`,
+			  `lastTableRank`,
+			  `lastStep`,
+			  `lastRound`,
+			  `lastStatus`,
+			  `remark`,
+			  `scoreBasicRatio`,
+			  `roomId`,
+			  `weedTopNumber`,
+			  `weedTopScore`
+			)
+			values
+			]]>
+
+		<iterate  conjunction ="," >
+			<![CDATA[
+			 (
+			#params[].userId:bigint#,
+			#params[].playingId:bigint#,
+			#params[].lastScore:int#,
+			#params[].lastRank:int#,
+			#params[].lastTableRank:int#,
+			#params[].lastStep:int#,
+			#params[].lastRound:int#,
+			#params[].lastStatus:int#,
+			#params[].remark:varchar#,
+			#params[].scoreBasicRatio:float#,
+			#params[].roomId:bigint#,
+			#params[].weedTopNumber:int#,
+			#params[].weedTopScore:int#
+			)
+			]]>
+		</iterate>
+	</update>
+
+	<update id="score_detail_updateScoreBasicRatio" parameterClass="java.util.Map">
+	 	UPDATE t_competition_score_detail SET scoreBasicRatio=#scoreBasicRatio#, lastScore=lastScore*scoreBasicRatio WHERE id IN ($ids$);
+	</update>
+
+	<update id="score_total_updateScoreBasicRatio" parameterClass="java.util.Map">
+	 	UPDATE t_competition_score_total SET score=score*#scoreBasicRatio# WHERE playingId = #id#;
+	</update>
+	<!-- 总榜 -->
+	<update id="score_total_insert_batch"
+			parameterClass="java.util.Map">
+		<![CDATA[
+			insert into t_competition_score_total(
+			`userId`,
+		  	`playingId`,
+		  	`score`,
+		 	 `status`,
+		 	 `rank`
+			)
+			values
+			]]>
+		<iterate  conjunction ="," property="srcs" >
+			<![CDATA[
+			 (
+			#srcs[].userId:bigint#,
+			#srcs[].playingId:bigint#,
+			#srcs[].score:int#,
+			#srcs[].status:int#,
+			#srcs[].rank:int#
+			)
+			]]>
+		</iterate>
+		ON DUPLICATE KEY UPDATE
+		<isNotEmpty  property="changeScore">
+			`score`=VALUES(`score`)
+		</isNotEmpty>
+
+		<isEmpty property="changeScore">
+			`score`=`score`
+		</isEmpty>
+
+		<isNotEmpty prepend="," property="changeStatus">
+			`status`=VALUES(`status`)
+		</isNotEmpty>
+
+		<isEmpty prepend="," property="changeStatus">
+			`status`=`status`
+		</isEmpty>
+
+		<isEmpty prepend="," property="changeRank">
+			`rank`=`rank`
+		</isEmpty>
+
+		<isNotEmpty prepend="," property="changeRank">
+			`rank`=VALUES(`rank`)
+		</isNotEmpty>
+	</update>
+
+	<!-- 当前榜单 赛事积分总排名
+			<isEmpty prepend=" and " property="status">t.`status`=1</isEmpty>
+	-->
+	<select id="score_total_selectByOrderRank" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreTotalDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreTotalDB">
+		/*FORCE_MASTER*/ SELECT rank,score,t.userId,IFNULL(u.`name`,CONCAT('',t.`userId`)) userName FROM t_competition_score_total t left join user_inf u on t.userId=u.userId
+		WHERE playingId=#playingId#
+		<isNotEmpty prepend=" and " property="status"> t.`status`=#status#</isNotEmpty>
+		<isNotEmpty prepend=" and " property="userId">t.`userId`=#userId#</isNotEmpty>
+		<isNotEmpty prepend=" and " property="inRoom">t.`inRoom`=#inRoom#</isNotEmpty>
+		ORDER BY t.rank
+		LIMIT #limit#
+	</select>
+
+	<!-- 当前榜单 赛事积分总排名 -->
+	<select id="score_total_selectByInRoom" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreTotalDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreTotalDB">
+		/*FORCE_MASTER*/ SELECT rank,score,t.userId,inRoom FROM t_competition_score_total t
+		WHERE playingId=#playingId#
+		<isNotEmpty prepend=" and " property="inRoom"> t.`inRoom`=#inRoom#</isNotEmpty>
+		ORDER BY t.rank
+	</select>
+
+	<!-- 当前榜单 赛事积分总排名 -->
+	<select id="score_total_selectByCount" resultClass="java.lang.Integer" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreTotalDB">
+		/*FORCE_MASTER*/ SELECT count(id) FROM t_competition_score_total t
+		WHERE playingId=#playingId#
+		<isNotEmpty prepend=" and " property="status"> t.`status`=#status#</isNotEmpty>
+		<isNotEmpty prepend=" and " property="inRoom"> t.`inRoom`=#inRoom#</isNotEmpty>
+		ORDER BY t.rank
+	</select>
+
+	<!-- 当前榜单 赛事积分总排名 -->
+	<select id="score_total_selectByHistory" resultClass="com.sy.sanguo.game.competition.model.param.HistoryParam" parameterClass="java.lang.Long">
+		SELECT userid, COUNT(*) total,
+		IFNULL(SUM(IF(rank=1,1,0)),0) `one`,
+		IFNULL(SUM(IF(rank=2,1,0)),0) `two` ,
+		IFNULL(SUM(IF(rank=3,1,0)),0) `three`
+		FROM t_competition_score_total WHERE userId=#userId#
+	</select>
+
+	<!-- 当前榜单 赛事积分总排名 -->
+	<select id="score_total_selectByOrderRankByUserId" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreTotalDB" parameterClass="java.util.Map">
+		/*FORCE_MASTER*/ SELECT rank,score,t.userId FROM t_competition_score_total t
+		WHERE t.playingId=#playingId# AND t.`status`=1 AND t.userId in ($userIds$)
+		ORDER BY t.rank
+	</select>
+
+	<!-- 赛事积分总排名,提取上一步结束的榜单 -->
+	<select id="score_total_selectByOrderRankSimple" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreTotalDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreTotalDB">
+		/*FORCE_MASTER*/ SELECT rank,(SELECT COUNT(*) FROM t_competition_score_total WHERE playingId=#playingId# and `status`=1) total FROM t_competition_score_total WHERE playingId=#playingId# AND userId=#userId#
+	</select>
+
+	<!-- 赛事积分总排名,批量初始化生成 -->
+<!--	<update id="score_total_batchInsertScoreDetail" parameterClass="java.util.Map">-->
+<!--		INSERT INTO t_competition_score_total(userId,playingId,rank,score,`status`)-->
+<!--		SELECT userId,playingId,@aply$playingId$:=@aply$playingId$+1,#defaultScore#,1 FROM t_competition_apply,(SELECT @aply$playingId$:=0)b  where `status`=1 and playingId=#playingId#-->
+<!--	</update>-->
+	<!-- 赛事积分总排名,批量初始化生成 -->
+	<update id="score_total_batchInsertScoreDetail" parameterClass="java.util.Map">
+		INSERT INTO t_competition_score_total(userId,playingId,rank,score,`status`)
+		SELECT userId,playingId,@aply$playingId$:=@aply$playingId$+1,#defaultScore#,1 FROM t_competition_apply,(SELECT @aply$playingId$:=0)b  where `status`=1 and signShow=1 and playingId=#playingId# and userId in ($userIds$)
+	</update>
+
+	<!-- 更新赛事积分流水上的个人排名,以轮次和回合作为一个单位 这里仅更新还存活的玩家-->
+	<update id="score_total_updateRankByPlayingId" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreTotalDB">
+		UPDATE t_competition_score_total a,(SELECT @sdit$randomVal$:=0) ir,
+		(
+			SELECT (@sdit$randomVal$:=@sdit$randomVal$+1) i,t.* FROM t_competition_score_total t
+			WHERE playingId=#playingId#
+			<isNotEmpty prepend=" and " property="status"> `status`=1 </isNotEmpty>
+		ORDER BY score DESC LIMIT 999999
+		) i SET a.`rank`=i.i WHERE a.id=i.id
+	</update>
+
+	<!-- 以topN状态更新状态 -->
+	<update id="score_total_updateStatusByPlayingId" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionScoreTotalDB">
+		UPDATE t_competition_score_total a SET `status`=2 WHERE playingId=#playingId#
+		<isNotEmpty prepend=" and " property="rank">`rank` > #rank#</isNotEmpty>
+		<isNotEmpty prepend=" and " property="score">`score` <![CDATA[<]]> #score#</isNotEmpty>
+	</update>
+
+
+
+
+
+	<!-- 查询当前剩余匹配桌子未完成结算的 -->
+	<select id="room_queryByPlayingCount" resultClass="java.lang.Long" parameterClass="java.util.Map">
+		/*FORCE_MASTER*/ SELECT COUNT(keyId) FROM t_competition_room WHERE playingId=#playingId# and keyId != #keyId# and currentCount<![CDATA[>]]> 0;
+	</select>
+	<!--找到当前赛事没有开赛并且返回缺少人数-->
+	<select id="room_queryNotStartRoomByCurCount" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionRoom" parameterClass="java.util.Map">
+		/*FORCE_MASTER*/ SELECT keyId, maxCount, (maxCount-currentCount) currentCount, serverId FROM t_competition_room WHERE playingId=#playingId# and (currentState=0 or currentState=1) order by currentCount limit 1;
+	</select>
+	<!--找到当前赛事空闲的桌子数量-->
+	<select id="room_queryCountByPlayingId" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		/*FORCE_MASTER*/ SELECT count(*) FROM t_competition_room WHERE playingId=#playingId# and (currentState=0 or currentState=1) and serverId=#serverId# and curStep=#curStep# and curRound=#curRound#
+	</select>
+	<!--找到当前赛事没有开赛并且返回缺少人数-->
+	<select id="room_queryNotStartRooms" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionRoom" parameterClass="java.util.Map">
+		/*FORCE_MASTER*/ SELECT keyId,serverId FROM t_competition_room WHERE playingId=#playingId# ;
+	</select>
+	<!--通过配置ID找到该服务器配置的玩法-->
+	<select id="room_queryPlayTypeByRoomConfigId" resultClass="java.lang.Long" parameterClass="java.util.Map">
+		/*FORCE_MASTER*/ SELECT playType from t_competition_room_config where keyId=#roomConfigId#;
+	</select>
+	<!--通过配置ID找到该服务器配置的玩法-->
+	<select id="room_queryPlayCountByRoomConfigId" resultClass="java.lang.Long" parameterClass="java.util.Map">
+		/*FORCE_MASTER*/ SELECT playerCount from t_competition_room_config where keyId=#roomConfigId#;
+	</select>
+	<!--通过配置ID找到该服务器配置的玩法-->
+	<select id="room_queryPlayingTableByRoomUser" resultClass="java.lang.Long" parameterClass="java.util.Map">
+		/*FORCE_MASTER*/ SELECT tableId FROM t_competition_room_user u,t_competition_room t WHERE t.keyId=u.roomId AND u.playingId=#playingId# AND userId=#userId#
+	</select>
+
+
+
+	<update id="room_user_insert_competition_room_user" parameterClass="java.util.List">
+		<![CDATA[
+			insert into t_competition_room_user(roomId,userId,gameResult,logIds,initScore,playingId, serverId, rank) values
+			]]>
+
+		<iterate  conjunction ="," >
+			<![CDATA[
+			 (
+			#params[].roomId:bigint#,
+			#params[].userId:bigint#,
+			#params[].gameResult:int#,
+			#params[].logIds:varchar#,
+			#params[].initScore:int#,
+			#params[].playingId:bigint#,
+			#params[].serverId:int#,
+			#params[].rank:int#
+			)
+			]]>
+		</iterate>
+		ON DUPLICATE KEY UPDATE
+		`initScore`=`initScore`,
+		`roomId`=`roomId`,
+		`serverId`=`serverId`,
+		`gameResult`=`gameResult`,
+		`logIds`=`logIds`,
+		`rank`=`rank`
+	</update>
+
+
+	<update id="room_user_add_competition_room_player_count" parameterClass="java.util.HashMap">
+        UPDATE t_competition_room
+        SET
+            currentCount = currentCount + #addCount#
+        WHERE
+            keyId = #keyId#
+            AND (currentCount + #addCount#) <![CDATA[ <= ]]> maxCount
+            AND (currentCount + #addCount#) <![CDATA[ >= ]]> 0
+    </update>
+
+
+	<delete id="room_user_delete_competition_room_user" parameterClass="java.util.HashMap">
+		DELETE FROM t_competition_room_user WHERE playingId = #playingId#
+	</delete>
+
+	<!-- 查询当前未分配好桌子的所有玩家 -->
+	<select id="room_user_queryByUserRoomId" resultClass="java.lang.Long" parameterClass="java.util.Map">
+		/*FORCE_MASTER*/ SELECT COUNT(keyId) FROM t_competition_room_user WHERE playingId=#playingId#  and roomId=0;
+	</select>
+
+
+	<!--奖励-->
+	<insert id="clearing_award_insert"
+			parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionClearingAwardDB">
+		insert into
+		t_competition_clearing_award(`playingId`,`rank`,`userId`,`awardId`,`awardVal`,`status`)
+		values (#playingId#,#rank#,#userId#,#awardId#,#awardVal#,#status#);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS ID
+		</selectKey>
+	</insert>
+
+	<update id="clearing_award_update_status"
+			parameterClass="java.util.Map">
+		update t_competition_clearing_award set `status`=#status# where `status`=#default_status# and `id`=#id#;
+	</update>
+
+
+	<select id="clearing_award_selectByList" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionClearingAwardDB"
+			parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionClearingAwardDB">
+		select * from t_competition_clearing_award where playingId=#playingId#
+	</select>
+
+
+
+	<!--跑马灯-->
+	<insert id="runningHorseLight_insert"
+			parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionRunningHorseLightDB">
+		INSERT INTO `t_competition_running_horse_light` (
+		`type`,
+		`content`,
+		`bTime`,
+		`eTime`,
+		`diffsec`,
+		`srvno`,
+		`playCount`,
+		`mdlno`
+		)
+		VALUES
+		(
+		#type#,
+		#content#,
+		#bTime#,
+		#eTime#,
+		#diffsec#,
+		#srvno#,
+		#playCount#,
+		#mdlno#
+		);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS ID
+		</selectKey>
+	</insert>
+
+
+	<!--通过配置ID找到该服务器配置的玩法 where createTime >= DATE_SUB(NOW(),INTERVAL 10 MINUTE)-->
+	<select id="runningHorseLight_selectByLast" resultClass="com.sy.sanguo.game.competition.model.db.CompetitionRunningHorseLightDB" parameterClass="com.sy.sanguo.game.competition.model.db.CompetitionRunningHorseLightDB">
+		SELECT * from t_competition_running_horse_light where eTime >= NOW()
+		<isNotEmpty prepend=" and " property="type">`type`=#type#</isNotEmpty>
+		<isEmpty prepend=" and " property="type">`type`=1</isEmpty>
+		ORDER BY id ASC
+		limit 10;
+	</select>
+</sqlMap>
+
+

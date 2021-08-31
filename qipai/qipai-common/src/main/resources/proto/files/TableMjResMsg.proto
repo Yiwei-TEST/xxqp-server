@@ -1,0 +1,63 @@
+syntax = "proto2";
+import "proto/files/TablePhzResMsg.proto";
+package com.sy599.game.msg.serverPacket;
+//牌组
+message MjHuCards{
+	required int32 action=1;//动作
+	repeated int32 cards=2;//牌
+	repeated int32 ext=3;//扩展字段
+}
+
+//单个玩家结算
+message ClosingMjPlayerInfoRes{
+	optional string userId=1;//userId
+	optional string name=2;//名字
+	required int32 seat=3;//座位
+	optional int32 sex=4;//性别
+	optional string icon=5;//头像
+	optional int32 point=6;//积分
+	optional int32 totalPoint=7;//总积分
+	optional int32 winCount=8;//赢的次数
+	optional int32 lostCount=9;//输的次数
+	optional int32 maxPoint=10;//最高积分
+	optional int32 zmCount=11;
+	optional int32 jpCount=12;
+	optional int32 fpCount=13;
+	optional int32 totalFan=14;
+	repeated int32 ext=15;//扩展字段
+	repeated int32 handPais=16;//所有手牌id
+	repeated PhzHuCards moldPais=17;//吃碰杠
+	optional int32 isHu=18;//胡牌ID
+	optional int32 birdPoint=19;
+    repeated int32 actionCount=20;//所用动作次数
+    repeated int32 dahus=21;//大胡
+    repeated int32 xiaohus=22;//小胡
+    optional int32 credit=23;//玩家身上的credit
+    optional int64 winLoseCredit=24;//输赢信用分
+    optional int64 commissionCredit=25;//抽水信用分
+    repeated int32 pointArr=26;//[类型]=分值
+    optional int32 fanPao=27;//是否放炮：0否，1是
+     optional int32 goldFlag=28;//金币场结算标记：1 破产2封顶
+}
+//结算
+message ClosingMjInfoRes{
+	repeated ClosingMjPlayerInfoRes closingPlayers=1;//所有玩家
+	optional int32 isBreak=2; //是否提前解散
+	optional int32 wanfa=3;  //玩法  
+	repeated string ext=4;//扩展字段
+	repeated MjHuCards huList=6;//所有胡的记录，针对甘肃麻将
+	repeated int32 bird=7;//鸟ID
+    repeated int32 birdSeat=8;//鸟位置
+    optional int32 groupLogId=9;//俱乐部战绩id
+    repeated int32 leftCards=10;//剩余牌
+    optional int32 catchBirdSeat=11;//抓鸟人座位
+    repeated int64 creditConfig=12;         // 信用房配置
+    repeated int32 intParams=13;//创房参数
+	repeated BirdAttribute birdAttr = 14;	//鸟, 麻将id->谁中->谁的鸟
+}
+
+message BirdAttribute{
+	required uint32 mjId=1;			//麻将id
+	required uint32 awardSeat=2;	//中的位置
+	required uint32 belongSeat=3;	//所属位置,默认为0,属于系统产出的
+}

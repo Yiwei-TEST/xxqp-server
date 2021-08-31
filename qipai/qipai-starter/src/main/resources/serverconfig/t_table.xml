@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="check_table">
+
+	<select id="check_table_exists" resultClass="java.lang.Integer"  parameterClass="java.util.HashMap">
+		SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_NAME=#tableName# and TABLE_SCHEMA=#dbName#;
+	</select>
+
+	<select id="select_table_auto_increment" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+		select AUTO_INCREMENT from information_schema.tables where TABLE_NAME=#tableName# and TABLE_SCHEMA=#dbName# limit 1;
+	</select>
+
+	<update id="update_table_auto_increment" parameterClass="java.util.HashMap">
+		alter table $tableName$ AUTO_INCREMENT=#initValue#;
+	</update>
+
+    <update id="t_user_statistics">
+		CREATE TABLE IF NOT EXISTS `t_user_statistics` (
+		`keyId` bigint(19) NOT NULL AUTO_INCREMENT COMMENT '主键',
+		`userId` varchar(20) NOT NULL DEFAULT '0' COMMENT '玩家id',
+		`winCount` int(8) NOT NULL DEFAULT '0' COMMENT '赢的次数',
+		`loseCount` int(8) NOT NULL DEFAULT '0' COMMENT '输的次数',
+		`drawCount` int(8) NOT NULL DEFAULT '0' COMMENT '平局次数',
+		`userScore` int(10) NOT NULL DEFAULT '0' COMMENT '得分',
+		`roomType` varchar(20) NOT NULL DEFAULT 'common' COMMENT '房间类型',
+		`currentDate` bigint(16) NOT NULL DEFAULT '0' COMMENT '统计日期',
+		`gameType` int(8) NOT NULL DEFAULT '0' COMMENT '游戏标识',
+		`gameCount0` int(8) NOT NULL DEFAULT '0' COMMENT '小局总数',
+		`gameCount1` int(8) NOT NULL DEFAULT '0' COMMENT '大局总数',
+		PRIMARY KEY (`keyId`),
+		UNIQUE KEY `idx_unique` (`currentDate`,`userId`,`gameType`,`roomType`)
+		) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+	</update>
+
+    <update id="t_login_data">
+		CREATE TABLE IF NOT EXISTS `t_login_data` (
+		  `keyId` bigint(19) NOT NULL AUTO_INCREMENT COMMENT '主键',
+		  `currentDate` int(8) NOT NULL COMMENT '日期（年月日）',
+		  `userId` varchar(32) NOT NULL COMMENT '用户ID',
+		  `firstLoginTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '首次登录时间',
+		  `lastLoginTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后登录时间',
+		  `lastLogoutTime` timestamp NULL DEFAULT NULL COMMENT '最后一次退出的时间',
+		  `loginTotalCount` int(9) NOT NULL COMMENT '登陆总次数',
+		  `loginTotalTime` int(6) NOT NULL COMMENT '在线时长',
+		  `loginCount0` int(9) NOT NULL COMMENT '0点登录次数',
+		  `loginCount1` int(9) NOT NULL COMMENT '1点登录次数',
+		  `loginCount2` int(9) NOT NULL COMMENT '2点登录次数',
+		  `loginCount3` int(9) NOT NULL COMMENT '3点登录次数',
+		  `loginCount4` int(9) NOT NULL COMMENT '4点登录次数',
+		  `loginCount5` int(9) NOT NULL COMMENT '5点登录次数',
+		  `loginCount6` int(9) NOT NULL COMMENT '6点登录次数',
+		  `loginCount7` int(9) NOT NULL COMMENT '7点登录次数',
+		  `loginCount8` int(9) NOT NULL COMMENT '8点登录次数',
+		  `loginCount9` int(9) NOT NULL COMMENT '9点登录次数',
+		  `loginCount10` int(9) NOT NULL COMMENT '10点登录次数',
+		  `loginCount11` int(9) NOT NULL COMMENT '11点登录次数',
+		  `loginCount12` int(9) NOT NULL COMMENT '12点登录次数',
+		  `loginCount13` int(9) NOT NULL COMMENT '13点登录次数',
+		  `loginCount14` int(9) NOT NULL COMMENT '14点登录次数',
+		  `loginCount15` int(9) NOT NULL COMMENT '15点登录次数',
+		  `loginCount16` int(9) NOT NULL COMMENT '16点登录次数',
+		  `loginCount17` int(9) NOT NULL COMMENT '17点登录次数',
+		  `loginCount18` int(9) NOT NULL COMMENT '18点登录次数',
+		  `loginCount19` int(9) NOT NULL COMMENT '19点登录次数',
+		  `loginCount20` int(9) NOT NULL COMMENT '20点登录次数',
+		  `loginCount21` int(9) NOT NULL COMMENT '21点登录次数',
+		  `loginCount22` int(9) NOT NULL COMMENT '22点登录次数',
+		  `loginCount23` int(9) NOT NULL COMMENT '23点登录次数',
+		  PRIMARY KEY (`keyId`),
+		  UNIQUE KEY `idx_unique` (`currentDate`,`userId`),
+		  KEY `idx_userId` (`userId`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户登录详情数据表';
+	</update>
+
+    <update id="t_online_data">
+		CREATE TABLE IF NOT EXISTS `t_online_data` (
+		  `keyId` bigint(19) NOT NULL AUTO_INCREMENT COMMENT '主键',
+		  `currentTime` varchar(20) NOT NULL COMMENT '当前时间',
+		  `serverId` varchar(20) NOT NULL COMMENT '服务器ID',
+		  `currentCount` int(5) NOT NULL COMMENT '在线人数',
+		  PRIMARY KEY (`keyId`),
+  		  UNIQUE KEY `idx_unique` (`currentTime`,`serverId`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='在线数据统计表';
+	</update>
+
+	<update id="user_card_record">
+		CREATE TABLE IF NOT EXISTS `user_card_record` (
+		  `id` bigint(19) NOT NULL AUTO_INCREMENT COMMENT '主键',
+		  `userId` bigint(19) NOT NULL COMMENT '玩家ID',
+		  `freeCard` int(11) NOT NULL COMMENT '玩家当前免费房卡数',
+		  `cards` int(11) NOT NULL COMMENT '玩家当前房卡数',
+		  `addFreeCard` int(11) NOT NULL COMMENT '玩家本次操作(消耗/获得)免费房卡数',
+		  `addCard` int(11) NOT NULL COMMENT '玩家本次操作(消耗/获得)免费房卡数',
+		  `recordType` int(1) NOT NULL COMMENT '操作类型(1消耗  0获得)',
+		  `playType` int(8) NOT NULL COMMENT '操作所属玩法ID 0表示不属于玩法类操作',
+		  `sourceType` int(8) NOT NULL DEFAULT '0' COMMENT '操作来源',
+		  `sourceName` varchar(100) DEFAULT NULL COMMENT '操作来源名',
+		  `createTime` datetime DEFAULT NULL COMMENT '操作时间',
+		  PRIMARY KEY (`id`),
+		  KEY `idx_user` (`userId`,`createTime`),
+		  KEY `idx_date` (`createTime`,`sourceType`)
+		) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+	</update>
+</sqlMap>

@@ -1,0 +1,20 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+message ComRes {
+    required int32 code = 1;
+    repeated int32 params = 2;
+    repeated string strParams = 3;
+}
+//通用消息
+message ComReq {
+    required int32 code = 1;
+    repeated int32 params = 2;
+    repeated string strParams = 3;
+    optional int32 optType = 4; //用于定义操作类型
+}
+
+
+message PingRes {
+    optional int32 t = 1;
+    optional string v = 2;
+}

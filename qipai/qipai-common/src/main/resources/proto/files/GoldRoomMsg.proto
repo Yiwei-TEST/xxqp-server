@@ -1,0 +1,53 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+
+message GoldRoomAreaProto {
+    optional int64 keyId = 1;
+    optional int64 parentId = 2; // 上级区域id，0为没有上级
+    optional int32 state = 3; // 1有效，2失效
+    optional string name = 4; //名字
+    optional int32 order = 5; //排序值
+}
+
+// MsgManager管理msgType=5024
+message GoldRoomAreaList {
+    repeated GoldRoomAreaProto list = 1;
+}
+
+message GoldRoomConfigProto {
+    optional int64 keyId = 1;
+    optional int32 state = 2; // 1有效，2失效
+    optional int32 playType = 3; //玩法
+    optional string name = 4; //名字
+    optional int32 playerCount = 5; //最大人数
+    optional int32 totalBureau = 6; //局数
+    optional string tableMsg = 7; //创房信息
+    optional string goldMsg = 8; //金币分配置信息
+    optional int64 areaId = 9; //区域id,GoldRoomAreaProto.keyId
+    optional int32 order = 10; //排序值
+}
+
+// MsgManager管理msgType=5025
+message GoldRoomConfigList {
+    repeated GoldRoomConfigProto list = 1;
+    optional int32 code = 2;
+}
+
+
+message GoldRoomHallProto {
+    optional int64 keyId = 1;
+    optional string name = 2; //名字
+    optional int32 type = 3; // 类型：1、打开玩法列表，2、直接匹配模式
+    optional string extMsg = 4; //属性
+    optional string playTypes = 5; //玩法列表
+    optional string description = 6; //描述信息
+}
+
+// MsgManager管理msgType=5028
+message GoldRoomHallList {
+    repeated GoldRoomHallProto list = 1;
+    optional int32 code = 2;
+}
+
+
+

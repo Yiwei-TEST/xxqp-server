@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="resources_configs">
+
+	<resultMap id="resourcesConfigs" class="com.sy599.game.db.bean.ResourcesConfigs">
+		<result property="msgType" column="msgType" />
+		<result property="msgKey" column="msgKey" />
+		<result property="msgValue" column="msgValue" />
+	</resultMap>
+
+	<select id="load_all_configs" resultMap="resourcesConfigs">
+		SELECT msgType,msgKey,msgValue FROM t_resources_configs;
+	</select>
+
+    <select id="loadOneConfig" resultMap="resourcesConfigs" parameterClass="java.util.HashMap">
+		SELECT
+		    msgType,msgKey,msgValue
+		FROM
+		    t_resources_configs
+		where
+		    msgType= #msgType#
+		    AND msgKey = #msgKey#
+	</select>
+
+	<resultMap id="sevenSignConfig" class="com.sy599.game.db.bean.SevenSignConfig">
+		<result property="id" column="id" />
+		<result property="dayNum" column="dayNum" />
+		<result property="goldNum" column="goldNum" />
+	</resultMap>
+	<select id="loadSevenSign" resultMap="sevenSignConfig">
+		SELECT id,dayNum,goldNum FROM seven_sign_config;
+	</select>
+
+
+	<resultMap id="missionConfig" class="com.sy599.game.db.bean.MissionConfig">
+		<result property="id" column="id" />
+		<result property="tag" column="tag" />
+		<result property="missionExplain" column="missionExplain" />
+		<result property="awardExplain" column="awardExplain" />
+		<result property="type" column="type" />
+		<result property="finishNum" column="finishNum" />
+		<result property="awardId" column="awardId" />
+		<result property="awardIcon" column="awardIcon" />
+		<result property="awardNum" column="awardNum" />
+		<result property="ext" column="ext" />
+	</resultMap>
+	<select id="loadMissionConfig" resultMap="missionConfig">
+		SELECT id,tag,missionExplain,awardExplain,type,finishNum,awardId,awardIcon,awardNum,ext FROM mission_config where onOff = 1 order by sort
+		desc;
+	</select>
+
+
+
+	<resultMap id="twinReward" class="com.sy599.game.db.bean.TWinReward">
+		<result property="id" column="id" />
+		<result property="winCount" column="winCount" />
+		<result property="goldenBean" column="goldenBean" />
+		<result property="baijinBean" column="baijinBean" />
+	</resultMap>
+	<select id="queryAllTwinReward" resultMap="twinReward">
+		SELECT * FROM t_twin_reward  order by winCount
+		desc;
+	</select>
+
+
+
+</sqlMap>

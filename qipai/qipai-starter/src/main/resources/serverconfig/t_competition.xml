@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="competition">
+
+    <select id="load_all_room_config" resultClass="com.sy599.game.db.bean.competition.CompetitionRoomConfig">
+        SELECT * FROM t_competition_room_config
+    </select>
+
+	<insert id="insert_competition_room" parameterClass="com.sy599.game.db.bean.competition.CompetitionRoom">
+		insert into t_competition_room (configId,playingId,curStep,curRound, currentCount,maxCount,serverId,currentState,tableMsg,`ext`,modeId,gameCount,createdTime,modifiedTime,createParamClearingModel)
+		VALUES (#configId#,#playingId#,#curStep#,#curRound#,#currentCount#,#maxCount#,#serverId#,#currentState#,#tableMsg#,#ext#,#modeId#,#gameCount#,#createdTime#,#modifiedTime#,#createParamClearingModel#);
+		<selectKey resultClass="java.lang.Long" keyProperty="keyId">
+			SELECT
+			@@IDENTITY AS keyId
+		</selectKey>
+	</insert>
+
+	<delete id="delete_competition_room_by_keyId" parameterClass="java.util.HashMap">
+        DELETE FROM t_competition_room WHERE keyId = #keyId#
+    </delete>
+
+
+	<insert id="insert_competition_room_user" parameterClass="com.sy599.game.db.bean.competition.CompetitionRoomUser">
+		insert into t_competition_room_user
+		(roomId,userId,createdTime,gameResult,logIds,initScore,playingId, serverId)
+		VALUES
+		(#roomId#,#userId#,#createdTime#,#gameResult#,#logIds#,#initScore#,#playingId#, #serverId#);
+		<selectKey resultClass="java.lang.Long" keyProperty="keyId">
+			SELECT
+			@@IDENTITY AS keyId
+		</selectKey>
+	</insert>
+
+
+	<select id="select_competition_room_force_master" resultClass="com.sy599.game.db.bean.competition.CompetitionRoom" parameterClass="java.util.HashMap">
+        /*FORCE_MASTER*/  SELECT * FROM t_competition_room WHERE keyId=#keyId#
+		<isPropertyAvailable prepend=" and " property="curStep">
+			curStep = #curStep#
+		</isPropertyAvailable>
+
+		<isPropertyAvailable prepend=" and " property="curRound">
+			curRound = #curRound#
+		</isPropertyAvailable>
+    </select>
+
+	<select id="select_competition_room" resultClass="com.sy599.game.db.bean.competition.CompetitionRoom" parameterClass="java.util.HashMap">
+        SELECT * FROM t_competition_room WHERE keyId=#keyId#
+    </select>
+
+	<update id="update_competition_room_by_keyId" parameterClass="java.util.HashMap">
+		UPDATE t_competition_room
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend=" , " property="tableId">
+				tableId = #tableId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" , " property="currentState">
+				currentState = #currentState#
+			</isPropertyAvailable>
+		</dynamic>
+		WHERE
+		keyId = #keyId#
+	</update>
+
+	<update id="update_competition_room_user_by_keyId" parameterClass="java.util.HashMap">
+		UPDATE t_competition_room_user
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend=" , " property="currentState">
+				`status` = #currentState#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" , " property="roomId">
+				`roomId` = #roomId#
+			</isPropertyAvailable>
+		</dynamic>
+		WHERE
+		userId = '$userId$'
+		<isPropertyAvailable prepend=" AND " property="roomId">
+			`playingId` = #playingId# AND roomId  = 0
+		</isPropertyAvailable>
+	</update>
+
+
+	<delete id="delete_competition_room_user" parameterClass="java.util.HashMap">
+		DELETE FROM t_competition_room_user WHERE roomId = #roomId#
+		<dynamic prepend="">
+			<isPropertyAvailable prepend=" and " property="userId">
+				userId = '$userId$'
+			</isPropertyAvailable>
+
+			<isPropertyAvailable prepend=" and " property="playingId">
+				playingId = #playingId#
+			</isPropertyAvailable>
+		</dynamic>
+	</delete>
+
+	<select id="load_competition_playing" parameterClass="java.util.HashMap" resultClass="com.sy599.game.db.bean.competition.CompetitionPlaying">
+		SELECT *  FROM t_competition_playing WHERE id = #id#;
+	</select>
+
+
+	<select id="load_all_competition_room_user" resultClass="com.sy599.game.db.bean.competition.CompetitionRoomUser" parameterClass="java.util.HashMap">
+        SELECT * FROM t_competition_room_user
+        WHERE
+            roomId = #roomId#
+    </select>
+
+	<select id="load_all_competition_room" resultClass="com.sy599.game.db.bean.competition.CompetitionRoom" parameterClass="java.util.HashMap">
+        SELECT * FROM t_competition_room
+        WHERE
+        	playingId = #playingId#
+        	AND serverId = #serverId#
+            AND currentState <![CDATA[ < ]]> 2
+            AND currentCount <![CDATA[ >= ]]> maxCount
+    </select>
+
+
+	<select id="random_competition_room" resultClass="com.sy599.game.db.bean.competition.CompetitionRoom" parameterClass="java.util.HashMap">
+       /*FORCE_MASTER*/ SELECT * FROM t_competition_room
+        WHERE
+            modeId = #configId# AND playingId = #playingId#
+            AND currentState = 1
+            AND currentCount <![CDATA[ < ]]> maxCount
+            AND createdTime <![CDATA[ >= ]]> ( NOW() - interval 24 hour )
+			<isNotEmpty prepend=" and " property="serverId">
+				serverId = #serverId#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="curStep">
+				curStep = #curStep#
+			</isNotEmpty>
+			<isNotEmpty prepend=" and " property="curRound">
+				curRound = #curRound#
+			</isNotEmpty>
+        ORDER BY (maxCount - currentCount)
+		LIMIT 1
+    </select>
+
+	<select id="load_competition_user" resultClass="com.sy599.game.db.bean.competition.CompetitionRoomUser" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT * FROM t_competition_room_user
+		WHERE
+		playingId = #playingId# and serverId = #serverId#
+		ORDER BY keyId
+	</select>
+
+	<select id="competition_room_get_currentCount" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+       /*FORCE_MASTER*/ SELECT currentCount FROM t_competition_room
+        WHERE keyId=#keyId#
+		LIMIT 1
+    </select>
+
+
+	<update id="add_competition_room_player_count" parameterClass="java.util.HashMap">
+        UPDATE t_competition_room
+        SET
+            currentCount = currentCount + #addCount#
+        WHERE
+            keyId = #keyId#
+            AND (currentCount + #addCount#) <![CDATA[ <= ]]> maxCount
+            AND (currentCount + #addCount#) <![CDATA[ >= ]]> 0
+    </update>
+
+	<insert id="add_competition_curPlayingTableCount" parameterClass="java.util.HashMap">
+        UPDATE t_competition_playing
+        SET
+            curPlayingTableCount = curPlayingTableCount + #addCount#
+        WHERE
+            id = #playingId# and (curPlayingTableCount + #addCount#) <![CDATA[ >= ]]> 0
+		<isPropertyAvailable prepend=" and " property="defaultCount">
+			curPlayingTableCount = #defaultCount#;
+		</isPropertyAvailable>
+		<selectKey resultClass="java.lang.Long" keyProperty="playingId">
+			SELECT curPlayingTableCount FROM t_competition_playing WHERE  id = #playingId#;
+		</selectKey>
+    </insert>
+
+	<select id="load_competition_curPlayingTableCount" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		SELECT curPlayingTableCount FROM t_competition_playing WHERE  id = #playingId#;
+	</select>
+
+
+	<select id="room_queryPlayingTableByRoomUser" resultClass="java.lang.Long" parameterClass="java.util.Map">
+		/*FORCE_MASTER*/ SELECT tableId FROM t_competition_room_user u,t_competition_room t WHERE t.keyId=u.roomId AND u.playingId=#playingId# AND userId=#userId#
+	</select>
+
+</sqlMap>
+
+
+
+
+

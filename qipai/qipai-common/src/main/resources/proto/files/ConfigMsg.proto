@@ -1,0 +1,30 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+
+//配置信息
+message ConfigInfo {
+    repeated SevenGoldConfigRes sign=1;
+    required AloneConfigRes aloneConfig=3;
+}
+
+//非列表的单独配置放此处
+message AloneConfigRes {
+    required int32 share=1;//分享
+    required int32 broke= 2;//破产
+    required int32 brokeShare = 3;//破产弹出的分享
+    required int32 bingDingNum = 4;//绑定成功获取豆子
+    required int32 brokeTigger = 5;//破产下限触发
+    required int32 videoWatchNum = 6;//视频奖励次数
+    required int32 videoAwardNum = 7;//视频奖励数量
+}
+
+//七天签到配置信息
+message SevenGoldConfigRes {
+    required int32 id=1;
+    required int32 dayNum = 2;// 签到天数
+    required int32 goldNum = 3;// 对应奖励金币
+}
+
+
+
+

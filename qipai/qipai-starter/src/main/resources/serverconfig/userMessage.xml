@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="message">
+
+	<resultMap class="com.sy599.game.db.bean.UserMessage" id="userMessage">
+		<result property="id" column="id" />
+		<result property="userId" column="userId" />
+		<result property="time" column="time" />
+		<result property="content" column="content" />
+		<result property="award" column="award" />
+	</resultMap>
+
+	<insert id="saveUserMessage" parameterClass="com.sy599.game.db.bean.UserMessage">
+		INSERT INTO user_message
+		(userId,time,content,award)
+		values
+		(#userId#,#time#,#content#,#award#);
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			SELECT
+			@@IDENTITY AS id
+		</selectKey>
+	</insert>
+	<select id="selectUserMessage" parameterClass="java.lang.Long"
+		resultMap="userMessage">
+		select * from user_message where userId =#userId# ORDER BY time desc limit 30;
+	</select>
+	
+	<select id="selectUserMessageByType" parameterClass="java.lang.Integer"
+		resultMap="userMessage">
+		select * from user_message where type =#type# ORDER BY time desc limit #limitNum#;
+	</select>
+
+	<delete id="delete" parameterClass="java.lang.Long">
+		delete from user_message
+		where id =#id#
+	</delete>
+
+	<delete id="deleteByDate" parameterClass="java.lang.Long">
+		delete from
+		user_message where userId=#userId# and DATE(time) <![CDATA[< ]]>
+		DATE(DATE_SUB(NOW(),INTERVAL 7 day)) ;
+	</delete>
+</sqlMap>

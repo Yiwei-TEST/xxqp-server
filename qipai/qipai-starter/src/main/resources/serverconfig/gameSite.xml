@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="gamesite">
+
+	<resultMap class="com.sy599.game.db.bean.UserGameSite" id="UserGameSite">
+		<result property="userId" column="userId"/>
+		<result property="gameSiteId" column="gameSiteId"/>
+		<result property="integral" column="integral"/>
+		<result property="roundNum" column="roundNum"/>
+		<result property="playGame" column="playGame"/>
+		<result property="turnBlank" column="turnBlank"/>
+		<result property="tableId" column="tableId"/>
+		<result property="serverId" column="serverId"/>
+		<result property="applyTime" column="applyTime"/>
+		<result property="passInviteCode" column="passInviteCode"/>
+	</resultMap>
+	
+	<select id="queryUserGameSite" resultMap="UserGameSite" parameterClass="java.lang.Long">
+		select * from user_game_site where userId = #userId#
+	</select>
+	
+	
+</sqlMap>

@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="dataStatistics">
+
+	<update id="save_or_update1" parameterClass="com.sy599.game.db.bean.DataStatistics">
+		insert into t_data_statistics (dataDate,dataCode,userId,gameType,dataType,dataValue)
+		VALUES (#dataDate#,#dataCode#,#userId#,#gameType#,#dataType#,#dataValue#)
+		on
+		duplicate key update
+		dataValue=dataValue+#dataValue#
+	</update>
+	<update id="save_or_update2" parameterClass="com.sy599.game.db.bean.DataStatistics">
+		insert into t_data_statistics (dataDate,dataCode,userId,gameType,dataType,dataValue)
+		VALUES (#dataDate#,#dataCode#,#userId#,#gameType#,#dataType#,#dataValue#)
+		on
+		duplicate key update
+		dataValue=dataValue+#dataValue#
+	</update>
+	<update id="save_or_update3" parameterClass="com.sy599.game.db.bean.DataStatistics">
+		insert into t_data_statistics (dataDate,dataCode,userId,gameType,dataType,dataValue)
+		VALUES (#dataDate#,#dataCode#,#userId#,#gameType#,#dataType#,#dataValue#)
+		on
+		duplicate key update
+		dataValue=dataValue+#dataValue#
+	</update>
+	<update id="save_or_update4" parameterClass="com.sy599.game.db.bean.DataStatistics">
+		insert into t_data_statistics (dataDate,dataCode,userId,gameType,dataType,dataValue)
+		VALUES (#dataDate#,#dataCode#,#userId#,#gameType#,#dataType#,#dataValue#)
+		on
+		duplicate key update
+		dataValue=IF(dataValue<![CDATA[<]]>#dataValue#,#dataValue#,dataValue),
+		gameType=IF(dataValue<![CDATA[<]]>#dataValue#,#gameType#,gameType)
+	</update>
+	<update id="save_or_update5" parameterClass="com.sy599.game.db.bean.DataStatistics">
+		insert into t_data_statistics (dataDate,dataCode,userId,gameType,dataType,dataValue)
+		VALUES (#dataDate#,#dataCode#,#userId#,#gameType#,#dataType#,#dataValue#)
+		on
+		duplicate key update
+		dataValue=IF(dataValue<![CDATA[>]]>#dataValue#,#dataValue#,dataValue),
+		gameType=IF(dataValue<![CDATA[<]]>#dataValue#,#gameType#,gameType)
+	</update>
+
+	<insert id="save_user_datas" parameterClass="java.util.HashMap">
+		insert into t_user_datas (userId,gameCode,roomType,dataCode,dataValue,createdTime) VALUES (#userId#,#gameCode#,#roomType#,#dataCode#,#dataValue#,#createdTime#)
+		<selectKey resultClass="java.lang.Long" keyProperty="keyId">
+			SELECT
+			@@IDENTITY AS keyId
+		</selectKey>
+	</insert>
+	<update id="update_user_datas" parameterClass="java.util.HashMap">
+		UPDATE t_user_datas set dataValue=#dataValue#,createdTime=#createdTime# WHERE userId=#userId# and gameCode=#gameCode# and roomType=#roomType# and dataCode=#dataCode#
+	</update>
+	<select id="select_user_datas" resultClass="java.lang.String" parameterClass="java.util.HashMap">
+		select dataValue from t_user_datas where userId=#userId# and gameCode=#gameCode# and roomType=#roomType# and dataCode=#dataCode# limit 1
+	</select>
+
+	<update id="save_or_update_login_data" parameterClass="java.util.HashMap">
+		insert into t_login_data (currentDate,userId,firstLoginTime,lastLoginTime,lastLogoutTime,loginTotalCount,loginTotalTime
+		,loginCount0,loginCount1,loginCount2,loginCount3,loginCount4,loginCount5,loginCount6,loginCount7,loginCount8,loginCount9,loginCount10,loginCount11
+		,loginCount12,loginCount13,loginCount14,loginCount15,loginCount16,loginCount17,loginCount18,loginCount19,loginCount20,loginCount21,loginCount22,loginCount23)
+		VALUES (#currentDate#,#userId#,#firstLoginTime#,#lastLoginTime#,#lastLogoutTime#,#loginTotalCount#,#loginTotalTime#
+		,#loginCount0#,#loginCount1#,#loginCount2#,#loginCount3#,#loginCount4#,#loginCount5#,#loginCount6#,#loginCount7#,#loginCount8#,#loginCount9#,#loginCount10#,#loginCount11#
+		,#loginCount12#,#loginCount13#,#loginCount14#,#loginCount15#,#loginCount16#,#loginCount17#,#loginCount18#,#loginCount19#,#loginCount20#,#loginCount21#,#loginCount22#,#loginCount23#)
+		on duplicate key update
+		<dynamic prepend=" ">
+			<isPropertyAvailable prepend="," property="lastLoginTime" removeFirstPrepend="true">
+				lastLoginTime=#lastLoginTime#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="lastLogoutTime" removeFirstPrepend="true">
+				lastLogoutTime=#lastLogoutTime#
+			</isPropertyAvailable>
+			<isGreaterEqual prepend="," property="loginTotalCount" compareValue="1"  removeFirstPrepend="true">
+				loginTotalCount=loginTotalCount+#loginTotalCount#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginTotalTime"  compareValue="1" removeFirstPrepend="true">
+				loginTotalTime=loginTotalTime+#loginTotalTime#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount0" compareValue="1" removeFirstPrepend="true">
+				loginCount0=loginCount0+#loginCount0#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount1" compareValue="1" removeFirstPrepend="true">
+				loginCount1=loginCount1+#loginCount1#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount2" compareValue="1" removeFirstPrepend="true">
+				loginCount2=loginCount2+#loginCount2#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount3" compareValue="1" removeFirstPrepend="true">
+				loginCount3=loginCount3+#loginCount3#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount4" compareValue="1" removeFirstPrepend="true">
+				loginCount4=loginCount4+#loginCount4#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount5" compareValue="1" removeFirstPrepend="true">
+				loginCount5=loginCount5+#loginCount5#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount6" compareValue="1" removeFirstPrepend="true">
+				loginCount6=loginCount6+#loginCount6#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount7" compareValue="1" removeFirstPrepend="true">
+				loginCount7=loginCount7+#loginCount7#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount8" compareValue="1" removeFirstPrepend="true">
+				loginCount8=loginCount8+#loginCount8#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount9" compareValue="1" removeFirstPrepend="true">
+				loginCount9=loginCount9+#loginCount9#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount10" compareValue="1" removeFirstPrepend="true">
+				loginCount10=loginCount10+#loginCount10#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount11" compareValue="1" removeFirstPrepend="true">
+				loginCount11=loginCount11+#loginCount11#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount12" compareValue="1" removeFirstPrepend="true">
+				loginCount12=loginCount12+#loginCount12#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount13" compareValue="1" removeFirstPrepend="true">
+				loginCount13=loginCount13+#loginCount13#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount14" compareValue="1" removeFirstPrepend="true">
+				loginCount14=loginCount14+#loginCount14#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount15" compareValue="1" removeFirstPrepend="true">
+				loginCount15=loginCount15+#loginCount15#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount16" compareValue="1" removeFirstPrepend="true">
+				loginCount16=loginCount16+#loginCount16#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount17" compareValue="1" removeFirstPrepend="true">
+				loginCount17=loginCount17+#loginCount17#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount18" compareValue="1" removeFirstPrepend="true">
+				loginCount18=loginCount18+#loginCount18#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount19" compareValue="1" removeFirstPrepend="true">
+				loginCount19=loginCount19+#loginCount19#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount20" compareValue="1" removeFirstPrepend="true">
+				loginCount20=loginCount20+#loginCount20#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount21" compareValue="1" removeFirstPrepend="true">
+				loginCount21=loginCount21+#loginCount21#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount22" compareValue="1" removeFirstPrepend="true">
+				loginCount22=loginCount22+#loginCount22#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount23" compareValue="1" removeFirstPrepend="true">
+				loginCount23=loginCount23+#loginCount23#
+			</isGreaterEqual>
+		</dynamic>
+	</update>
+
+	<update id="update_login_data" parameterClass="java.util.HashMap">
+		update t_login_data
+		<dynamic prepend=" set ">
+			<isPropertyAvailable prepend="," property="lastLoginTime" removeFirstPrepend="true">
+				lastLoginTime=#lastLoginTime#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="lastLogoutTime" removeFirstPrepend="true">
+				lastLogoutTime=#lastLogoutTime#
+			</isPropertyAvailable>
+			<isGreaterEqual prepend="," property="loginTotalCount" compareValue="1"  removeFirstPrepend="true">
+				loginTotalCount=loginTotalCount+#loginTotalCount#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginTotalTime"  compareValue="1" removeFirstPrepend="true">
+				loginTotalTime=loginTotalTime+#loginTotalTime#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount0" compareValue="1" removeFirstPrepend="true">
+				loginCount0=loginCount0+#loginCount0#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount1" compareValue="1" removeFirstPrepend="true">
+				loginCount1=loginCount1+#loginCount1#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount2" compareValue="1" removeFirstPrepend="true">
+				loginCount2=loginCount2+#loginCount2#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount3" compareValue="1" removeFirstPrepend="true">
+				loginCount3=loginCount3+#loginCount3#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount4" compareValue="1" removeFirstPrepend="true">
+				loginCount4=loginCount4+#loginCount4#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount5" compareValue="1" removeFirstPrepend="true">
+				loginCount5=loginCount5+#loginCount5#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount6" compareValue="1" removeFirstPrepend="true">
+				loginCount6=loginCount6+#loginCount6#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount7" compareValue="1" removeFirstPrepend="true">
+				loginCount7=loginCount7+#loginCount7#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount8" compareValue="1" removeFirstPrepend="true">
+				loginCount8=loginCount8+#loginCount8#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount9" compareValue="1" removeFirstPrepend="true">
+				loginCount9=loginCount9+#loginCount9#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount10" compareValue="1" removeFirstPrepend="true">
+				loginCount10=loginCount10+#loginCount10#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount11" compareValue="1" removeFirstPrepend="true">
+				loginCount11=loginCount11+#loginCount11#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount12" compareValue="1" removeFirstPrepend="true">
+				loginCount12=loginCount12+#loginCount12#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount13" compareValue="1" removeFirstPrepend="true">
+				loginCount13=loginCount13+#loginCount13#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount14" compareValue="1" removeFirstPrepend="true">
+				loginCount14=loginCount14+#loginCount14#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount15" compareValue="1" removeFirstPrepend="true">
+				loginCount15=loginCount15+#loginCount15#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount16" compareValue="1" removeFirstPrepend="true">
+				loginCount16=loginCount16+#loginCount16#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount17" compareValue="1" removeFirstPrepend="true">
+				loginCount17=loginCount17+#loginCount17#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount18" compareValue="1" removeFirstPrepend="true">
+				loginCount18=loginCount18+#loginCount18#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount19" compareValue="1" removeFirstPrepend="true">
+				loginCount19=loginCount19+#loginCount19#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount20" compareValue="1" removeFirstPrepend="true">
+				loginCount20=loginCount20+#loginCount20#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount21" compareValue="1" removeFirstPrepend="true">
+				loginCount21=loginCount21+#loginCount21#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount22" compareValue="1" removeFirstPrepend="true">
+				loginCount22=loginCount22+#loginCount22#
+			</isGreaterEqual>
+			<isGreaterEqual prepend="," property="loginCount23" compareValue="1" removeFirstPrepend="true">
+				loginCount23=loginCount23+#loginCount23#
+			</isGreaterEqual>
+		</dynamic>
+		where userId=#userId# and currentDate=#currentDate#
+	</update>
+
+	<update id="save_or_update_online_data" parameterClass="java.util.HashMap">
+		insert into t_online_data (currentTime,serverId,currentCount)
+		VALUES (#currentTime#,#serverId#,#currentCount#)
+		on duplicate key update currentCount=#currentCount#
+	</update>
+
+	<update id="save_system_user_countlogin" parameterClass="java.util.HashMap">
+		insert IGNORE into system_user_countlogin (userId,logintime,type)
+		VALUES (#userId#,#logintime#,#type#)
+	</update>
+
+
+    <update id="save_or_update_bjd" parameterClass="com.sy599.game.db.bean.DataStatistics">
+		insert into bjd_data_statistics (dataDate,dataCode,userId,gameType,dataType,dataValue)
+		VALUES (#dataDate#,#dataCode#,#userId#,#gameType#,#dataType#,#dataValue#)
+		on
+		duplicate key update
+		dataValue=dataValue+#dataValue#
+	</update>
+
+    <select id="loadMaxWzjsOfUser" resultClass="com.sy599.game.db.bean.DataStatistics" parameterClass="java.util.HashMap">
+		select
+		    dataCode,
+		    sum(dataValue) as dataValue
+	    from
+	        bjd_data_statistics
+		where
+		   userId = #userId#
+		   AND dataDate <![CDATA[ >= ]]> #startDate#
+		   AND dataType = 'wzjsCount'
+		   group by dataCode
+        order by dataValue desc
+        limit 1
+	</select>
+
+    <update id="save_or_update_gold_dataStatistics" parameterClass="com.sy599.game.db.bean.GoldDataStatistics">
+		insert into gold_data_statistics
+		(dataDate,dataType,userId,dataCount,dataValue)
+		VALUES
+		(#dataDate#,#dataType#,#userId#,#dataCount#,#dataValue#)
+		on
+		duplicate key update
+		dataCount = dataCount + #dataCount#,
+        dataValue = dataValue + #dataValue#
+	</update>
+
+
+    <select id="load_gold_data_statistics_dataValue" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+		select
+		    dataValue
+	    from
+	        gold_data_statistics
+		where
+		   dataDate = #dataDate#
+		   AND dataType = #dataType#
+		   AND userId = #userId#
+	</select>
+
+    <select id="load_goldRoom_robot_playType_lose" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		select
+		    userId ,
+		    sum(dataValue) as sumValue
+	    from
+	        gold_data_statistics
+		where
+		   dataDate = #dataDate#
+		   AND dataType in ( $dataTypes$ )
+		group by userId
+	</select>
+</sqlMap>

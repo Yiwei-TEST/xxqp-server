@@ -1,0 +1,226 @@
+syntax = "proto2";
+import "proto/files/TablePhzResMsg.proto";
+package com.sy599.game.msg.serverPacket;
+//创建一个牌桌
+message CreateTableRes {
+	required string tableId = 1;//牌桌id
+	required int32 nowBurCount = 2;//现在进行的局数
+	required int32 totalBurCount = 3;//创建的总局数
+	repeated PlayerInTableRes players=4;//玩家信息
+	optional int32 nextSeat=5;//下次出牌的seat
+	required int32 wanfa=6;
+	optional int32 remain=7;
+	repeated int32 ext=8;
+	optional string gotyeRoomId=9;//聊天室id	
+	repeated int32 matchExt=10;//比赛场扩展参数
+	optional int32 renshu=11;//人数
+	optional int32 fromOverPop=12;//是否是点了结算框的确定
+	optional int32 showRenew=13;//是否显示续费
+	optional int32 isDaiKai=14;//是否是代开房间
+	optional int32 tableType=15;//房间属性 0普通房间1军团2练习场
+	optional string groupProperty=16;//军团属性值
+	repeated int32 timeOut=17; // 托管时间
+	repeated int32 scoreCard=18;//本轮出的分牌
+	repeated string extStr=19; // 扩展字符串
+    optional int32 roundCardType=20; //本轮出的牌型
+    optional string masterId=21;            //房主id
+    optional int32 lastWinSeat=22;			//庄家座位号
+    optional int64 creatorId=23;            //创房者id
+    optional int32 dealDice=24;             //骰子点数
+    repeated string strExt=25;              //字符串扩展
+    repeated int64 creditConfig=26;         // 信用房配置
+    repeated int32 intParams=27;            // 创房int参数列表
+    repeated string strParams=28;            // 创房str参数列表
+    optional string roomName=29;           // 包间名字
+    repeated string generalExt=30;          // 通用扩展
+    repeated QiZi qiPan = 31; // 棋盘
+    optional string goldMsg = 32;           // 金币场信息
+    optional int64 goldRoomConfigId = 33;   // 金币场配置id
+    optional string groupTableGoldMsg = 34; // 亲友圈金币房信息
+}
+
+//加入牌桌
+message JoinTableRes{
+	required PlayerInTableRes player=1;//加入的玩家信息
+	optional int32 nextSeat=2;//下次出牌的seat
+	required int32 wanfa=3;
+}
+
+//牌桌上玩家信息
+message PlayerInTableRes{
+	 required string userId=1;//用户id
+	 required string name=2;//名字
+	 required int32 seat=3;//座位
+	 required int32 sex=4;//性别
+	 required string icon=5;//头像
+	 required int32 point=6;//积分
+	 repeated int32 handCardIds=7;//手牌
+	 repeated int32 outCardIds=8;//出牌
+	 optional int32 status=9;//状态 1准备 2离线
+	 repeated int32 recover=10;//牌局恢复
+	 optional string ip=11;
+	 repeated int32 outedIds=12;//麻将已经出了的牌
+     repeated int32 moldIds=13;//杠了碰了的牌
+     repeated int32 angangIds=14;//暗杠的牌
+     repeated int32 ext=15;//附加参数
+     optional int32 gameSiteRank=16;// 比赛场排名
+     repeated int32 matchExt=17;// 比赛场附加参数
+     repeated PhzHuCards moldCards=18;//杠了碰了的牌
+	 optional string gps=19;//经纬度
+	 optional int32 userSate=20;//玩家状态：0禁止登陆，1正常，2红名
+	 optional int32 designation=21;//玩家称号：0草民,1县令,2知府,3尚书,4宰相,5皇帝
+	 repeated PhzHuCards huCards=22;//甘肃麻将胡过了的牌
+	 optional string gold=23;//玩家身上的金币
+	 optional int64 credit=24;//玩家身上的credit
+	 repeated int32 scoreCard=25;//玩家身上捡的分牌
+	 repeated int32 intExts=26;//额外参数字符串数组
+	 repeated string strExts=27;//额外参数字符串数组
+	 optional int32 shiZhongCard=28;//起手示众牌
+     optional int64 coin=29;        // 新的金币
+     optional int32 frameId=30;     // 头像框id
+     optional int64 score=31;       // 棋分
+}
+
+// 打筒子玩家状态栏信息
+message PlayerPointDetail {
+}
+
+//发牌
+message DealInfoRes{
+	repeated int32 handCardIds=1;//手牌
+	required int32 nextSeat=2;//下次出牌的seat
+	optional int32 gameType=3;//游戏类型
+	optional int32 remain=4;
+	repeated int32 selfAct=5;//
+	optional int32 banker=6;//庄家座位
+	repeated int32 xiaohu=7;//长沙麻将起牌小胡
+	repeated int32 levelCardIds = 8;//级牌牌组id
+    optional int32 baoting = 9;         //闲家是否有报听
+    optional int32 seat=10;             //座位号
+    optional int32 dealDice=11;         //发牌色子值，一个两位数，十位、个位各代表一个色子值
+    optional int32 laiZiVal=12;         //癞子牌的值，1000表示没有癞子
+    optional int32 diCardId=13;         //地牌ID
+    optional int32 kingCardId=14;       //王牌ID
+	repeated int32 horses = 15;			//买的马,麻将ID
+	optional int32 nextDisCardIndex=16; //下个地牌出现位置
+	optional int32 dealDiceFloorIndex=17; //定地牌摇的骰子
+}
+
+//结算
+message ClosingInfoRes{
+     repeated ClosingPlayerInfoRes closingPlayers=1;
+     repeated int32 bird=2;
+     repeated int32 birdSeat=3;
+     optional int32 isBreak=4;
+     optional int32 wanfa=5;    
+     repeated string ext=6;//
+     repeated string matchExt=7;//比赛场
+     repeated int32 cutCard=8;//切掉的牌
+     repeated int32 cutDtzCard=9;//打筒子切掉的牌
+     optional int32 groupLogId=10;//俱乐部战绩id
+     repeated int32 intParams=11;//创房参数
+}
+
+//单个玩家结算
+message ClosingPlayerInfoRes{
+	optional string userId=1;//userId
+	optional string name=2;//名字
+	optional int32 leftCardNum=3;//剩余牌数
+	optional int32 point=4;//积分
+	optional int32 totalPoint=5;//总积分
+	optional int32 boom=6;//炸弹数
+	optional int32 winCount=7;//赢的次数
+	optional int32 lostCount=8;//输的次数
+	optional int32 maxPoint=9;//最高积分
+	optional int32 totalBoom=10;//总炸弹数
+	repeated int32 cards=11;//剩下的牌
+	required int32 seat=12;//座位
+	optional int32 sex=13;
+	optional string icon=14;
+    optional int32 isHu=15;
+    repeated int32 actionCounts=16;//动作
+    repeated int32 gangIds=17;//杠
+    repeated int32 dahus=18;//大胡
+    repeated int32 xiaohus=19;//小胡
+    repeated PhzHuCards mcards=20;//牌
+    repeated string ext=21;//拓展字段
+    optional string gold=22;//玩家身上的金币
+    optional int32 credit=23;//玩家身上的credit
+    optional int64 winLoseCredit=24;//输赢信用分
+    optional int64 commissionCredit=25;//抽水信用分
+    optional int32 goldFlag=26;//金币场结算标记：1 破产2封顶
+    
+}
+
+message GangCard {
+	repeated int32 cards=1;//杠的牌
+}
+
+//沅江麻将单个玩家结算
+message YjClosingPlayerInfoRes{
+	optional string userId=1;//userId
+	optional string name=2;//名字
+	optional int32 leftCardNum=3;//剩余牌数
+	optional int32 point=4;//局积分
+	optional int32 totalPoint=5;//总积分
+	optional int32 zimoCount=6;//自摸次数
+	optional int32 jiePaoCount=7;//接炮次数
+	optional int32 fangPaoCount=8;//放炮次数
+	required int32 seat=9;//座位
+	optional int32 sex=10;
+	optional string icon=11;
+	optional int32 isHu=12;// 胡的麻将
+	repeated int32 actionCounts=13;//动作
+	repeated int32 cards=14;//手上的牌
+	repeated int32 pengs=15;//碰的牌
+	repeated GangCard mGang=16;//明杠
+	repeated GangCard aGang=17;//暗杠
+	repeated GangCard jGang=18;//接杠
+	repeated int32 dahus=19;//大胡  0碰碰胡  1将将胡 2清一色 3七小队 4豪华七小队 5双豪华七小队 6三豪华七小队 7杠爆 8抢杠胡 9海底捞 10一条龙 11门清 12天胡 13一字翘
+	repeated PhzHuCards mcards=20;//牌
+	repeated int32 gangInfos=21;//杠相关信息    0暗杠次数 1摸杠次数 2接杠次数 3放杠次数
+	repeated string ext=22;//拓展字段
+	repeated int32 dahuCounts=23;//大胡次数  0碰碰胡  1将将胡 2清一色 3七小队 4豪华七小队 5双豪华七小队 6三豪华七小队 7杠爆 8抢杠胡 9海底捞 10一条龙 11门清 12天胡 13一字翘
+    optional int32 credit=24;//玩家身上的credit
+    optional int64 winLoseCredit=25;//输赢信用分
+    optional int64 commissionCredit=26;//抽水信用分
+}
+
+//沅江麻将结算
+message YjClosingInfoRes{
+	repeated YjClosingPlayerInfoRes closingPlayers=1;
+	repeated int32 bird=2;
+	repeated int32 birdSeat=3;
+	optional int32 isBreak=4;
+	optional int32 wanfa=5;
+	repeated string ext=6;//
+	repeated string matchExt=7;//比赛场
+	repeated int32 cutCard=8;//切掉的牌
+	repeated int32 cutDtzCard=9;//打筒子切掉的牌
+	repeated int32 leftCards=10;//牌桌上剩下的牌
+	optional int32 fangPaoSeat=11;//放炮玩家的座位号
+	repeated int32 jiePaoSeat=12;//接炮玩家的座位号
+	optional int32 groupLogId=13;//俱乐部战绩id
+    repeated int32 intParams=14;//创房参数
+    repeated int64 creditConfig=15; // 信用房配置
+    repeated int32 chouCards=16;//抽掉的牌
+}
+
+//发牌
+message YjDealInfoRes{
+	repeated int32 handCardIds=1;//手牌
+	required int32 nextSeat=2;//下次出牌的seat
+	optional int32 gameType=3;//游戏类型
+	optional int32 remain=4;
+	repeated int32 selfAct=5;//
+	optional int32 banker=6;//庄家座位
+	repeated int32 xiaohu=7;//长沙麻将起牌小胡
+	optional int32 baoting = 8;//闲家是否有报听
+}
+
+// 棋盘中的棋子
+message QiZi {
+    optional int32 x = 1;   // x坐标
+    optional int32 y = 2;   // y坐标
+    optional int32 val = 3; // 值(-1：黑子，1：白子)
+}

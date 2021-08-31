@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="robot">
+
+    <select id="load_all_robot" resultClass="com.sy599.game.robot.Robot" >
+        /*FORCE_MASTER*/ select * from t_robot
+    </select>
+
+    <select id="rand_robot" resultClass="java.lang.Long" parameterClass="java.lang.Integer">
+        /*FORCE_MASTER*/ select userId from t_robot
+        where
+            type = #type#
+            AND used = 0
+        order by lastUseTime asc
+        limit 20
+    </select>
+
+    <update id="use_robot" parameterClass="java.lang.Long">
+        update t_robot
+        set
+            used = 1
+        where
+            userId = #userId#
+            AND used = 0
+    </update>
+
+    <update id="recycle_robot" parameterClass="java.lang.Long">
+        update t_robot
+        set
+            used = 0 ,
+            usedCount = usedCount + 1
+        where
+            userId = #userId#
+    </update>
+
+</sqlMap>

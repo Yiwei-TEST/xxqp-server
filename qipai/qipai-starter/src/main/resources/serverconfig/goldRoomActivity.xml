@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="goldRoomActivity">
+
+
+
+    <resultMap class="com.sy599.game.db.bean.gold.GoldRoomActivityUserItem" id="GoldRoomActivityUserItem">
+        <result property="keyId" column="keyId"/>
+        <result property="userid" column="userid"/>
+        <result property="activityBureau" column="activityBureau"/>
+        <result property="activityItemNum" column="activityItemNum"/>
+        <result property="daterecord" column="daterecord"/>
+        <result property="activityDesc" column="activityDesc"/>
+        <result property="createdTime" column="createdTime"/>
+        <result property="modifiedTime" column="modifiedTime"/>
+        <result property="isReward" column="isReward"/>
+        <result property="everydayLimit" column="everydayLimit"/>
+    </resultMap>
+
+    <resultMap class="com.sy599.game.db.bean.gold.GoldAcitivityRankResult" id="GoldRoomActivityRankMap">
+        <result property="rowno" column="rowno"/>
+        <result property="userid" column="userid"/>
+        <result property="name" column="name"/>
+        <result property="headimgurl" column="headimgurl"/>
+        <result property="activityItemNum" column="activityItemNum"/>
+        <result property="modifiedTime" column="modifiedTime"/>
+    </resultMap>
+
+    <select id="queryInfoByUserid" resultMap="GoldRoomActivityUserItem" parameterClass="java.lang.Long">
+          /*FORCE_MASTER*/ SELECT * FROM
+            t_gold_room_activity_user_item
+            WHERE userid =#userid#
+    </select>
+    <select id="queryInfoByUseridAndThem" resultMap="GoldRoomActivityUserItem" parameterClass="java.util.HashMap">
+          /*FORCE_MASTER*/ SELECT * FROM
+            t_gold_room_activity_user_item
+            WHERE userid =#userid#
+            and  activityDesc= #them#
+    </select>
+
+    <select id="queryInfoByUseridByThem" resultMap="GoldRoomActivityUserItem" parameterClass="java.util.HashMap">
+          /*FORCE_MASTER*/ SELECT * FROM
+            t_gold_room_activity_user_item
+            WHERE userid =#userid# and activityDesc=#activityDesc#
+    </select>
+
+    <insert id="save" parameterClass="com.sy599.game.db.bean.gold.GoldRoomActivityUserItem">
+        INSERT INTO t_gold_room_activity_user_item (
+            userid,
+            activityBureau,
+            activityItemNum,
+            daterecord,
+            activityDesc,
+            everydayLimit
+        )
+        VALUES (
+		    #userid#, #activityBureau#, #activityItemNum#, #daterecord#, #activityDesc#, #everydayLimit#);
+    </insert>
+
+    <update id="updateItem" parameterClass="java.util.HashMap">
+      /*FORCE_MASTER*/  UPDATE  t_gold_room_activity_user_item  SET
+            activityBureau =#activityBureau#,
+            activityItemNum =#activityItemNum#,
+            daterecord =#daterecord#,
+              everydayLimit =#everydayLimit#
+        WHERE keyId =#keyId#
+    </update>
+    <update id="updateReward" parameterClass="java.util.HashMap">
+      /*FORCE_MASTER*/  UPDATE  t_gold_room_activity_user_item  SET
+            isReward =#isReward#
+        WHERE keyId =#keyId#
+    </update>
+
+    <select id="queryActivityRankList" parameterClass="java.util.HashMap" resultMap="GoldRoomActivityUserItem">
+        /*FORCE_MASTER*/ SELECT  t.*,u.name as 'name', u.headimgurl as 'headimgurl' FROM
+            t_gold_room_activity_user_item t
+        LEFT JOIN user_inf u ON u.userId = t.userid
+        ORDER BY
+            activityItemNum DESC,
+            modifiedTime ASC
+        LIMIT 0,20
+    </select>
+
+    <select id="queryActivityRankMap" parameterClass="java.util.HashMap" resultMap="GoldRoomActivityRankMap">
+
+               /*FORCE_MASTER*/      SELECT
+                @rowno :=@rowno + 1 AS rowno,
+                a.*
+            FROM
+                (
+                    SELECT
+                        t.userid,
+                        u. NAME,
+                        u.headimgurl,
+                        t.activityItemNum,
+                        t.modifiedTime
+                    FROM
+                        t_gold_room_activity_user_item t
+                    LEFT JOIN user_inf u ON u.userId = t.userid
+                    WHERE t.activitydesc ='粽子'
+                    ORDER BY
+                        activityItemNum DESC,
+                        modifiedTime ASC 	LIMIT 0,50
+                   ) a, (SELECT @rowno := 0) b
+    </select>
+
+    <select id="queryActivityRankMapByUserId" parameterClass="java.util.HashMap" resultMap="GoldRoomActivityRankMap">
+               /*FORCE_MASTER*/      SELECT
+                @rowno :=@rowno + 1 AS rowno,
+                a.*
+            FROM
+                (
+                    SELECT
+                        t.userid,
+                        u. NAME,
+                        u.headimgurl,
+                        t.activityItemNum,
+                        t.modifiedTime
+                    FROM
+                        t_gold_room_activity_user_item t
+                    LEFT JOIN user_inf u ON u.userId = t.userid
+                    where  u.userid =#userid#
+                    ORDER BY
+                        activityItemNum DESC,
+                        modifiedTime ASC
+                     ) a, (SELECT @rowno := 0) b
+    </select>
+
+    <select id="queryActivityRankMapByThemAndUserId" parameterClass="java.util.HashMap" resultMap="GoldRoomActivityRankMap">
+
+               /*FORCE_MASTER*/      SELECT
+                @rowno :=@rowno + 1 AS rowno,
+                a.*
+            FROM
+                (
+                    SELECT
+                        t.userid,
+                        u. NAME,
+                        u.headimgurl,
+                        t.activityItemNum,
+                        t.modifiedTime
+                    FROM
+                        t_gold_room_activity_user_item t
+                    LEFT JOIN user_inf u ON u.userId = t.userid
+                    <dynamic prepend="where">
+                        <isParameterPresent>
+                            <isNotEmpty prepend="and" property="them" >
+                                t.activitydesc = #them#
+                            </isNotEmpty>
+                            <isNotEmpty prepend="and" property="userid">
+                                t.userid = #userid#
+                            </isNotEmpty>
+                        </isParameterPresent>
+                    </dynamic>
+
+                    ORDER BY
+                        activityItemNum DESC,
+                        modifiedTime ASC 	LIMIT 0,50
+                   ) a, (SELECT @rowno := 0) b
+    </select>
+</sqlMap>
+
+
+
+
+
+
+

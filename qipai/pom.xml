@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.sy.game.qipai</groupId>
+    <artifactId>qipai-all</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>qipai-common</module>
+        <module>qipai-lib</module>
+        <module>qipai-starter</module>
+        <!--        <module>guajiLogin</module>-->
+
+        <!--麻将-->
+        <module>game-hzmj</module>
+        <module>game-zzmj</module>
+        <!--<module>game-bsmj</module>-->
+        <module>game-csmj</module>
+        <!--<module>game-tdhmj</module>-->
+        <!--<module>game-mj-cxmj</module>-->
+        <!--<module>game-mj-yjmj</module>-->
+        <!--<module>game-mj-nxmj</module>-->
+        <!--<module>game-mj-dehmj</module>-->
+        <!--<module>game-mj-nxkwmj</module>-->
+        <!--<module>game-mj-tcpfmj</module>-->
+        <!--<module>game-mj-tcdpmj</module>-->
+        <!--<module>game-mj-yzwdmj</module>-->
+        <!--<module>game-mj-ahmj</module>-->
+        <!--<module>game-mj-symj</module>-->
+        <!--<module>game-mj-tjmj</module>-->
+        <!--<module>game-mj-chaosmj</module>-->
+        <!--<module>game-mj-265-yymj</module>-->
+        <!--<module>game-mj-tcmj</module>-->
+        <!--<module>game-mj-nymj</module>-->
+  		<!--<module>game-mj-daozmj</module>-->
+  		<!--<module>game-mj-zjmj</module>-->
+        <!--<module>game-mj-nanxmj</module>-->
+        <!--<module>game-mj-cqxzmj</module>-->
+        <!--<module>game-mj-jingzhoumj</module>-->
+        <!--<module>game-mj-253zhengzmj</module>-->
+
+        <!--字牌-->
+        <module>game-ldfpf</module>
+        <!--<module>game-zzzp</module>-->
+        <!--<module>game-lyzp</module>-->
+        <!--<module>game-sypaohuzi</module>-->
+        <!--<module>game-xxgaohuzi</module>-->
+        <!--<module>game-xxpaohuzi</module>-->
+        <!--<module>game-xtpaohuzi</module>-->
+        <!--<module>game-zp-hylhq</module>-->
+        <!--<module>game-zp-zhz</module>-->
+        <!--<module>game-zp-nxphz</module>-->
+        <!--<module>game-zp-hsphz</module>-->
+        <!--<module>game-zp-lszp</module>-->
+        <!--<module>game-zp-hbgzp</module>-->
+        <!--<module>game-zp-pengHuzi</module>-->
+        <!--<module>game-zp-yjghz</module>-->
+        <!--<module>game-zp-xx2710</module>-->
+        <!--<module>game-zp-cdepaohuzi</module>-->
+        <!--<module>game-zp-nxghz</module>-->
+        <!--<module>game-zp-yiyangwhz</module>-->
+        <!--<module>game-zp-yywhz</module>-->
+        <!--<module>game-zp-ldsphz</module>-->
+        <!--<module>game-zp-hyshk</module>-->
+        <!--<module>game-zp-glphz</module>-->
+        <!--<module>game-zp-dzbp</module>-->
+        <!--<module>game-zp-yzphz</module>-->
+        <!--<module>game-zp-ahpaohuzi</module>-->
+        <!--<module>game-zp-smpaohuzi</module>-->
+        <!--<module>game-zp-266-wcphz</module>-->
+        <!--<module>game-zp-xplp</module>-->
+        <!--<module>game-zp-yzlc</module>-->
+        <!--<module>game-zp-honggwpaohuzi</module>-->
+		<!--<module>game-zp-254axphz</module>-->
+		<!--<module>game-zp-xppaohuzi521</module>-->
+        <!--<module>game-zp-hjphz281</module>-->
+
+        <!--扑克-->
+        <!--<module>game-dtz</module>-->
+        <module>game-pdkuai</module>
+        <!--<module>game-pk-sandh</module>-->
+        <!--<module>game-pk-diantuo</module>-->
+        <!--<module>game-pk-yyqf</module>-->
+        <!--<module>game-pk-niushibie</module>-->
+        <!--<module>game-pk-xtbp</module>-->
+        <!--<module>game-pk-yybs</module>-->
+        <!--<module>game-pk-tcgd</module>-->
+        <!--<module>game-pk-hsth</module>-->
+        <!--<module>game-pk-2renddz</module>-->
+        <!--<module>game-pk-cdtlj</module>-->
+        <!--<module>game-pk-zzpdk</module>-->
+
+        <!--棋类-->
+        <!--<module>game-qi-wzq</module>-->
+        <module>guajiLogin</module>
+    </modules>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.compiler>1.8</project.build.compiler>
+    </properties>
+
+
+    <dependencies>
+        <!--<dependency>-->
+        <!--<groupId>net.bytebuddy</groupId>-->
+        <!--<artifactId>bytebuddy</artifactId>-->
+        <!--<version>1.4.26</version>-->
+        <!--<scope>system</scope>-->
+        <!--<systemPath>${basedir}/src/main/webapp/WEB-INF/lib/byte-buddy-1.4.26.jar</systemPath>-->
+        <!--</dependency>-->
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                    <forkMode>once</forkMode>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>${project.build.compiler}</source>
+                    <target>${project.build.compiler}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

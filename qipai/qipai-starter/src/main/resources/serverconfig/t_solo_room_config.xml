@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="soloRoom">
+
+    <select id="load_all_solo_room_config" resultClass="com.sy599.game.db.bean.SoloRoomConfig">
+        SELECT * FROM t_solo_room_config
+    </select>
+
+</sqlMap>
+
+
+
+
+

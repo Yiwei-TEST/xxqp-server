@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="activity">
+
+	<!-- 
+	<update id="updateFudai" parameterClass="java.util.HashMap">
+		update user_lucky set feedbackCount = feedbackCount + #card# where userId = #userId#
+	</update>
+	 -->
+
+	<insert id="addHbFafangRecord" parameterClass="java.util.HashMap">
+		insert into hb_fafang_record (id, tableId, userId, userName, hbType, money, createTime) values 
+		(#id#, #tableId#, #userId#, #userName#, #hbType#, #money#, #createTime#)
+	</insert>
+	
+	<update id="insertUserTotalMoney" parameterClass="java.util.HashMap">
+		insert into user_extendinf
+		(userId, cdk, extend, myConsume, name, totalMoney, shengMoney, prizeFlag)
+		values
+		(#userId#, #cdk#, #extend#, #myConsume#, #name#, #totalMoney#, #shengMoney#, #prizeFlag#)
+		on
+		duplicate key update
+		totalMoney = totalMoney + #totalMoney#
+	</update>
+	
+	<update id="updateFudai" parameterClass="java.util.HashMap">
+		insert into
+		user_lucky (userId, username, sex, inviteeCount, invitorId, feedbackCount, openCount, activityStartTime, prizeFlag) values 
+		(#userId#, #username#, #sex#, #inviteeCount#, #invitorId#, #feedbackCount#, #openCount#, #activityStartTime#, #prizeFlag#)
+		on duplicate key update
+		feedbackCount = feedbackCount + #feedbackCount#
+	</update>
+	
+	<insert id="addActivityReward" parameterClass="com.sy599.game.db.bean.activityRecord.ActivityReward">
+		insert into activity_reward (activityId, userId, type, state, rewardIndex, rewardDate, reward, rewardNum) values 
+		(#activityId#, #userId#, #type#, #state#, #rewardIndex#, #rewardDate#, #reward#, #rewardNum#)
+	</insert>
+
+	<resultMap id="activeConfig" class="com.sy599.game.db.bean.Activity">
+		<result property="id" column="id" />
+		<result property="beginTime" column="beginTime" />
+		<result property="endTime" column="endTime" />
+		<result property="them" column="them" />
+		<result property="showContent" column="showContent" />
+		<result property="extend" column="extend" />
+		<result property="showBeginTime" column="showBeginTime" />
+		<result property="showEndTime" column="showEndTime" />
+	</resultMap>
+	<select id="loadActiveConfig" resultMap="activeConfig">
+		SELECT * FROM activity;
+	</select>
+
+	<resultMap id="inviteQueqiao" class="com.sy599.game.db.bean.InviteQueQiao">
+		<result property="id" column="id" />
+		<result property="sendId" column="sendId" />
+		<result property="acceptId" column="acceptId" />
+		<result property="sendTime" column="sendTime" />
+		<result property="isAllow" column="isAllow" />
+		<result property="isRead" column="isRead" />
+	</resultMap>
+
+	<resultMap id="inviteQueqiaoWithSendMsg" class="com.sy599.game.db.bean.InviteQueQiaoWithSendMsg">
+		<result property="id" column="id" />
+		<result property="sendId" column="sendId" />
+		<result property="acceptId" column="acceptId" />
+		<result property="sendTime" column="sendTime" />
+		<result property="isAllow" column="isAllow" />
+		<result property="isRead" column="isRead" />
+		<result property="name" column="name" />
+		<result property="headimgurl" column="headimgurl" />
+	</resultMap>
+	<select id="selectIsAllow" resultMap="inviteQueqiao" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/SELECT * FROM invite_queqiao where (acceptId=#userId# or sendId=#userId#) and isAllow=1;
+	</select>
+	<select id="selectBySendIdOrAcceptId" resultMap="inviteQueqiao" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/SELECT * FROM invite_queqiao where acceptId=#userId# or sendId=#userId#;
+	</select>
+	<delete id="deleteWhereTeamSuccess" parameterClass="java.util.HashMap">
+		DELETE FROM invite_queqiao WHERE  sendId=#sendId# and isAllow==0;
+	</delete>
+
+	<delete id="deleteOneInvite" parameterClass="java.util.HashMap">
+		DELETE FROM invite_queqiao WHERE  sendId=#sendId# and acceptId=#acceptId#;
+	</delete>
+	<insert id="insertInvite" parameterClass="java.util.HashMap">
+		insert into invite_queqiao (sendId, acceptId, sendTime) values(#sendId#, #acceptId#, #sendTime#)
+		<selectKey resultClass="java.lang.Integer" keyProperty="id">
+			SELECT
+			@@IDENTITY AS id
+		</selectKey>
+	</insert>
+	<select id="select10MinInvite" resultMap="inviteQueqiao" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/SELECT * FROM invite_queqiao where sendId=#sendId# and acceptId=#acceptId# and sendTime>#sendTime#;
+	</select>
+	<update id="updateAllowTeamInvite" parameterClass="java.util.HashMap">
+		UPDATE invite_queqiao set isAllow=1
+		where (
+		select count(ub.id) FROM(
+			select * from invite_queqiao where (sendId=#sendId# or acceptId=#sendId#) and isAllow=1
+			) ub
+		)=0
+		and sendId=#sendId# and acceptId=#acceptId# and sendTime>=#sendTime#;
+	</update>
+	<select id="selectAllInvite" resultMap="inviteQueqiaoWithSendMsg" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/SELECT iq.*,ui.name,ui.headimgurl
+		FROM invite_queqiao iq LEFT JOIN user_inf ui on iq.sendId=ui.userId
+		where iq.acceptId=#acceptId#;
+	</select>
+
+	<update id="updateIsRead" parameterClass="java.util.HashMap">
+		UPDATE invite_queqiao set isRead=1 where acceptId=#acceptId# and sendTime>=#sendTime#;
+	</update>
+	<update id="updateAllowIsRead" parameterClass="java.util.HashMap">
+		UPDATE invite_queqiao set isRead=0 where sendId=#sendId# and acceptId=#acceptId# order by sendTime desc limit 1;
+	</update>
+	<update id="updateReadQueQiaoMsg" parameterClass="java.util.HashMap">
+		UPDATE invite_queqiao set isRead=1 where sendId=#sendId# and acceptId=#acceptId#;
+	</update>
+
+	<select id="selectTeamateInf" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/SELECT ui.name,ui.headimgurl,ma.ext FROM user_inf ui
+		LEFT JOIN mission_about ma on ui.userId=ma.userId where ui.userId=#userId#;
+	</select>
+
+</sqlMap>

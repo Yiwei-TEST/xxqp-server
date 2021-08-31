@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<settings useStatementNamespaces="true" />
+	<!-- Configure a built-in transaction manager. If you're using an app server, 
+		you probably want to use its transaction manager and a managed datasource  SIMPLE-->
+	<transactionManager type="JDBC" commitRequired="false">
+		<dataSource type="com.sy599.game.common.datasource.DruidDataSourceFactory">
+			<property name="druid.driverClassName" value="${jdbc.ClassDriver}" />
+			<property name="druid.url" value="${jdbc.url}" />
+			<property name="druid.username" value="${jdbc.user}" />
+			<property name="druid.password" value="${jdbc.password}" />
+			<property name="druid.initialSize" value="5"/>
+			<property name="druid.minIdle" value="2"/>
+			<property name="druid.maxActive" value="16"/>
+			<property name="druid.maxWait" value="60000"/>
+			<property name="druid.timeBetweenEvictionRunsMillis" value="60000"/>
+			<property name="druid.minEvictableIdleTimeMillis" value="300000"/>
+			<property name="druid.validationQuery" value="SELECT 'x'"/>
+			<property name="druid.testWhileIdle" value="true"/>
+			<property name="druid.testOnBorrow" value="false"/>
+			<property name="druid.testOnReturn" value="false"/>
+			<property name="druid.poolPreparedStatements" value="true"/>
+			<property name="druid.maxPoolPreparedStatementPerConnectionSize" value="50"/>
+			<!--<property name="druid.filters" value="stat,config,log4j,mergeStat"/>-->
+			<property name="druid.connectionProperties" value="config.decrypt=false,druid.stat.slowSqlMillis=5000"/>
+		</dataSource>
+	</transactionManager>
+
+	<!-- List the SQL Map XML files. They can be loaded from the classpath, 
+		as they are here (com.domain.data...) -->
+	<sqlMap resource="serverconfig/userInfo.xml" />
+	<sqlMap resource="serverconfig/tableInfo.xml" />
+	<sqlMap resource="serverconfig/systemCommonInfo.xml" />
+	<sqlMap resource="serverconfig/tablelogInfo.xml" />
+	<sqlMap resource="serverconfig/userMessage.xml" />
+	<sqlMap resource="serverconfig/log.xml" />
+	<sqlMap resource="serverconfig/noticeInfo.xml" />
+	<sqlMap resource="serverconfig/gotyeroom.xml" />
+	<sqlMap resource="serverconfig/userFirstmyth.xml" />
+	<sqlMap resource="serverconfig/marquee.xml" />
+	<sqlMap resource="serverconfig/gameSite.xml" />
+	<sqlMap resource="serverconfig/activity.xml" />
+	<sqlMap resource="serverconfig/server.xml" />
+	<sqlMap resource="serverconfig/userSign.xml" />
+	<sqlMap resource="serverconfig/userTwinReward.xml" />
+	
+	<sqlMap resource="serverconfig/t_black.xml" />
+	<sqlMap resource="serverconfig/t_group.xml" />
+	<sqlMap resource="serverconfig/t_gold.xml" />
+	<sqlMap resource="serverconfig/t_chat_message.xml" />
+	<sqlMap resource="serverconfig/userGameRebate.xml" />
+	<sqlMap resource="serverconfig/userGameBureau.xml" />
+	<sqlMap resource="serverconfig/userBindGameBureau.xml" />
+	<sqlMap resource="serverconfig/t_gold_room.xml" />
+	<sqlMap resource="serverconfig/t_userShare.xml" />
+	<sqlMap resource="serverconfig/t_table.xml" />
+	<sqlMap resource="serverconfig/dataStatistics.xml" />
+	<sqlMap resource="serverconfig/t_lottery.xml" />
+	<sqlMap resource="serverconfig/exchange.xml" />
+	<sqlMap resource="serverconfig/t_resources_configs.xml"/>
+	<sqlMap resource="serverconfig/t_user_relation.xml"/>
+	<sqlMap resource="serverconfig/t_roomcard.xml"/>
+	<sqlMap resource="serverconfig/t_match.xml"/>
+	<sqlMap resource="serverconfig/userRedBag.xml"/>
+	<sqlMap resource="serverconfig/t_base_config.xml"/>
+	<sqlMap resource="serverconfig/t_jifen_recordLog.xml"/>
+	<sqlMap resource="serverconfig/mangguo_authorization.xml" />
+	<sqlMap resource="serverconfig/redBagSystem.xml" />
+	<sqlMap resource="serverconfig/redbagInfo.xml" />
+	<sqlMap resource="serverconfig/userCardRecord.xml" />
+	<sqlMap resource="serverconfig/t_lhd_record.xml" />
+    <sqlMap resource="serverconfig/t_group_credit.xml" />
+    <sqlMap resource="serverconfig/t_pdk_config.xml" />
+    <sqlMap resource="serverconfig/userCoinRecord.xml" />
+    <sqlMap resource="serverconfig/groupConfig.xml" />
+    <sqlMap resource="serverconfig/sys_partition.xml" />
+	<sqlMap resource="serverconfig/sevenGoldSign.xml" />
+	<sqlMap resource="serverconfig/missionAbout.xml" />
+    <sqlMap resource="serverconfig/userGoldRecord.xml" />
+    <sqlMap resource="serverconfig/t_solo_room_config.xml" />
+	<sqlMap resource="serverconfig/t_competition.xml" />
+	<sqlMap resource="serverconfig/goldRoomActivity.xml" />
+	<sqlMap resource="serverconfig/t_robot.xml" />
+	<sqlMap resource="serverconfig/t_group_warn.xml" />
+	<sqlMap resource="serverconfig/t_sendDiamonds.xml" />
+
+
+	<sqlMap resource="serverconfig/authority.xml" />
+</sqlMapConfig>

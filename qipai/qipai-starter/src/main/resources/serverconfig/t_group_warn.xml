@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="groupWarn">
+
+	<resultMap class="com.sy599.game.db.bean.group.GroupWarn" id="tGroupWarn">
+		<result property="id" column="id" />
+		<result property="groupId" column="groupId" />
+		<result property="userId" column="userId" />
+		<result property="warnScore" column="warnScore" />
+		<result property="warnSwitch" column="warnSwitch" />
+		<result property="createTime" column="createTime" />
+	</resultMap>
+
+
+    <select id="getGroupWarnByUserIdAndGroupId" parameterClass = "java.util.Map"  resultMap="tGroupWarn">
+		select * from t_group_warn
+		where userId = #userId# and groupId = #groupId#
+	</select>
+
+	<select id="groupWarnList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT
+            d2.userId,
+            u.headimgurl,
+            u.name,
+            d2.sumCredit,
+            d2.warnScore,
+            d2.warnSwitch,
+            if(d2.warnScore >d2.sumCredit,'1','0') as status
+        FROM
+            (
+			SELECT
+                    d1.*,
+                    tw.warnScore,
+                    tw.warnSwitch,
+                    tw.createTime as descTime,
+                    ( CASE WHEN d1.promoterId = 0 THEN #promoterId# ELSE d1.promoterId END ) AS userId
+                FROM
+                    (
+                        SELECT
+                             $groupByKey$ AS promoterId,
+                            count( userId ) AS memberCount,
+                            sum( credit + creditPurse ) AS sumCredit
+                        FROM
+                            t_group_user
+                        WHERE
+                            groupId = #groupId#
+                            $andSql$
+
+                        GROUP BY
+                             $groupByKey$
+                    ) d1 , t_group_warn tw
+                  WHERE  (CASE WHEN d1.promoterId = 0 THEN #promoterId# ELSE d1.promoterId END ) != #promoterId#
+					 and (CASE WHEN d1.promoterId = 0 THEN #promoterId# ELSE d1.promoterId END ) = tw.userId
+				<dynamic prepend="">
+					<isPropertyAvailable prepend=" and " property="targetUserId">
+						tw.userId = #targetUserId#
+					</isPropertyAvailable>
+				</dynamic>
+
+            ) d2,
+            user_inf u,
+            t_group_user gu
+        WHERE
+            u.userId = d2.userId
+            AND gu.groupId = #groupId#
+            AND gu.userId = d2.userId
+        order by (case when d2.promoterId = 0 then 0 else 1 end) asc ,d2.descTime desc
+		LIMIT #startNo#,#pageSize#
+	</select>
+
+
+    <insert id="insertGroupWarn" parameterClass="com.sy599.game.db.bean.group.GroupWarn">
+		insert into t_group_warn (groupId,userId,warnScore,warnSwitch,createTime) values (#groupId#, #userId#,#warnScore#, #warnSwitch#,#createTime#)
+	</insert>
+
+    <delete id="deleteGroupWarn"  parameterClass = "java.util.Map">
+		delete from t_group_warn
+		WHERE userId = #userId# and groupId = #groupId#;
+	</delete>
+
+    <update id="updateGroupWarn" parameterClass="java.util.HashMap">
+        update t_group_warn
+        set
+            warnScore = #warnScore# ,
+            warnSwitch = #warnSwitch#
+        where
+            groupId = #groupId#
+            AND userId = #userId#
+    </update>
+</sqlMap>

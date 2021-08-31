@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"  
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="groupserver">
+
+	<cacheModel id="code-CacheModel" type="LRU" readOnly="true"
+		serialize="false">
+		<flushInterval minutes="10" />
+		<property name="cache-size" value="1000" />
+	</cacheModel>
+	
+	<resultMap class="com.sy.sanguo.game.bean.GroupServer"
+		id="groupserver">
+		<result property="id" column="id" />
+		<result property="serverIds" column="serverIds" />
+		<result property="name" column="name" />
+		<result property="content" column="content" />
+	</resultMap>
+
+	<select id="selectSystemServer"
+		resultMap="groupserver" cacheModel="code-CacheModel">
+		SELECT id,serverIds,name,content FROM
+		system_groupserver order by id desc
+	</select>
+	
+		<update id="updateSystemServer"
+		parameterClass="java.util.HashMap">
+		update system_groupserver
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="name">
+				name=#name#
+			</isPropertyAvailable>	
+			<isPropertyAvailable prepend="," property="serverIds">
+				serverIds=#serverIds#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="content">
+				content=#content#
+			</isPropertyAvailable>
+		</dynamic>
+		where id= #id#;
+	</update>
+
+	<insert id="addSystemServer" parameterClass="java.util.HashMap">
+		insert into system_groupserver(serverIds,name,content)
+		values(#serverIds#,#name#,#content#);
+	</insert>
+
+
+	<delete id="deleteSystemServer"
+		parameterClass="java.util.HashMap">
+		delete from system_groupserver where id= #id#
+	</delete>
+</sqlMap>
+

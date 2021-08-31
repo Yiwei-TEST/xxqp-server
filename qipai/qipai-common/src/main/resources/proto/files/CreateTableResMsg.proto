@@ -1,0 +1,6 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+//创建一个牌桌
+message CreateTableReq {
+    required int32 bureauCount = 1;//创建的局数
+}
