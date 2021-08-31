@@ -4,16 +4,16 @@ echo ""
 echo "---------------------start---------------------"
 #配置
 #项目前辍
-PROJECT_PREFIX=qile
+PROJECT_PREFIX=xxqp
 #git项目地址
-PROJECT_DIR=/d/qile-server/qile/qipai/guajiLogin
+PROJECT_DIR=/d/xxqp-server/qipai/guajiLogin
 #包输出目录
 OUT_DIR=/d/serverpackage/login
 
 #当前目录
 CUR_DIR=`pwd`
 #配置文件，配置需要保留的文件
-PROP_FILE="/d/qile-server/qile/qipai/src/scripts/login.properties"
+PROP_FILE="/d/xxqp-server/qipai/src/scripts/login.properties"
 
 #打包的目标目录
 PACKAGE_DIR="${OUT_DIR}/login"
