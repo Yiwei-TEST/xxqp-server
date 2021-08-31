@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="userRedBag">
+
+	<resultMap class="com.sy599.game.db.bean.activityRecord.UserRedBagRecord" id="userRedBagRecord">
+		<result property="userId" column="userId" />
+		<result property="receiveDate" column="receiveDate" />
+		<result property="gameNum" column="gameNum" />
+		<result property="receiveNum" column="receiveNum" />
+		<result property="receiveRecords" column="receiveRecords" />
+	</resultMap>
+
+	<insert id="saveUserRedBagRecord" parameterClass="com.sy599.game.db.bean.activityRecord.UserRedBagRecord">
+		INSERT INTO
+		activity_redbag
+		(userId,receiveDate,gameNum,receiveNum,receiveRecords)
+		values
+		(#userId#,#receiveDate#,#gameNum#,#receiveNum#,#receiveRecords#)
+		on duplicate key update
+		gameNum=#gameNum#,receiveNum=#receiveNum#,receiveRecords=#receiveRecords#
+	</insert>
+
+	<select id="getUserRedBagRecord" parameterClass="java.lang.Long"
+			resultMap="userRedBagRecord">
+		select * from activity_redbag where userId =#userId#;
+	</select>
+</sqlMap>

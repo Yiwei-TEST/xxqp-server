@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="mix">
+
+    <resultMap class="com.sy.sanguo.game.bean.UserInfo" id="UserInfo">
+    	<result property="username" column="username"/>
+		<result property="pw" column="pw"/>
+		<result property="playedSid" column="playedSid"/>
+		<result property="sessCode" column="sessCode"/>
+		<result property="regTime" column="regTime"/>
+		<result property="logTime" column="logTime"/>
+	</resultMap>
+	<select id="getAllUser" resultMap="UserInfo" parameterClass="java.util.HashMap">
+		select * from mobile_reg order by username desc limit #start#,#end#;
+	</select>
+	
+	<resultMap class="com.sy.sanguo.game.bean.OrderInfo" id="orderInfo">
+    	<result property="id" column="id"/>
+		<result property="flat_id" column="flat_id"/>
+		<result property="order_id" column="order_id"/>
+		<result property="server_id" column="server_id"/>
+		<result property="order_amount" column="order_amount"/>
+		<result property="item_id" column="item_id"/>
+		<result property="item_num" column="item_num"/>
+		<result property="platform" column="platform"/>
+		<result property="create_time" column="create_time"/>
+	</resultMap>
+	<select id="getAllOrder" resultMap="orderInfo" parameterClass="java.util.HashMap">
+		select * from order_info order by id asc limit #start#,#end#;
+	</select>
+</sqlMap>
+
+
+
+
+
+
+

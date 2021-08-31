@@ -1,0 +1,53 @@
+# config root logger
+log4j.rootLogger = DEBUG,system.out
+log4j.appender.system.out = org.apache.log4j.ConsoleAppender
+log4j.appender.system.out.layout = org.apache.log4j.PatternLayout
+log4j.appender.system.out.layout.ConversionPattern =[%d{yy/MM/dd HH:mm:ss:SSS}] - %m%n
+
+# config thisProject.file logger
+log4j.logger.msg = DEBUG, msg
+log4j.appender.msg= org.apache.log4j.DailyRollingFileAppender
+log4j.appender.msg.File = e:/logs/msg.log
+log4j.appender.msg.layout =org.apache.log4j.PatternLayout
+log4j.appender.msg.layout.ConversionPattern=[%d{yy/MM/dd HH:mm:ss:SSS}]%m%n
+
+log4j.logger.db = DEBUG, db
+log4j.appender.db = org.apache.log4j.DailyRollingFileAppender
+log4j.appender.db.File = e:/logs/db.log
+log4j.appender.db.layout =org.apache.log4j.PatternLayout
+log4j.appender.db.layout.ConversionPattern=[%d{yy/MM/dd HH:mm:ss:SSS}]%m%n
+log4j.appender.db.BufferedIO=true
+log4j.appender.db.BufferSize=8192
+
+log4j.logger.monitor = DEBUG, monitor
+log4j.appender.monitor = org.apache.log4j.DailyRollingFileAppender
+log4j.appender.monitor.File = e:/logs/monitor.log
+log4j.appender.monitor.layout =org.apache.log4j.PatternLayout
+log4j.appender.monitor.layout.ConversionPattern=[%d{yy/MM/dd HH:mm:ss:SSS}]%m%n
+log4j.logger.chat = DEBUG, chat
+log4j.appender.chat = org.apache.log4j.DailyRollingFileAppender
+log4j.appender.chat.File = e:/logs/chat.log
+log4j.appender.chat.layout =org.apache.log4j.PatternLayout
+log4j.appender.chat.layout.ConversionPattern=[%d{yy/MM/dd HH:mm:ss:SSS}]%m%n
+
+log4j.logger.error = DEBUG, error
+log4j.appender.error = org.apache.log4j.DailyRollingFileAppender
+log4j.appender.error.File = e:/logs/error.log
+log4j.appender.error.layout =org.apache.log4j.PatternLayout
+log4j.appender.error.layout.ConversionPattern=[%d{yy/MM/dd HH:mm:ss:SSS}]%m%n
+
+log4j.logger.robot = DEBUG, robot
+log4j.appender.robot = org.apache.log4j.DailyRollingFileAppender
+log4j.appender.robot.File = e:/logs/robot.log
+log4j.appender.robot.layout =org.apache.log4j.PatternLayout
+log4j.appender.robot.layout.ConversionPattern=[%d{yy/MM/dd HH:mm:ss:SSS}]%m%n
+log4j.appender.robot.BufferedIO=true
+log4j.appender.robot.BufferSize=8192
+
+#log4j.logger.com.ibatis=debug
+#log4j.logger.com.ibatis.common.jdbc.SimpleDataSource=debug
+#l#og4j.logger.com.ibatis.common.jdbc.ScriptRunner=debug
+#log4j.logger.com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate=debug
+#log4j.logger.java.sql.Connection=debug
+#log4j.logger.java.sql.Statement=debug
+#log4j.logger.java.sql.PreparedStatement=debug,db

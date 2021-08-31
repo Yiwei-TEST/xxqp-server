@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<beans>
+	<bean id="gameUserDao" class=" com.sy.sanguo.game.pdkuai.db.dao.GameUserDao">
+    	<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	<bean id="userDao" class="com.sy.sanguo.game.dao.UserDaoImpl">
+    	<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	<bean id="orderDao" class="com.sy.sanguo.game.dao.OrderDaoImpl">
+    	<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	<bean id="supportDao" class="com.sy.sanguo.game.dao.SupportDaoImpl">
+    	<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	<bean id="ordervaliDao" class="com.sy.sanguo.game.dao.OrderValiDaoImpl">
+    	<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	<bean id="noticeDaoImpl" class="com.sy.sanguo.game.dao.NoticeDaoImpl">
+    	<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	<bean id="blackDaoImpl" class=" com.sy.sanguo.game.dao.BlackDaoImpl">
+    	<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	<bean id="maskWordDao" class="com.sy.sanguo.game.dao.MaskWordDao">
+    	<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	<bean id="sqlDao" class="com.sy.sanguo.game.dao.SqlDaoImpl">
+    	<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+	<bean id="roomCardDao" class="com.sy.sanguo.game.dao.RoomCardDaoImpl">
+    	<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+
+	<bean id="userRelationDao" class="com.sy.sanguo.game.dao.UserRelationDaoImpl">
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+
+    <bean id="groupDao" class="com.sy.sanguo.game.dao.group.GroupDao">
+        <property name="sqlMapClient" ref="sqlMapClient" />
+    </bean>
+
+    <bean id="groupDaoNew" class="com.sy.sanguo.game.dao.group.GroupDaoNew">
+        <property name="sqlMapClient" ref="sqlMapClient" />
+    </bean>
+
+	<bean id="groupWarnDao" class="com.sy.sanguo.game.dao.group.GroupWarnDao">
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+
+    <bean id="groupGoldRoomDao" class="com.sy.sanguo.game.dao.group.GroupGoldRoomDao">
+        <property name="sqlMapClient" ref="sqlMapClient" />
+    </bean>
+
+    <bean id="groupRecycleDao" class="com.sy.sanguo.game.dao.group.GroupRecycleDao">
+        <property name="sqlMapClient" ref="sqlMapClient" />
+    </bean>
+
+    <bean id="groupCreditDao" class="com.sy.sanguo.game.dao.group.GroupCreditDao">
+        <property name="sqlMapClient" ref="sqlMapClient" />
+    </bean>
+
+    <bean id="userLotteryStatisticsDao" class="com.sy.sanguo.game.dao.UserLotteryStatisticsDaoImpl">
+        <property name="sqlMapClient" ref="sqlMapClient" />
+    </bean>
+	<bean id="dataStatisticsDao" class="com.sy.sanguo.game.dao.DataStatisticsDao">
+		<property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+
+	<bean id="groupAction" class="com.sy.sanguo.game.action.group.GroupAction" scope="request">
+		<property name="groupDao" ref="groupDao" />
+		<property name="groupCreditDao" ref="groupCreditDao" />
+		<property name="userDao" ref="userDao" />
+		<property name="dataStatisticsDao" ref="dataStatisticsDao" />
+        <property name="groupDaoNew" ref="groupDaoNew" />
+	</bean>
+
+    <bean id="groupActionNew" class="com.sy.sanguo.game.action.group.GroupActionNew" scope="request">
+        <property name="userDao" ref="userDao" />
+        <property name="groupDao" ref="groupDao" />
+        <property name="groupDaoNew" ref="groupDaoNew" />
+        <property name="dataStatisticsDao" ref="dataStatisticsDao" />
+		<property name="groupWarnDao" ref="groupWarnDao" />
+    </bean>
+
+	<bean id="newGroupAction" class="com.sy.sanguo.game.action.group.NewGroupAction" scope="request">
+		<property name="groupDao" ref="groupDao" />
+		<property name="userDao" ref="userDao" />
+		<property name="dataStatisticsDao" ref="dataStatisticsDao" />
+	</bean>
+
+    <bean id="dataStatisticsAction" class="com.sy.sanguo.game.action.DataStatisticsAction" scope="request">
+        <property name="groupDao" ref="groupDao" />
+        <property name="userDao" ref="userDao" />
+		<property name="dataStatisticsDao" ref="dataStatisticsDao" />
+    </bean>
+
+	 <bean id="noticeAction" class="com.sy.sanguo.game.action.NoticeAction" init-method="initDBNotice"  scope="request">
+		<property name="noticeDaoImpl" ref="noticeDaoImpl" />
+	</bean>
+	 
+	<bean id="userAction" class="com.sy.sanguo.game.action.UserAction" scope="request">
+		<property name="userDao" ref="userDao" />
+		<property name="initData" ref="initdata" />
+		<property name="gameUserDao" ref="gameUserDao" />
+		<property name="roomCardDao" ref="roomCardDao" />
+		<property name="noticeDaoImpl" ref="noticeDaoImpl" />
+		<property name="userRelationDao" ref="userRelationDao" />
+	</bean>
+	 
+	<bean id="loginAction" class="com.sy.sanguo.game.action.LoginAction" scope="request">
+		<property name="userDao" ref="userDao" />
+	</bean>
+	 
+	<bean id="W360LoginAction" class="com.sy.sanguo.game.action.W360LoginAction" scope="request">
+		<property name="userDao" ref="userDao" />
+	</bean>
+	
+	<bean id="W360RoleValiAction" class="com.sy.sanguo.game.action.W360RoleValiAction" scope="request">
+		<property name="orderDao" ref="orderDao" />
+		<property name="orderValiDao" ref="ordervaliDao" />
+	</bean>
+	
+	<bean id="W360PayAction" class="com.sy.sanguo.game.action.W360PayAction" scope="request">
+		<property name="orderDao" ref="orderDao" />
+		<property name="orderValiDao" ref="ordervaliDao" />
+	</bean>
+	
+	<bean id="payAction" class="com.sy.sanguo.game.action.PayAction" scope="request">
+		<property name="orderDao" ref="orderDao" />
+		<property name="orderValiDao" ref="ordervaliDao" />
+		<property name="userDao" ref="userDao" />
+		<property name="roomCardDao" ref="roomCardDao" />
+	</bean>
+	
+	<bean id="commonAction" class="com.sy.sanguo.game.action.CommonAction" scope="request">
+		<property name="userDao" ref="userDao" />
+		<property name="orderDao" ref="orderDao" />
+		<property name="orderValiDao" ref="ordervaliDao" />
+	</bean>
+	
+	<bean id="qipaiAction" class="com.sy.sanguo.game.pdkuai.action.PdkAction" scope="request">
+		<property name="userDao" ref="userDao" />
+		<property name="orderDao" ref="orderDao" />
+		<property name="gameUserDao" ref="gameUserDao" />
+		<property name="orderValiDao" ref="ordervaliDao" />
+		<property name="roomCardDao" ref="roomCardDao" />
+		<property name="groupDao" ref="groupDao" />
+		<property name="userRelationDao" ref="userRelationDao" />
+		<property name="userLotteryStatisticsDao" ref="userLotteryStatisticsDao" />
+	</bean>
+	
+	<bean id="supportAction" class="com.sy.sanguo.game.action.SupportAction" scope="request">
+		<property name="supportDao" ref="supportDao" />
+		<property name="orderDao" ref="orderDao" />		
+		<property name="orderValiDao" ref="ordervaliDao" />
+		<property name="userDao" ref="userDao" />
+	</bean>
+	
+
+	<bean id="qbpriceAction" class="com.sy.sanguo.game.action.QBPriceAction" scope="request">
+		<property name="orderValiDao" ref="ordervaliDao" />
+	</bean>
+	
+	<bean id="qbpayAction" class="com.sy.sanguo.game.action.QBPayAction" scope="request">
+		<property name="orderDao" ref="orderDao" />
+		<property name="orderValiDao" ref="ordervaliDao" />
+	</bean>
+	
+	<bean id="LogAction" class="com.sy.sanguo.game.action.LogAction" scope="request">
+	</bean>
+	
+	<bean id="authorizationAction" class="com.sy.sanguo.game.action.AuthorizationAction" scope="request">
+		<property name="roomCardDao" ref="roomCardDao" />
+		<property name="userDao" ref="userDao" />
+	</bean>
+
+	<bean id="roomCardAction" class="com.sy.sanguo.game.action.RoomCardAction" scope="request">
+		<property name="roomCardDao" ref="roomCardDao" />
+		<property name="orderDao" ref="orderDao" />
+	</bean>
+
+	<bean id="redBagReceiveAction" class="com.sy.sanguo.game.action.RedBagReceiveAction" scope="request">
+	</bean>
+
+    <bean id="groupCreditAction" class="com.sy.sanguo.game.action.group.GroupCreditAction" scope="request">
+        <property name="groupDao" ref="groupDao" />
+        <property name="groupCreditDao" ref="groupCreditDao" />
+        <property name="userDao" ref="userDao" />
+        <property name="dataStatisticsDao" ref="dataStatisticsDao" />
+    </bean>
+
+    <bean id="bjdAction" class="com.sy.sanguo.game.action.BjdAction" scope="request">
+        <property name="userDao" ref="userDao" />
+        <property name="groupDao" ref="groupDao" />
+        <property name="groupDaoNew" ref="groupDaoNew" />
+        <property name="userRelationDao" ref="userRelationDao" />
+        <property name="groupCreditDao" ref="groupCreditDao" />
+        <property name="groupRecycleDao" ref="groupRecycleDao" />
+    </bean>
+
+    <bean id="groupGoldRoomAction" class="com.sy.sanguo.game.action.group.GroupGoldRoomAction" scope="request">
+        <property name="userDao" ref="userDao" />
+        <property name="groupDao" ref="groupDao" />
+        <property name="groupDaoNew" ref="groupDaoNew" />
+        <property name="dataStatisticsDao" ref="dataStatisticsDao" />
+        <property name="groupGoldRoomDao" ref="groupGoldRoomDao" />
+    </bean>
+</beans>

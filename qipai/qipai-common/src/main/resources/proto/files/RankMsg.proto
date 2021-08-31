@@ -1,0 +1,25 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+
+//任务配置信息
+message RankInfo {
+    required int32 rank = 1;// 排行名次
+    required string icon = 2;// 头像
+    required string name = 3;// 昵称
+    required int32 userId = 4;// 玩家ID
+	required int32 number = 6;// 具体分数
+}
+
+message TypeRankInfo {
+    required int32 taskType = 1;// 1财富排行榜 2局数排行榜
+    required int32 myRank = 2;// 我的排名 0表示未上榜
+    repeated RankInfo rankInfos = 3;// 该类型下的玩家排行信息
+}
+
+//排行榜面板信息
+message RankLists {
+     repeated TypeRankInfo typeRankInfos = 1;//分组的排行榜信息
+     required int32 openType = 2;//  0从排行榜打开  1从积分排行榜打开
+}
+
+

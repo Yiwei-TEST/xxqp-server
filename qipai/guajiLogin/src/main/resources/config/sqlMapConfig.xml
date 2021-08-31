@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<settings lazyLoadingEnabled="true" useStatementNamespaces="true" />
+	<sqlMap resource="config/ibatis/t_user.xml" />
+	<sqlMap resource="config/ibatis/t_orderinfo.xml" />
+	<sqlMap resource="config/ibatis/t_supportinfo.xml" />
+	<sqlMap resource="config/ibatis/t_ordervalidate.xml" />
+	<sqlMap resource="config/ibatis/t_notice.xml" />
+	<sqlMap resource="config/ibatis/t_groupserver.xml" />
+	<sqlMap resource="config/ibatis/t_black.xml" />
+	<sqlMap resource="config/ibatis/t_chatMaskWord.xml" />
+	<sqlMap resource="config/ibatis/t_sql.xml" />
+	<sqlMap resource="config/ibatis/tablelogInfo.xml" />
+	<sqlMap resource="config/ibatis/userMessage.xml" />
+	<sqlMap resource="config/ibatis/t_authorization.xml" />
+	<sqlMap resource="config/ibatis/t_roomcard.xml" />
+	<sqlMap resource="config/ibatis/t_room.xml" />
+	<sqlMap resource="config/ibatis/t_firstmyth.xml" />
+	<sqlMap resource="config/ibatis/t_gamesite.xml" />
+	<sqlMap resource="config/ibatis/t_gotyeroom.xml" />
+	<sqlMap resource="config/ibatis/t_systemCommonInfo.xml" />
+	<sqlMap resource="config/ibatis/t_daikaitable.xml" />
+	<sqlMap resource="config/ibatis/t_lucky.xml" />
+	<sqlMap resource="config/ibatis/t_redpacket.xml" />
+	<sqlMap resource="config/ibatis/t_server.xml" />
+	<sqlMap resource="config/ibatis/t_userSign.xml" />
+	<sqlMap resource="config/ibatis/t_userShare.xml" />
+	<sqlMap resource="config/ibatis/t_lottery.xml" />
+	<sqlMap resource="config/ibatis/marquee.xml" />
+	<sqlMap resource="config/ibatis/t_group.xml" />
+	<sqlMap resource="config/ibatis/t_user_relation.xml" />
+	<sqlMap resource="config/ibatis/t_gold.xml" />
+	<sqlMap resource="config/ibatis/t_gold_firstmyth.xml" />
+	<sqlMap resource="config/ibatis/t_agency_show.xml" />
+	<sqlMap resource="config/ibatis/t_gold_room.xml" />
+	<sqlMap resource="config/ibatis/t_activity.xml" />
+	<sqlMap resource="config/ibatis/t_lottery_statistics.xml" />
+	<sqlMap resource="config/ibatis/dataStatistics.xml" />
+	<sqlMap resource="config/ibatis/t_resources_configs.xml" />
+	<sqlMap resource="config/ibatis/redBagSystem.xml" />
+	<sqlMap resource="config/ibatis/userRedBag.xml" />
+	<sqlMap resource="config/ibatis/t_shareStatic.xml" />
+	<sqlMap resource="config/ibatis/mangguo_authorization.xml" />
+	<sqlMap resource="config/ibatis/redbagInfo.xml" />
+	<sqlMap resource="config/ibatis/userCardRecord.xml" />
+    <sqlMap resource="config/ibatis/t_group_credit.xml" />
+    <sqlMap resource="config/ibatis/t_group_new.xml" />
+    <sqlMap resource="config/ibatis/t_group_gold_room.xml" />
+    <sqlMap resource="config/ibatis/db_lock.xml" />
+    <sqlMap resource="config/ibatis/groupConfig.xml" />
+    <sqlMap resource="config/ibatis/t_group_recycle.xml" />
+    <sqlMap resource="config/ibatis/sys_partition.xml" />
+    <sqlMap resource="config/ibatis/t_competition.xml" />
+	<sqlMap resource="config/ibatis/t_group_warn.xml" />
+    <sqlMap resource="config/ibatis/statistics.xml" />
+
+</sqlMapConfig>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+		PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="groupRecycle">
+
+    <select id="countGroupTable" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select
+            count(keyId)
+        from
+            t_group_table
+        where
+            groupId = #groupId#
+            AND createdTime <![CDATA[ >= ]]> date_add(now(), interval -15 day)
+    </select>
+
+    <delete id="deleteGroup" parameterClass="java.util.HashMap">
+		DELETE FROM t_group
+		WHERE
+		    ( groupId = #groupId# and parentGroup = 0 )
+		    OR parentGroup = #groupId#
+	</delete>
+
+    <delete id="deleteGroupUser" parameterClass="java.util.HashMap">
+		DELETE FROM t_group_user
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteGroupUserLog" parameterClass="java.util.HashMap">
+		DELETE FROM t_group_user_log
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteGroupTableConfig" parameterClass="java.util.HashMap">
+		DELETE FROM t_group_table_config
+		WHERE
+		    parentGroup = #groupId#
+		    or ( groupId = #groupId# and parentGroup = 0 )
+	</delete>
+
+    <delete id="deleteGroupCommissionConfig" parameterClass="java.util.HashMap">
+		DELETE FROM t_group_commission_config
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteGroupCreditConfig" parameterClass="java.util.HashMap">
+		DELETE FROM t_group_credit_config
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteGroupTable" parameterClass="java.util.HashMap">
+		DELETE FROM t_group_table
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteTableUser" parameterClass="java.util.HashMap">
+		DELETE FROM t_table_user$gpSeq$
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteTableRecord" parameterClass="java.util.HashMap">
+		DELETE FROM t_table_record
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteGroupReview" parameterClass="java.util.HashMap">
+		DELETE FROM t_group_review
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteGroupCreditLog" parameterClass="java.util.HashMap">
+		DELETE FROM t_group_credit_log$gpSeq$
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteGroupCreditLogMaster" parameterClass="java.util.HashMap">
+		DELETE FROM t_group_credit_log_master
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteLogGroupTable" parameterClass="java.util.HashMap">
+		DELETE FROM log_group_table
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteLogGroupCommission" parameterClass="java.util.HashMap">
+		DELETE FROM log_group_commission
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteBjdDataStatistics" parameterClass="java.util.HashMap">
+		DELETE FROM bjd_data_statistics
+		WHERE
+		    dataCode = #groupId#
+	</delete>
+
+    <delete id="deleteBjdGroupNewerBind" parameterClass="java.util.HashMap">
+		DELETE FROM bjd_group_newer_bind
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteDataStatistics" parameterClass="java.util.HashMap">
+		DELETE FROM t_data_statistics
+		WHERE
+		    dataCode = #dataCode#
+	</delete>
+
+    <delete id="deleteLogGroupExp" parameterClass="java.util.HashMap">
+		DELETE FROM log_group_exp
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteLogGroupUserExp" parameterClass="java.util.HashMap">
+		DELETE FROM log_group_user_exp
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteLogGroupUserAlert" parameterClass="java.util.HashMap">
+		DELETE FROM log_group_user_alert
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteLogGroupUserLevel" parameterClass="java.util.HashMap">
+		DELETE FROM log_group_user_level
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+    <delete id="deleteGroupUserReject" parameterClass="java.util.HashMap">
+		DELETE FROM t_group_user_reject
+		WHERE
+		    groupId = #groupId#
+	</delete>
+
+</sqlMap>
+
+
+
+
+
+
+

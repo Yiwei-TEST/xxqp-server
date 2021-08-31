@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="agency_show">
+	<select id="selectAgencyShow" resultClass="java.lang.String">
+        SELECT weixin_name FROM agency_show;
+    </select>
+</sqlMap>
+
+
+
+
+
+
+

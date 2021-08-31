@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="userShare">
+
+	<resultMap class="com.sy599.game.db.bean.UserShare" id="UserShare">
+		<result property="userId" column="userId" />
+		<result property="type" column="type" />
+		<result property="shareDate" column="shareDate" />
+		<result property="diamond" column="diamond" />
+		<result property="extend" column="extend" />
+	</resultMap>
+	
+	<select id="getUserShareInfo" parameterClass="java.util.HashMap" resultMap="UserShare">
+		select * from user_share
+		where
+		    userId = #userId#
+		    AND shareDate <![CDATA[>= ]]> #startTime#
+		    AND shareDate <![CDATA[<= ]]> #endTime#
+		    AND type=#type#
+	</select>
+	
+	<select id="countUserShareInfo" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select coalesce(COUNT(*),0) from user_share
+        where
+            userId = #userId#
+            AND shareDate <![CDATA[>= ]]> #startTime#
+            AND shareDate <![CDATA[<= ]]> #endTime#
+            AND type=#type#
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="extend">
+                    extend=#extend#
+                </isPropertyAvailable>
+            </dynamic>
+	</select>
+	
+	<insert id="addUserShare" parameterClass="com.sy599.game.db.bean.UserShare">
+		insert into user_share
+		(userId,type, shareDate, diamond, extend)
+		values (#userId#,#type#,#shareDate#,#diamond#,#extend#)
+	</insert>
+
+
+</sqlMap>
+
+
+
+
+
+
+

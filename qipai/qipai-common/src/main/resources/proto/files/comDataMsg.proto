@@ -1,0 +1,7 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+//通用data推送
+message ComData {
+    required int32 code = 1;
+    required string data =2;
+}

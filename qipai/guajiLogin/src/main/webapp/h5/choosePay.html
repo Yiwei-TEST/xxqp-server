@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<!--STATUS OK-->
+<html>
+<head>
+<title>请选择支付方式</title>
+<meta charset=utf-8>
+<meta content="width=device-width, user-scalable=no, initial-scale=0.70, maximum-scale=0.70, minimum-scale=0.70" name="viewport">
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="full-screen" content="yes"/>
+<style type="text/css" >
+body,div,hr,p{
+	margin:0px;
+	padding:0px;
+	background-color:#eeeeee;
+	
+}
+p{
+	font-size:25px;
+	font-color:#7f7f7f;
+	background-color:#ffffff;
+}
+#top{
+	height:80px;
+}
+#info{
+	height:230px;
+	background-color:#ffffff;
+	overflow:hidden;
+
+}
+#icon{
+	width:152px;
+	height:152px;
+	border:1px solid #cccccc;
+	margin-top:36px;
+	margin-left:20px;
+	float:left;
+}
+hr{
+	color:#cccccc;
+	height:1px;
+}
+#payBtn{
+	width:405px;
+	height:47px;
+	background-image:url("./resource/img/btn_red_bg.png");
+	border:1px solid #99080d;
+	margin:0 auto;
+	padding-top:13px;
+}
+#backBtn{
+	width:175px;
+	height:82px;
+	padding-left:20px;
+	padding-top:20px;
+}
+.line{
+	height:80px;
+	background-color:#ffffff;
+	padding-left:20px;
+}
+#footer{
+	margin:57px auto;
+	text-align:center;
+}
+#choose{
+	margin-top:40px;
+}
+#choosePayText{
+	
+	padding-top:23px;
+}
+.payType{
+	padding-top:23px;
+	margin-left:26px;
+	font-color:#000000;
+	float:left;
+}
+#zhifubao_yuan{
+	background-image:url("./resource/img/choose_select.png");
+}
+#yinlianka_yuan{
+	background-image:url("./resource/img/choose_normal.png");
+}
+.yuan{
+	margin-left:3px;
+	margin-top:28px;
+	width:20px;
+	height:20px;
+	float:left;
+	background-repeat:none;
+	background-color:#ffffff;
+}
+#info_txt{
+	
+	float:left;
+	margin-left:30px;
+	margin-top:65px;
+	background-color:#ffffff;
+}
+#info_txt p{
+	display:inline;
+	margin:0px;
+}
+.info_txt_innner{
+
+	margin:0px;
+	background-color:#ffffff;
+	margin-top:10px;
+}
+#product_name{
+	font-size:23px;
+	padding-left:30px;
+}
+#product_amont{
+	padding-left:30px;
+	font-size:28px;
+	color:red;
+}
+#iconImg{
+	width:150px;
+	height:150px;
+	margin:1px;
+}
+#loading{
+	position:fixed;
+	margin:auto;
+	left:0; 
+	right:0; 
+	top:0; 
+	bottom:0;
+	width:32px; 
+	height:32px;
+}
+</style>
+<script src="./resource/js/jquery-1.11.2.min.js"></script>
+<script src="./resource/js/pay.js"></script>
+</head>
+<body>
+<div id="top">
+	<div id="backBtn" ><img src="./resource/img/back.png" alt="pay"/></div>
+</div>
+<hr />
+<div id="info">
+	<div id="icon"><img src="./resource/img/back.png" alt="pay" id="iconImg"/></div>
+	<div id="info_txt">
+		<div class="info_txt_innner"><p>商品名称</p><p id="product_name">月卡30元</p></div>
+		<div class="info_txt_innner"><p>支付金额</p><p id="product_amont">30元</p></div>
+	</div>
+</div>
+<hr />
+
+<div id="choose">
+<hr />
+<div class="line"><p id="choosePayText">请选择支付方式</p></div>
+<hr />
+<div class="line" id="zhifubao"><div id="zhifubao_yuan" class="yuan"></div><p class="payType">支付宝</p></div>
+<hr />
+<div class="line" id="yinlianka"><div id="yinlianka_yuan" class="yuan"></div><p class="payType">银行卡</p></div>
+<hr />
+</div>
+
+<div id="footer">
+	<div id="payBtn"><img src="./resource/img/pay.png" alt="pay"/></div>
+</div>
+
+<div id="loading"><img src="./resource/img/loading.gif" alt="loading"/></div>
+</body>
+</html>

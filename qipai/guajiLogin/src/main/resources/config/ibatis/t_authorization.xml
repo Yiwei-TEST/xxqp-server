@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="authorization">
+
+    <resultMap class="com.sy.sanguo.game.bean.WeiXinAuthorization" id="WeiXinAuthorization">
+		<result property="agencyId" column="agencyId"/>
+		<result property="unionId" column="unionId"/>
+		<result property="createTime" column="createTime"/>
+		<result property="inviterId" column="inviterId"/>
+		<result property="inviterTime" column="inviterTime"/>
+	</resultMap>
+	
+	<insert id="addWeiXinAuthorization" parameterClass="com.sy.sanguo.game.bean.WeiXinAuthorization">
+		insert into
+		weixin_authorization (agencyId, unionId, createTime, inviterId, inviterTime)
+		values (#agencyId#, #unionId#, #createTime#, #inviterId#, #inviterTime#);
+	</insert>
+	
+	<select id="queryWeiXinAuthorization" resultMap="WeiXinAuthorization" parameterClass="java.util.HashMap">
+		select agencyId, unionId, createTime, inviterId, inviterTime from weixin_authorization where unionId = #unionId#
+	</select>
+	
+	<update id="updateAuthorization" >
+		update weixin_authorization 
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="agencyId">
+				agencyId= #agencyId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="createTime">
+				createTime= #createTime#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="inviterId">
+				inviterId= #inviterId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="inviterTime">
+				inviterTime= #inviterTime#
+			</isPropertyAvailable>			
+		</dynamic>
+		WHERE unionId = #unionId#
+	</update>
+	
+
+	
+	
+</sqlMap>
+

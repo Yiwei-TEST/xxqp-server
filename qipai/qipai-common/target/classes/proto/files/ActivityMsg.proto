@@ -1,0 +1,74 @@
+syntax = "proto2";
+import "proto/files/TaskMsg.proto";
+package com.sy599.game.msg.serverPacket;
+
+//活动配置信息
+message ActivityConfigInfo {
+    required int32 id = 1;// 活动ID
+    required string wanfas = 2;// 支持的玩法ID -1表示所有玩家
+    required int32 type = 3;// 活动类型 0永久活动 1时限活动
+    required string activityName = 4;// 活动名称
+    required string startTime = 5;// 活动开始时间
+    required string endTime = 6;// 活动结束时间
+    required string params = 7;// 活动相关参数  包括活动达成相关参数comParams 活动奖励配置参数rewardParams  玩家个人活动相关参数 
+	required string desc = 8;// 活动描叙
+	optional int32 singleEnter = 9;// 是否单独入口活动 1单独入口活动 0活动专区活动
+}
+
+
+//精彩活动面板信息
+message ActivityLists {
+     repeated ActivityConfigInfo configInfos = 1;// 开启的活动信息列表
+}
+
+//单独的龙舟活动入口
+message ActivityLZ {
+    required int32 tag = 1;// 活动主题
+    required string activityName = 2;// 活动名称
+    required string startTime = 3;// 活动开始时间
+    required string endTime = 4;// 活动结束时间
+	required string desc = 5;// 活动描叙
+	repeated MissionRes content = 6;//活动具体进度
+	required int32 playNum = 7;// 当天金币场对局数
+	required int32 goldNum = 8;// 龙舟活动获得的金币总数
+}
+
+//鹊桥活动
+message ActivityQueQiaoRes {
+    required int32 tag = 1;// 活动主题
+    required string activityName = 2;// 活动名称
+    required string startTime = 3;// 活动开始时间
+    required string endTime = 4;// 活动结束时间
+	required string desc = 5;// 活动描叙
+	required int32 playNum = 6;// 当天金币场对局数
+	required int32 goldNum = 7;// 活动获得的金币总数
+	repeated SelfQueQiaoMsg sqqm = 8;//自己鹊桥领奖进度信息
+
+    optional string teammateId = 9;// 队友id
+    optional string teammateWxName = 10;// 队友微信名
+    optional string teammateIcon = 11;// 队友头像
+    optional int32 teammatPlayNum = 12;// 队友对局数
+}
+
+//自己鹊桥领奖进度信息
+message SelfQueQiaoMsg{
+    required int32 id = 1;// 领奖id
+    required int32 isComplete = 2;// 是否完成
+    required int32 isObtain = 3;// 是否领取
+}
+
+//邀请面板
+message QueQiaoInviteBoardMsg{
+    repeated QueQiaoInviteMsg qqim = 1;//邀请信息list
+    required string userId = 2;//
+}
+
+message QueQiaoInviteMsg{
+    required int32 id = 1;// 邀请id
+    required string sendId = 2;// 邀请人ID
+    required string acceptId = 3;// 被邀请人ID
+    required int32 isAllow = 4;// 是否已经同意邀请
+    optional string teammateWxName = 5;// 队友微信名
+    optional string teammateIcon = 6;// 队友头像
+    optional string time = 7;// 邀请时间
+}

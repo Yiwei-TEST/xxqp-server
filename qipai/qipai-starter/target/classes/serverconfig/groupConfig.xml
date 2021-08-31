@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="groupConfig">
+
+    <select id="loadAllGroupLevelConfig" resultClass="com.sy599.game.db.bean.group.SysGroupLevelConfig">
+		select * from sys_group_level_config order by level asc
+	</select>
+
+    <select id="loadAllGroupUserLevelConfig" resultClass="com.sy599.game.db.bean.group.SysGroupUserLevelConfig">
+		select * from sys_group_user_level_config order by level asc
+	</select>
+
+</sqlMap>

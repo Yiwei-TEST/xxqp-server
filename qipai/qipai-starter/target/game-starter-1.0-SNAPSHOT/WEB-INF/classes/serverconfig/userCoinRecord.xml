@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="userCoinRecord">
+
+	<insert id="saveUserCoinRecord" parameterClass="java.util.HashMap">
+		INSERT INTO user_coin_record
+		(userId,freeCoin,coin,addFreeCoin,addCoin,playType,sourceType,sourceName,createTime)
+		values
+		(#userId#,#freeCoin#,#coin#,#addFreeCoin#,#addCoin#,#playType#,#sourceType#,#sourceName#,#createTime#)
+	</insert>
+
+</sqlMap>

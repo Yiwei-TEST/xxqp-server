@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="log">
+
+	<!-- <resultMap id="RoomcardConsumeStatistics" class="com.sy.platht.service.roomCard.bean.RoomcardConsumeStatistics"> 
+		<result property="consumeDate" column="consumeDate" /> <result property="commonCards" 
+		column="commonCards" /> <result property="freeCards" column="freeCards" /> 
+		<result property="pdkConsumef" column="pdkConsumef" /> <result property="pdkConsumes" 
+		column="pdkConsumes" /> <result property="zzmjConsume" column="zzmjConsume" 
+		/> <result property="csmjConsume" column="csmjConsume" /> <result property="hzmjConsume" 
+		column="hzmjConsume" /> </resultMap> -->
+
+	<update id="insertCardsConsume" parameterClass="java.util.HashMap">
+		insert into
+		user_card_consume(userId,regBindId,consumeCard,consumeNum,regTime)
+		values(#userId#,#regBindId#,#consumeCard#,#consumeNum#,#regTime#)
+		on
+		duplicate key update
+		consumeCard=#consumeCard#,consumeNum=consumeNum+#consumeNum#
+	</update>
+
+	<update id="insertGoldConsume" parameterClass="java.util.HashMap">
+		insert into
+		user_card_consume(userId,regBindId,consumeGold,regTime)
+		values(#userId#,#regBindId#,#consumeGold#,#regTime#)
+		on
+		duplicate key update
+		consumeGold=#consumeGold#
+	</update>
+
+	<!--<update id="updateConsumeCards" parameterClass="java.util.HashMap">-->
+		<!--insert into-->
+		<!--roomcard_consume_statistics(consumeDate,commonCards,freeCards,playType64,playType63,playType62,playType61,playType81,playType20,playType21,playType22,playType23,playType24,playType113,playType114,playType91,playType92,playType93)-->
+		<!--values(#date#,#commonCards#,#freeCards#,#playType64#,#playType63#,#playType62#,#playType61#,#playType81#,#playType20#,#playType21#,#playType22#,#playType23#,#playType24#,#playType113#,#playType114#,#playType91#,#playType92#,#playType93#)-->
+		<!--on duplicate key update-->
+		<!--consumeDate=#date#,commonCards=commonCards+#commonCards#,freeCards=freeCards+#freeCards#,playType64=playType64+#playType64#,playType63=playType63+#playType63#,playType62=playType62+#playType62#,playType61=playType61+#playType61#,playType81=playType81+#playType81#,playType20=playType20+#playType20#,playType21=playType21+#playType21#,playType22=playType22+#playType22#,playType23=playType23+#playType23#,playType24=playType24+#playType24#,playType113=playType113+#playType113#,playType114=playType114+#playType114#,playType91=playType91+#playType91#,playType92=playType92+#playType92#,playType93=playType93+#playType93#-->
+	<!--</update>-->
+
+	<update id="updateConsumeCards" parameterClass="java.lang.String">
+		$sql$
+	</update>
+
+	<insert id="insetDrawLog" parameterClass="java.util.HashMap">
+		insert into
+		user_drawlotterylog (userId,time,itemId,itemName,itemNum)
+		values(#userId#,#time#,#itemId#,#itemName#,#itemNum#)
+	</insert>
+
+    <update id="saveLogGroupTable" parameterClass="com.sy599.game.db.bean.LogGroupTable">
+		insert into log_group_table
+		    (dataDate,groupId,userGroup,gameType,bureau,userId,player2Count1,player2Count2,player2Count3,player3Count1,player3Count2,player3Count3,player4Count1,player4Count2,player4Count3,dyjCount)
+		VALUES
+		    (#dataDate#,#groupId#,#userGroup#,#gameType#,#bureau#,#userId#,#player2Count1#,#player2Count2#,#player2Count3#,#player3Count1#,#player3Count2#,#player3Count3#,#player4Count1#,#player4Count2#,#player4Count3#,#dyjCount#)
+		on
+		duplicate key update
+		player2Count1 = player2Count1 + #player2Count1#,
+		player2Count2 = player2Count2 + #player2Count2#,
+		player2Count3 = player2Count3 + #player2Count3#,
+		player3Count1 = player3Count1 + #player3Count1#,
+		player3Count2 = player3Count2 + #player3Count2#,
+		player3Count3 = player3Count3 + #player3Count3#,
+		player4Count1 = player4Count1 + #player4Count1#,
+		player4Count2 = player4Count2 + #player4Count2#,
+		player4Count3 = player4Count3 + #player4Count3#,
+		dyjCount = dyjCount + #dyjCount#
+	</update>
+
+    <update id="saveLogGroupCommission" parameterClass="com.sy599.game.db.bean.LogGroupCommission">
+		insert into log_group_commission
+		    (
+                dataDate,
+                groupId,
+                userId,
+                credit,
+                commissionCredit,
+                dyjCount,zjsCount,
+                totalPay,
+                commissionCount,
+                selfWinCredit,
+                selfCommissionCredit,
+                selfDyjCount,
+                selfZjsCount,
+                selfTotalPay,
+                selfCommissionCount
+		    )
+		VALUES
+		    (
+		        #dataDate#,
+		        #groupId#,
+		        #userId#,
+		        #credit#,
+		        #commissionCredit#,
+		        #dyjCount#,
+		        #zjsCount#,
+		        #totalPay#,
+		        #commissionCount#,
+		        #selfWinCredit#,
+		        #selfCommissionCredit#,
+		        #selfDyjCount#,
+		        #selfZjsCount#,
+		        #selfTotalPay#,
+		        #selfCommissionCount#
+		    )
+		on
+		duplicate key update
+            credit = credit + #credit#,
+            commissionCredit = commissionCredit + #commissionCredit#,
+            commissionCount = commissionCount + #commissionCount#,
+            dyjCount = dyjCount + #dyjCount#,
+            zjsCount = zjsCount + #zjsCount#,
+            totalPay = totalPay + #totalPay#,
+            selfWinCredit = selfWinCredit + #selfWinCredit#,
+            selfCommissionCredit = selfCommissionCredit + #selfCommissionCredit#,
+            selfCommissionCount = selfCommissionCount + #selfCommissionCount#,
+            selfDyjCount = selfDyjCount + #selfDyjCount#,
+            selfZjsCount = selfZjsCount + #selfZjsCount#,
+            selfTotalPay = selfTotalPay + #selfTotalPay#
+	</update>
+
+    <update id="save_log_group_gold_table" parameterClass="com.sy599.game.db.bean.LogGroupGoldTable">
+		insert into log_group_gold_table
+		    (`dataDate`,`groupId`,`configId`,`userId`,`playType`,`ticket`,`ticketCount`,`commission`,`commissionCount`)
+		VALUES
+		    (#dataDate#,#groupId#,#configId#,#userId#,#playType#,#ticket#,#ticketCount#,#commission#,#commissionCount#)
+		on
+		duplicate key update
+		ticket = ticket + #ticket#,
+		ticketCount = ticketCount + #ticketCount#,
+		commission = commission + #commission#,
+		commissionCount = commissionCount + #commissionCount#
+	</update>
+
+    <update id="save_log_group_gold_commission" parameterClass="com.sy599.game.db.bean.LogGroupGoldCommission">
+		insert into log_group_gold_commission
+		    (
+                dataDate,
+                groupId,
+                userId,
+                gold,
+                commission,
+                commissionCount,
+                zjsCount,
+                selfWin,
+                selfCommission,
+                selfCommissionCount,
+                selfZjsCount
+		    )
+		VALUES
+		    (
+		        #dataDate#,
+		        #groupId#,
+		        #userId#,
+		        #gold#,
+		        #commission#,
+		        #commissionCount#,
+		        #zjsCount#,
+		        #selfWin#,
+		        #selfCommission#,
+		        #selfCommissionCount#,
+		        #selfZjsCount#
+		    )
+		on
+		duplicate key update
+            gold = gold + #gold#,
+            commission = commission + #commission#,
+            commissionCount = commissionCount + #commissionCount#,
+            zjsCount = zjsCount + #zjsCount#,
+            selfWin = selfWin + #selfWin#,
+            selfCommission = selfCommission + #selfCommission#,
+            selfCommissionCount = selfCommissionCount + #selfCommissionCount#,
+            selfZjsCount = selfZjsCount + #selfZjsCount#
+	</update>
+
+
+    <update id="save_log_group_gold_win" parameterClass="com.sy599.game.db.bean.group.LogGroupGoldWin">
+		insert into log_group_gold_win
+		    (
+                dataDate,
+                groupId,
+                userId,
+                selfWin,
+                selfJsCount
+		    )
+		VALUES
+		    (
+		        #dataDate#,
+		        #groupId#,
+		        #userId#,
+		        #selfWin#,
+		        1
+		    )
+		on
+		duplicate key update
+            selfWin = selfWin + #selfWin#,
+            selfJsCount = selfJsCount + 1
+	</update>
+
+</sqlMap>

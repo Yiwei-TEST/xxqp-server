@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="gold">
+	<resultMap class="com.sy.sanguo.game.bean.GoldUserInfo" id="goldUser">
+		<result property="userId" column="userId" />
+		<result property="userName" column="userName" />
+		<result property="userNickName" column="userNickName" />
+		<result property="headimgurl" column="headimgurl" />
+		<result property="headimgraw" column="headimgraw" />
+		<result property="playCount" column="playCount" />
+		<result property="playCountWin" column="playCountWin" />
+		<result property="playCountLose" column="playCountLose" />
+		<result property="playCountEven" column="playCountEven" />
+		<result property="freeGold" column="freeGold" />
+		<result property="gold" column="gold" />
+		<result property="usedGold" column="usedGold" />
+		<result property="exp" column="exp" />
+		<result property="vipexp" column="vipexp" />
+        <result property="extend" column="extend" />
+        <result property="signature" column="signature"/>
+	</resultMap>
+
+    <insert id="insertGoldUser" parameterClass="com.sy.sanguo.game.bean.gold.GoldPlayer">
+        INSERT INTO t_gold_user (userId, userName, userNickName, sex, headimgurl, headimgraw, playCount, playCountWin, playCountLose
+        , playCountEven, freeGold, gold, usedGold, exp, vipexp, signature, extend,regTime,lastLoginTime,grade,gradeExp) VALUES (#userId#,#userName#,#userNickName#,#sex#,#headimgurl#,
+        #headimgraw#,#playCount#, #playCountWin#,#playCountLose#,#playCountEven#,#freeGold#,#gold#,#usedGold#,#exp#,#vipexp#,#signature#,#extend#,#regTime#,#lastLoginTime#,#grade#,#gradeExp#)
+    </insert>
+
+    <select id="selectGoldUserByUserId" parameterClass="java.lang.Long" resultMap="goldUser">
+        SELECT * FROM t_gold_user WHERE userId = #userId#
+    </select>
+
+    <update id="updateGoldUser" parameterClass="java.util.HashMap">
+        UPDATE t_gold_user SET 1=1
+        <isPropertyAvailable property="sex" prepend=",">
+            sex = #sex#
+        </isPropertyAvailable>
+        <isPropertyAvailable property="userNickName" prepend=",">
+            userNickName = #userNickName#
+        </isPropertyAvailable>
+        <isPropertyAvailable property="headimgurl" prepend=",">
+            headimgurl = #headimgurl#
+        </isPropertyAvailable>
+        <isPropertyAvailable property="signature" prepend=",">
+            signature = #signature#
+        </isPropertyAvailable>
+        WHEN userId = #userId#
+    </update>
+
+    <update id="addUserGold" parameterClass="java.util.HashMap">
+        UPDATE t_gold_user
+        <dynamic prepend="set">
+            <isPropertyAvailable prepend="," property="gold" >
+                gold = gold + #gold#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="freeGold">
+                freeGold = freeGold + #freeGold#
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE userId = #userId#
+    </update>
+
+    <select id="selectMatchBean" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select * from t_match where keyId=#matchId#
+    </select>
+
+    <select id="load_user_gold" resultClass="java.util.HashMap" parameterClass="java.lang.Long">
+        /*FORCE_MASTER*/ SELECT gold,freeGold FROM t_gold_user where userId = #userId#
+    </select>
+
+    <update id="change_user_gold" parameterClass="java.util.HashMap">
+		UPDATE t_gold_user
+		set
+            gold = gold + #gold#,
+            freeGold = freeGold + #freeGold#
+		WHERE
+		    userId = #userId#
+		    AND gold = #oldGold#
+		    AND freeGold = #oldFreeGold#
+		    AND gold + #gold#<![CDATA[ >= ]]> 0
+		    AND freeGold + #freeGold# <![CDATA[ >= ]]> 0;
+	</update>
+
+    <update id="save_or_update_gold_dataStatistics" parameterClass="com.sy.sanguo.game.bean.GoldDataStatistics">
+		insert into gold_data_statistics
+		(dataDate,dataType,userId,dataCount,dataValue)
+		VALUES
+		(#dataDate#,#dataType#,#userId#,#dataCount#,#dataValue#)
+		on
+		duplicate key update
+		dataCount = dataCount + #dataCount#,
+        dataValue = dataValue + #dataValue#
+	</update>
+</sqlMap>
+
+
+
+
+
+
+

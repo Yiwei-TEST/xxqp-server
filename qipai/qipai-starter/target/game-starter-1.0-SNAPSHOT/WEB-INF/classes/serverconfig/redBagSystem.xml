@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="redBagSystem">
+
+	<resultMap class="com.sy599.game.db.bean.RedBagSystemInfo" id="redBagSystemInfo">
+		<result property="createdTime" column="createdTime" />
+		<result property="dayPoolNum" column="dayPoolNum" />
+		<result property="receiveRecords" column="receiveRecords" />
+	</resultMap>
+
+	<insert id="saveRedBagSystemInfo" parameterClass="com.sy599.game.db.bean.RedBagSystemInfo">
+		INSERT INTO
+		t_redbag_system
+		(createdTime,dayPoolNum,receiveRecords)
+		values
+		(#createdTime#,#dayPoolNum#,#receiveRecords#)
+	</insert>
+
+	<update id="updateRedBagSystemInfo" parameterClass="com.sy599.game.db.bean.RedBagSystemInfo">
+		UPDATE t_redbag_system SET createdTime=#createdTime#,dayPoolNum=#dayPoolNum#,receiveRecords=#receiveRecords#
+	</update>
+
+	<select id="getRedBagSystemInfo" parameterClass="java.lang.Integer"
+			resultMap="redBagSystemInfo">
+		select * from t_redbag_system limit 1;
+	</select>
+</sqlMap>

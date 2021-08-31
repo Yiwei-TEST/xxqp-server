@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="systemCommonInfo">
+
+	<resultMap class="com.sy.sanguo.game.pdkuai.db.bean.SystemCommonInfo"
+		id="commonInfo">
+		<result property="type" column="type" />
+		<result property="content" column="content" />
+	</resultMap>
+
+	<insert id="save" parameterClass="com.sy.sanguo.game.pdkuai.db.bean.SystemCommonInfo">
+		insert into system_common_info values (#type#,#content#);
+	</insert>
+
+	<update id="update" parameterClass="com.sy.sanguo.game.pdkuai.db.bean.SystemCommonInfo">
+		update system_common_info set content=#content# where type=#type#;
+	</update>
+
+	<select id="selectAll" resultMap="commonInfo">
+		select * from system_common_info;
+	</select>
+
+	<select id="selectOne" resultClass="java.lang.Integer">
+		select 1;
+	</select>
+
+	<select id="select" resultMap="commonInfo" parameterClass="java.lang.String">
+		select * from system_common_info where type=#type#;
+	</select>
+
+	<select id="selectConfig" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		select * from system_common_info where type in ($types$);
+	</select>
+
+	<update id="updateSql" parameterClass="java.lang.String">
+		$sql$
+	</update>
+
+	<select id="showsql" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		$sql$
+	</select>
+</sqlMap>

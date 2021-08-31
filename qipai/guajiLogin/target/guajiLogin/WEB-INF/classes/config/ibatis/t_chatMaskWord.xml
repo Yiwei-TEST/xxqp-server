@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"  
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="maskword">
+	<resultMap class="com.sy.sanguo.game.bean.SystemChatMaskWord"
+		id="inf">
+		<result property="id" column="id" />
+		<result property="maskWord" column="maskWord" />
+		<result property="userName" column="userName" />
+		<result property="time" column="time" />
+		<result property="isLoad" column="isLoad" />
+	</resultMap>
+
+	<insert id="add" parameterClass="com.sy.sanguo.game.bean.SystemChatMaskWord">
+		insert into
+		system_chatMaskWords(id,maskWord,userName,time)
+		values(#id#,#maskWord#,#userName#,#time#);
+	</insert>
+
+	<select id="getList" resultMap="inf">
+		select * from
+		system_chatMaskWords;
+	</select>
+
+	<select id="getNoLoadList" resultMap="inf">
+		select * from
+		system_chatMaskWords where isLoad !=1;
+	</select>
+
+	<update id="updateLoad">
+		update system_chatMaskWords set isLoad=1 where isLoad
+		= 0;
+	</update>
+
+	<update id="delete">
+		delete from system_chatMaskWords where isLoad=2;
+	</update>
+</sqlMap>
+

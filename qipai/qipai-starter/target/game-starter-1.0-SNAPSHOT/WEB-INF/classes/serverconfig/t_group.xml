@@ -1,0 +1,1128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="group">
+
+	<resultMap class="com.sy599.game.db.bean.group.GroupTable" id="GroupTable">
+		<result property="keyId" column="keyId" />
+		<result property="groupId" column="groupId" />
+		<result property="configId" column="configId" />
+		<result property="tableId" column="tableId" />
+		<result property="tableMsg" column="tableMsg" />
+		<result property="serverId" column="serverId" />
+		<result property="createdTime" column="createdTime" />
+		<result property="currentState" column="currentState" />
+		<result property="currentCount" column="currentCount" />
+		<result property="maxCount" column="maxCount" />
+		<result property="playedBureau" column="playedBureau" />
+		<result property="players" column="players" />
+		<result property="overTime" column="overTime" />
+		<result property="type" column="type" />
+        <result property="dealCount" column="dealCount"/>
+        <result property="tableName" column="tableName"/>
+        <result property="creditMsg" column="creditMsg" />
+        <result property="playType" column="playType" />
+        <result property="payMsg" column="payMsg" />
+        <result property="isPrivate" column="isPrivate" />
+	</resultMap>
+
+	<resultMap class="com.sy599.game.db.bean.group.GroupTableConfig" id="GroupTableConfig">
+		<result property="keyId" column="keyId" />
+		<result property="parentGroup" column="parentGroup" />
+		<result property="groupId" column="groupId" />
+		<result property="tableName" column="tableName" />
+		<result property="tableMode" column="tableMode" />
+		<result property="modeMsg" column="modeMsg" />
+		<result property="gameType" column="gameType" />
+		<result property="payType" column="payType" />
+		<result property="gameCount" column="gameCount" />
+		<result property="playerCount" column="playerCount" />
+		<result property="descMsg" column="descMsg" />
+		<result property="configState" column="configState" />
+		<result property="tableOrder" column="tableOrder" />
+		<result property="playCount" column="playCount" />
+		<result property="createdTime" column="createdTime" />
+		<result property="creditMsg" column="creditMsg" />
+	</resultMap>
+
+	<select id="count_group_table_current_group1" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT COUNT(*) FROM t_group_table WHERE groupId=#groupId# AND currentState=#currentState#
+	</select>
+	<select id="count_group_table_current_group" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		SELECT COUNT(*) FROM t_group_table WHERE groupId=#groupId# AND (currentState="0" OR currentState="1")
+	</select>
+	<select id="count_group_table_current_user" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		SELECT COUNT(*) FROM t_group_table WHERE groupId=#groupId# AND userId=#userId# AND (currentState="0" OR currentState="1")
+	</select>
+	<select id="one_group_table_current" resultClass="com.sy599.game.db.bean.group.GroupTable" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT * FROM t_group_table WHERE currentState="0" AND tableId = #tableId# AND groupId IN (SELECT groupId FROM t_group_user WHERE userId = #userId#) limit 1;
+	</select>
+	<select id="one_group_table_keyId" resultClass="com.sy599.game.db.bean.group.GroupTable" parameterClass="java.lang.String">
+		select * from t_group_table where keyId=#keyId#
+	</select>
+	<select id="one_group_table_random" resultClass="com.sy599.game.db.bean.group.GroupTable" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT * FROM t_group_table WHERE configId=#configId# AND currentState="0" AND currentCount<![CDATA[< ]]>maxCount AND createdTime<![CDATA[>= ]]>#myDate# LIMIT 1
+	</select>
+	<select id="one_group_table_random_server" resultClass="com.sy599.game.db.bean.group.GroupTable" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT * FROM t_group_table
+		WHERE
+		    serverId = #serverId#
+		    AND configId = #configId#
+		    AND currentState = "0"
+		    AND currentCount <![CDATA[ < ]]> maxCount
+		    AND createdTime <![CDATA[ >= ]]> #myDate#
+		    AND isPrivate = 0
+        LIMIT 1
+	</select>
+	<select id="one_group_table_same_model" resultClass="com.sy599.game.db.bean.group.GroupTable" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT * FROM t_group_table
+		WHERE
+		    groupId = #groupId#
+		    AND configId = #configId#
+		    AND currentState = "0"
+		    AND currentCount <![CDATA[ < ]]> maxCount
+		    AND tableMsg NOT LIKE '%"props":"0%'
+		    AND isPrivate = 0
+        ORDER BY currentCount DESC
+        LIMIT 1
+	</select>
+	<select id="group_info_id" resultClass="com.sy599.game.db.bean.group.GroupInfo" parameterClass="java.util.HashMap">
+		select * from t_group where groupId=#groupId# AND parentGroup=#parentGroup# AND groupState="1"
+	</select>
+
+	<select id="getGroupAllCredit" resultClass="com.sy599.game.db.bean.group.GroupInfo" parameterClass="java.util.HashMap">
+		select * from t_group where isCredit  = 1 ORDER BY isCreditUpTime desc  limit #indexBegin#,10;
+	</select>
+
+	<select id="getGroupAllCreditId" resultClass="com.sy599.game.db.bean.group.GroupInfo" parameterClass="java.util.HashMap">
+		select * from t_group where isCredit  = 1 and groupId=#groupId# ORDER BY isCreditUpTime desc  limit #indexBegin#,10;
+	</select>
+
+	<update id="updateGroupIsCredit" parameterClass="java.util.HashMap">
+		UPDATE t_group set isCredit = #credit# ,isCreditUpTime=#isCreditUpTime#
+		WHERE groupId=#groupId#
+	</update>
+
+	<select id="all_group_table_current_group" resultMap="GroupTable" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT * FROM t_group_table WHERE groupId=#groupId# AND currentState=#currentState#
+	</select>
+	
+	<select id="all_group_info_parentGroup" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        /*FORCE_MASTER*/ select * from t_group
+        where parentGroup=#parentGroup#
+            <dynamic prepend=" ">
+                <isNotEmpty property="groupState">
+                    and groupState=#groupState#
+                </isNotEmpty>
+            </dynamic>
+            AND groupState != -1
+        ORDER BY groupId ASC
+		limit 100
+	</select>
+	<select id="all_last_group_table_config" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        /*FORCE_MASTER*/ SELECT t1.* FROM t_group_table_config t1,(SELECT groupId,MAX(keyId) myId FROM t_group_table_config WHERE parentGroup=#parentGroup#
+		 <dynamic prepend=" ">
+			 <isNotEmpty property="groupIds">
+				 and groupId in ($groupIds$)
+			 </isNotEmpty>
+		 </dynamic>
+		 GROUP BY groupId) t2 WHERE t1.keyId=t2.myId
+	</select>
+	<select id="all_group_room_base" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		(SELECT groupId,groupName FROM t_group WHERE groupState="1" AND parentGroup=#parentGroup# AND groupId<![CDATA[<= ]]>#groupRoom# ORDER BY groupId DESC LIMIT 2)
+		UNION
+		(SELECT groupId,groupName FROM t_group WHERE groupState="1" AND parentGroup=#parentGroup# AND groupId<![CDATA[> ]]>#groupRoom# ORDER BY groupId ASC LIMIT 2)
+	</select>
+	<select id="group_info_keyId" resultClass="com.sy599.game.db.bean.group.GroupInfo" parameterClass="java.util.HashMap">
+		select * from t_group where keyId=#keyId# AND groupState="1"
+	</select>
+	<select id="group_user_userId" resultClass="com.sy599.game.db.bean.group.GroupUser" parameterClass="java.util.HashMap">
+		select * from t_group_user where userId=#userId#
+		<dynamic prepend="">
+			<isPropertyAvailable prepend=" AND" property="groupId">
+				groupId=#groupId#
+			</isPropertyAvailable>
+		</dynamic>
+		limit 1
+	</select>
+	<select id="loadGroupMaster" resultClass="com.sy599.game.db.bean.group.GroupUser" parameterClass="java.lang.String">
+		select * from t_group_user where userRole=1 AND groupId=#groupId# limit 1
+	</select>
+
+	<select id="loadPromoter" resultClass="com.sy599.game.db.bean.group.GroupUser" parameterClass="java.util.HashMap">
+		select * from t_group_user
+		where userRole=10000 AND groupId=#groupId#
+		AND userId = (select $promoterId$ from t_group_user where userId = #userId# and groupId = #groupId#) limit 1
+	</select>
+
+    <select id="group_user_master_userId" resultClass="com.sy599.game.db.bean.group.GroupUser" parameterClass="java.lang.String">
+		select * from t_group_user where userRole="0" AND groupId=#groupId# limit 1
+	</select>
+
+	<select id="group_user_all" resultClass="java.util.HashMap" parameterClass="java.lang.String">
+		select userId from t_group_user where groupId=#groupId#
+	</select>
+	<insert id="create_table_user" parameterClass="com.sy599.game.db.bean.group.TableUser">
+		insert into t_table_user$gpSeq$ (groupId,tableNo,tableId,userId,playResult,createdTime) VALUES (#groupId#,#tableNo#,#tableId#,#userId#,#playResult#,#createdTime#)
+	</insert>
+    <insert id="create_group_table" parameterClass="com.sy599.game.db.bean.group.GroupTable">
+        insert into t_group_table
+            (groupId,configId,tableId,tableName,tableMsg,serverId,createdTime,currentState,currentCount,maxCount,userId,type,creditMsg,playType,payMsg,isPrivate,goldMsg)
+        VALUES
+            (#groupId#,#configId#,#tableId#,#tableName#,#tableMsg#,#serverId#,#createdTime#,#currentState#,#currentCount#,#maxCount#,#userId#,#type#,#creditMsg#,#playType#,#payMsg#,#isPrivate#,#goldMsg#)
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+	<update id="update_group_table" parameterClass="java.util.HashMap">
+		UPDATE t_group_table
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="currentState">
+				currentState=#currentState#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="count">
+				currentCount=currentCount+#count#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="currentCount">
+				currentCount=#currentCount#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="playedBureau">
+				playedBureau=#playedBureau#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="players">
+				players=#players#
+			</isPropertyAvailable>
+		</dynamic>
+		 WHERE keyId=#keyId#
+	</update>
+	<delete id="delete_table_user_unique" parameterClass="java.util.HashMap">
+		delete FROM t_table_user$gpSeq$ WHERE tableNo=#tableNo# AND userId=#userId#
+	</delete>
+	<delete id="delete_table_user_tableNo" parameterClass="java.util.HashMap">
+		delete FROM t_table_user$gpSeq$ WHERE tableNo=#tableNo#
+	</delete>
+	<delete id="delete_group_table_keyId" parameterClass="java.lang.String">
+		delete FROM t_group_table WHERE keyId=#keyId#
+	</delete>
+	<select id="one_group_table_config_keyId" resultClass="com.sy599.game.db.bean.group.GroupTableConfig" parameterClass="java.lang.String">
+		SELECT * FROM t_group_table_config WHERE keyId=#keyId#
+	</select>
+	<select id="one_group_table_config_groupId" resultClass="com.sy599.game.db.bean.group.GroupTableConfig" parameterClass="java.util.HashMap">
+		SELECT * FROM t_group_table_config WHERE configState="1" AND parentGroup=#parentGroup# AND groupId=#groupId# ORDER BY keyId DESC limit 1
+	</select>
+	<insert id="insert_table_record" parameterClass="com.sy599.game.db.bean.group.TableRecord">
+		insert into t_table_record (groupId,logId,tableNo,modeMsg,tableId,createdTime,playNo,recordType,initMsg,resultMsg) VALUES (#groupId#,#logId#,#tableNo#,#modeMsg#,#tableId#,#createdTime#,#playNo#,#recordType#,#initMsg#,#resultMsg#)
+	</insert>
+	<update id="update_group_table_config_keyId" parameterClass="java.util.HashMap">
+		UPDATE t_group_table_config
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="tableName">
+				tableName=#tableName#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="tableMode">
+				tableMode=#tableMode#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="modeMsg">
+				modeMsg=#modeMsg#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="gameType">
+				gameType=#gameType#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="payType">
+				payType=#payType#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="gameCount">
+				gameCount=#gameCount#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="playerCount">
+				playerCount=#playerCount#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="descMsg">
+				descMsg=#descMsg#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="tableOrder">
+				tableOrder=#tableOrder#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="playCount">
+				playCount=#playCount#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="count">
+				playCount=playCount+#count#
+			</isPropertyAvailable>
+		</dynamic>
+		WHERE keyId =#keyId#
+	</update>
+	<update id="update_group_user" parameterClass="java.util.HashMap">
+		UPDATE t_group_user
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="groupName">
+				groupName=#groupName#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="userNickname">
+				userNickname=#userNickname#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="userLevel">
+				userLevel=#userLevel#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="playCount1">
+				playCount1=#playCount1#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="playCount2">
+				playCount2=#playCount2#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="count1">
+				playCount1=playCount1+#count1#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="count2">
+				playCount2=playCount2+#count2#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="userRole">
+				userRole=#userRole#
+			</isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="exp">
+                exp = #exp#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="totalExp">
+                totalExp = #totalExp#
+            </isPropertyAvailable>
+		</dynamic>
+		WHERE
+		<dynamic prepend=" ">
+			<isPropertyAvailable prepend=" and " property="keyId">
+				keyId=#keyId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and " property="groupId">
+				groupId=#groupId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and " property="userId">
+				userId=#userId#
+			</isPropertyAvailable>
+		</dynamic>
+	</update>
+	<update id="update_table_user_score" parameterClass="java.util.HashMap">
+		UPDATE t_table_user$gpSeq$
+		SET
+		    playResult=#playResult#,
+		    isWinner=#isWinner#,
+		    winLoseCredit=#winLoseCredit#,
+		    commissionCredit=#commissionCredit#,
+		    userGroup=#userGroup#,
+		    createdTime=#createdTime#
+		WHERE tableNo=#tableNo# AND userId=#userId#
+	</update>
+
+	<select id="last_one_group_table_config" resultClass="com.sy599.game.db.bean.group.GroupTableConfig" parameterClass="java.util.HashMap">
+		SELECT * FROM t_group_table_config WHERE configState="1" AND groupId=#groupId# AND parentGroup=#parentGroup# ORDER BY keyId DESC limit 1;
+	</select>
+
+	<select id="group_tables_groupId" resultMap="GroupTable" parameterClass="java.util.HashMap">
+		select * from t_group_table
+		where
+			(tableMsg not like '%"room":%')
+			and (currentState='0'
+				<dynamic prepend=" ">
+					<isPropertyAvailable property="orStarted" prepend=" ">
+						or currentState='1'
+					</isPropertyAvailable>
+				</dynamic>
+				)
+			and groupId=#groupId#
+			<dynamic prepend=" ">
+				<isPropertyAvailable property="andNotFull" prepend="">
+					AND currentCount <![CDATA[ < ]]> maxCount
+				</isPropertyAvailable>
+			</dynamic>
+		ORDER BY currentState DESC,currentCount DESC ,keyId ASC
+		limit #startNo#,#pageSize#
+	</select>
+	<select id="group_tables_groupId_room" resultMap="GroupTable" parameterClass="java.util.HashMap">
+		select t1.* from t_group_table t1,t_group_table_config t2
+		where
+			t2.groupId=#groupRoom#
+			AND t1.configId=t2.keyId
+			AND t2.parentGroup=#groupId#
+			AND (
+				t1.currentState="0"
+				<dynamic prepend=" ">
+					<isPropertyAvailable property="orStarted" prepend=" ">
+						or t1.currentState="1"
+					</isPropertyAvailable>
+				</dynamic>
+				)
+			AND t1.groupId=#groupId#
+			<dynamic prepend=" ">
+				<isPropertyAvailable property="andNotFull" prepend="">
+					AND t1.currentCount <![CDATA[ < ]]> t1.maxCount
+				</isPropertyAvailable>
+			</dynamic>
+		ORDER BY t1.currentState DESC,t1.currentCount DESC ,t1.keyId ASC
+		limit #startNo#,#pageSize#
+	</select>
+	<select id="load_table_user_info" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT
+		    t1.tableNo,
+		    t1.userId,
+		    t2.`name` as userName,
+		    t2.headimgurl,
+		    t2.isOnLine,
+		    t2.sex
+		FROM
+		    t_table_user$gpSeq$ t1,
+		    user_inf t2
+        WHERE
+            t2.userId = t1.userId
+            AND t1.tableNo IN ($tableNos$)
+        ORDER BY t1.tableNo desc;
+	</select>
+
+	<select id="load_table_user_info_force_master" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT
+		    t1.tableNo,
+		    t1.userId,
+		    t2.`name` as userName,
+		    t2.headimgurl,
+		    t2.isOnLine,
+		    t2.sex
+		FROM
+		    t_table_user$gpSeq$ t1,
+		    user_inf t2
+        WHERE
+            t2.userId = t1.userId
+            AND t1.tableNo IN ($tableNos$)
+        ORDER BY t1.tableNo desc;
+	</select>
+
+	<select id="all_group_table_config" resultMap="GroupTableConfig" parameterClass="java.util.HashMap">
+		SELECT * FROM t_group_table_config
+		WHERE
+			configState="1"
+			<dynamic prepend=" ">
+				<isPropertyAvailable property="groupId" prepend=" and ">
+					groupId=#groupId#
+				</isPropertyAvailable>
+			</dynamic>
+			AND parentGroup=#parentGroup#
+		ORDER BY tableOrder ASC,createdTime desc
+	</select>
+
+	<select id="all_group_table_config2" resultMap="GroupTableConfig" parameterClass="java.util.HashMap">
+		SELECT * FROM t_group_table_config
+		WHERE
+		configState="1" AND groupId = #groupId# AND parentGroup=#parentGroup#
+		ORDER BY tableOrder ASC,createdTime desc
+	</select>
+
+	<select id="last_group_table_config" resultMap="GroupTableConfig" parameterClass="java.util.HashMap">
+		SELECT * FROM t_group_table_config WHERE configState="1" AND groupId=#groupId# AND parentGroup=#parentGroup# ORDER BY createdTime desc limit 1
+	</select>
+
+	<insert id="save_group_match_user" parameterClass="java.util.HashMap">
+		insert into t_group_match (groupCode,userId,createdTime) VALUES (#groupCode#,#userId#,#createdTime#)
+		<selectKey resultClass="java.lang.Long" keyProperty="keyId">
+			SELECT
+			@@IDENTITY AS keyId
+		</selectKey>
+	</insert>
+	<select id="load_group_match_user" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		select * from t_group_match where userId=#userId# limit 1
+	</select>
+	<delete id="quit_group_match_user"  parameterClass="java.util.HashMap">
+		delete from t_group_match where userId=#userId#
+	</delete>
+	<delete id="quit_group_match_users"  parameterClass="java.util.HashMap">
+		delete from t_group_match where userId in ($userIds$)
+	</delete>
+	<select id="load_group_match_users" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		select * from t_group_match where groupCode=#groupCode# and userId!=#lockCode# order by keyId asc limit #size#
+	</select>
+	<select id="count_group_match_users" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		select COALESCE(count(*),0) from t_group_match where groupCode=#groupCode# and userId!=#lockCode#
+	</select>
+	<update id="lock_group_match" parameterClass="java.util.HashMap">
+		insert IGNORE into t_group_match (groupCode,userId,createdTime) VALUES ('lock',#userId#,#createdTime#)
+	</update>
+
+	<select id="count_tables_groupId" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		select COUNT(*) from t_group_table where groupId=#groupId# AND (currentState="0" OR currentState="1")
+	</select>
+
+    <select id="random_group_user_limit" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT u.userId,u.`name`,u.headimgurl,u.playingTableId FROM user_inf u,t_group_user g WHERE u.isOnLine="1" AND u.userId=g.userId  AND u.playState="0"  AND g.groupId=#groupId# AND g.refuseInvite=1 ORDER BY rand() LIMIT #limit#
+	</select>
+    <select id="group_user_online" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            u.userId,
+            u.enterServer
+        FROM
+            t_group_user g,
+            user_inf u
+        WHERE
+            g.groupId = #groupId#
+            AND g.refuseInvite = 1
+            <dynamic prepend=" ">
+                <isPropertyAvailable property="userIds" prepend=" ">
+                    AND g.userId in ( $userIds$ )
+                </isPropertyAvailable>
+            </dynamic>
+            AND u.userId = g.userId
+            AND u.isOnLine = 1
+            AND u.playState = 0
+	</select>
+
+	<select id="user_all_group_count" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		select COUNT(*) from t_group_user where userId=#userId#
+	</select>
+
+	<update id="update_group_user_credit" parameterClass="java.util.HashMap">
+		UPDATE t_group_user
+		set
+		credit = credit + #credit#
+		WHERE
+		groupId=#groupId#
+		and userId=#userId#
+	</update>
+
+	<select id="all_group_room" resultClass="com.sy599.game.db.bean.group.GroupInfo" parameterClass="java.util.HashMap">
+		select * from t_group
+		where
+			parentGroup=#parentGroup#
+			AND groupState="1"
+	</select>
+
+	<select id="count_group_room_table" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT COUNT(*) FROM t_group_table WHERE groupId=#groupId# AND currentState=#currentState# AND tableMsg like $tableMsg$
+	</select>
+
+	<insert id="insert_group_credit_log" parameterClass="java.util.HashMap">
+		insert into t_group_credit_log$gpSeq$
+			(
+                groupId,
+                optUserId,
+                userId,
+                credit,
+                curCredit,
+                curCreditPurse,
+                type,
+                flag,
+                tableId,
+                promoterId1,
+                promoterId2,
+                promoterId3,
+                promoterId4,
+                promoterId5,
+                promoterId6,
+                promoterId7,
+                promoterId8,
+                promoterId9,
+                promoterId10,
+                roomName,
+                createdTime,
+                groupTableId
+			)
+		VALUES
+			(
+			    #groupId#,
+			    #optUserId#,
+			    #userId#,
+			    #credit#,
+			    (select coalesce(credit,0) from t_group_user where groupId=#groupId# and userId=#userId#),
+			    (select coalesce(creditPurse,0) from t_group_user where groupId=#groupId# and userId=#userId#),
+			    #type#,
+			    #flag#,
+			    #tableId#,
+			    #promoterId1#,
+			    #promoterId2#,
+			    #promoterId3#,
+			    #promoterId4#,
+			    #promoterId5#,
+			    #promoterId6#,
+			    #promoterId7#,
+			    #promoterId8#,
+			    #promoterId9#,
+			    #promoterId10#,
+			    #roomName#,
+			    #createdTime#,
+			    #groupTableId#
+			)
+	</insert>
+
+
+	<insert id="create_group_info" parameterClass="com.sy599.game.db.bean.group.GroupInfo">
+		insert into t_group
+		(parentGroup,groupId,groupName,maxCount,currentCount,groupLevel,groupMode,extMsg,createdTime,createdUser,descMsg,groupState,modifiedTime)
+		VALUES
+		(#parentGroup#,#groupId#,#groupName#,#maxCount#,#currentCount#,#groupLevel#,#groupMode#,#extMsg#,#createdTime#,#createdUser#,#descMsg#,#groupState#,#modifiedTime#)
+		<selectKey resultClass="java.lang.Long" keyProperty="keyId">
+			SELECT
+			@@IDENTITY AS keyId
+		</selectKey>
+	</insert>
+
+	<insert id="insert_group_table_config" parameterClass="com.sy599.game.db.bean.group.GroupTableConfig">
+		insert into t_group_table_config
+			(parentGroup,groupId,tableName,tableMode,modeMsg,gameType,payType,gameCount,playerCount,descMsg,tableOrder,playCount,createdTime)
+		VALUES
+			(#parentGroup#,#groupId#,#tableName#,#tableMode#,#modeMsg#,#gameType#,#payType#,#gameCount#,#playerCount#,#descMsg#,#tableOrder#,#playCount#,#createdTime#)
+		<selectKey resultClass="java.lang.Long" keyProperty="keyId">
+			SELECT
+			@@IDENTITY AS keyId
+		</selectKey>
+	</insert>
+
+	<delete id="delete_group_info_keyId" parameterClass="java.lang.String">
+		delete FROM t_group WHERE keyId=#keyId#
+	</delete>
+
+	<select id="count_group_started_table" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		select COUNT(*) from t_group_table
+		where
+			groupId = #groupId#
+			AND configId = #configId#
+			AND currentState = "1"
+	</select>
+
+	<select id="select_user_group_table" resultClass="com.sy599.game.db.bean.group.GroupTable" parameterClass="java.util.HashMap">
+		SELECT * FROM t_group_table WHERE currentState="0" AND userId = #userId# AND groupId = #groupId# AND configId = #configId# ORDER BY createdTime desc limit 1
+	</select>
+
+    <select id="load_group_relation" resultClass="com.sy599.game.db.bean.group.GroupRelation" parameterClass="java.lang.String">
+		select * from t_group_relation where keyId = #keyId#
+	</select>
+
+    <select id="load_group_team_leader" resultClass="com.sy599.game.db.bean.group.GroupUser" parameterClass="java.util.HashMap">
+        select * from t_group_user
+        where
+            groupId = #groupId#
+            AND userGroup = #teamId#
+            AND userRole = 10
+        limit 1
+    </select>
+
+	<select id="select_group_table" resultClass="com.sy599.game.db.bean.group.GroupTable" parameterClass="java.util.HashMap">
+        select * from t_group_table
+        where
+            keyId = #keyId#
+    </select>
+
+	<select id="select_group_table_dealCount" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		select dealCount from t_group_table
+        where
+            keyId = #keyId#
+	</select>
+
+	<update id="update_group_table_dealCount" parameterClass="java.util.HashMap">
+		update t_group_table set dealCount = #dealCount# where keyId = #keyId#;
+	</update>
+
+	<select id="select_currentState_byId" resultClass="java.lang.String" parameterClass="java.util.HashMap">
+		select currentState from t_group_table where keyId = #keyId#
+	</select>
+
+	<select id="select_currentCount_byId" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		select currentCount from t_group_table where keyId = #keyId#
+	</select>
+
+    <select id="group_tables_groupId_all" resultMap="GroupTable" parameterClass="java.util.HashMap">
+        /*FORCE_MASTER*/ select * from
+            t_group_table gt,
+            t_group_table_config con
+        where
+            gt.groupId = #groupId#
+            AND gt.currentState in ( "0" , "1" )
+            AND con.keyId = gt.configId
+        ORDER BY
+            (case
+                when gt.currentState="0" and gt.currentCount>0 then 10
+                <isPropertyAvailable property = "tableOrder">
+                    <isEqual prepend=" " property="tableOrder" compareValue="1">
+                        when gt.currentState="1" then 2
+                        when gt.currentState="0" and gt.currentCount=0 then 1
+                    </isEqual>
+                    <isEqual prepend=" " property="tableOrder" compareValue="2">
+                        when gt.currentState="0" and gt.currentCount=0 then 2
+                        when gt.currentState="1" then 1
+                    </isEqual>
+                </isPropertyAvailable>
+            ELSE 0
+            END
+            ) DESC,
+          con.tableOrder ASC,
+          con.keyId ASC
+        limit #startNo#,#pageSize#
+	</select>
+    <update id="add_group_table_dealCount" parameterClass="java.util.HashMap">
+		update t_group_table set dealCount = dealCount + 1 where keyId = #keyId#;
+	</update>
+
+    <update id="bindIsNewBjd" parameterClass="java.util.HashMap">
+		INSERT INTO bjd_group_newer_bind
+		(userId, groupId)
+		VALUES (#userId#, #groupId#)
+	</update>
+
+    <select id="loadIsNewBjdBind" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+		select groupId from bjd_group_newer_bind
+		where
+		    userId=#userId#
+	</select>
+
+    <select id="countGroupConfigTable" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT COUNT(*) FROM t_group_table WHERE groupId=#groupId# AND currentState=#currentState# AND configId = #configId#
+	</select>
+
+    <select id="loadCommissionConfigBySeq" resultClass="com.sy599.game.db.bean.group.GroupCommissionConfig" parameterClass="java.util.HashMap">
+		SELECT * FROM t_group_commission_config
+		WHERE
+		    groupId = #groupId#
+		    AND userId = #userId#
+		    AND seq = #seq#
+		limit 1
+	</select>
+
+    <select id="loadGroupRoomEmptyTableCount" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT COUNT(*) FROM t_group_table
+		WHERE
+		    groupId = #groupId#
+		    AND currentState = #currentState#
+		    AND configId = #configId#
+		    AND currentCount <![CDATA[ <= ]]> 0
+		    AND isPrivate = 0
+	</select>
+
+    <update id="updateTableUserIsNewPlayer" parameterClass="java.util.HashMap">
+		UPDATE t_table_user$gpSeq$
+		SET
+		    isNewPlayer = #isNewPlayer#
+		WHERE
+		    tableNo = #tableNo#
+		    AND userId = #userId#
+	</update>
+
+    <select id="one_group_table_keyId_master" resultClass="com.sy599.game.db.bean.group.GroupTable" parameterClass="java.lang.String">
+		 /*FORCE_MASTER*/ select * from t_group_table where keyId=#keyId#
+	</select>
+
+    <select id="loadGroupUserForceMaster" resultClass="com.sy599.game.db.bean.group.GroupUser" parameterClass="java.util.HashMap">
+        /*FORCE_MASTER*/ select * from t_group_user
+        where
+            userId = #userId#
+            AND groupId = #groupId#
+        limit 1
+    </select>
+
+    <update id="addGroupUserExp" parameterClass="java.util.HashMap">
+        update t_group_user
+        set
+            exp = exp + #exp#,
+            totalExp = totalExp + #exp#
+        where
+            keyId = #keyId#
+    </update>
+
+    <update id="addGroupExp" parameterClass="java.util.HashMap">
+        update t_group
+        set
+            exp = exp + #exp#,
+            totalExp = totalExp + #exp#
+        where
+            keyId = #keyId#
+    </update>
+
+    <update id="calcGroupUserLevel" parameterClass="java.util.HashMap">
+        update
+            t_group_user g ,
+            sys_group_user_level_config c
+        set
+            g.level = c.level + 1,
+            g.exp = g.exp - c.exp
+        where
+            g.keyId = #keyId#
+            AND c.level = g.level
+            AND g.exp >= c.exp
+            AND c.exp > 0
+    </update>
+
+    <update id="calcGroupLevel" parameterClass="java.util.HashMap">
+        update
+            t_group g,
+            sys_group_level_config c
+        set
+            g.level = c.level + 1,
+            g.exp = g.exp - c.exp
+        where
+            g.keyId = #keyId#
+            AND c.level = g.level
+            AND g.exp >= c.exp
+            AND c.exp > 0
+    </update>
+
+    <insert id="insertLogGroupExp" parameterClass="java.util.HashMap">
+		insert into log_group_exp
+			(groupId,userId,optUserId,tableId,credit,exp,curLevel,curExp,createdTime)
+		VALUES
+			(#groupId#,#userId#,#optUserId#,#tableId#,#credit#,#exp#,(select coalesce(level,0) from t_group where groupId=#groupId# AND parentGroup=0),(select coalesce(exp,0) from t_group where groupId=#groupId# AND parentGroup=0),#createdTime#)
+	</insert>
+
+    <insert id="insertLogGroupUserExp" parameterClass="java.util.HashMap">
+		insert into log_group_user_exp
+			(groupId,userId,optUserId,tableId,credit,exp,curLevel,curExp,createdTime)
+		VALUES
+			(#groupId#,#userId#,#optUserId#,#tableId#,#credit#,#exp#,(select coalesce(level,0) from t_group_user where groupId=#groupId# AND userId=#userId#),(select coalesce(exp,0) from t_group_user where groupId=#groupId# AND userId=#userId#),#createdTime#)
+	</insert>
+
+    <insert id="insertLogGroupUserLevel" parameterClass="java.util.HashMap">
+		insert into log_group_user_level
+			(groupId,userId,level,stat,createdTime,lastUpTime)
+		VALUES
+			(#groupId#,#userId#,#level#,#stat#,#createdTime#,#lastUpTime#)
+	</insert>
+
+    <update id="updateGroupInfo" parameterClass="java.util.HashMap">
+        UPDATE t_group
+        <dynamic prepend="SET">
+            <isPropertyAvailable prepend="," property="exp">
+                exp = #exp#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="totalExp">
+                totalExp = #totalExp#
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE
+        <dynamic prepend=" ">
+            <isPropertyAvailable prepend=" and " property="keyId">
+                keyId=#keyId#
+            </isPropertyAvailable>
+        </dynamic>
+    </update>
+
+    <update id="calcGroupExp" parameterClass="java.util.HashMap">
+        update
+            t_group g,
+            sys_group_level_config c
+        set
+            g.exp = 0,
+            g.totalExp = c.totalExp
+        where
+            g.keyId = #keyId#
+            AND c.level = g.level
+            AND c.exp = 0
+    </update>
+
+    <update id="calcGroupUserExp" parameterClass="java.util.HashMap">
+        update
+            t_group_user gu,
+            sys_group_user_level_config c
+        set
+            gu.exp = 0,
+            gu.totalExp = c.totalExp
+        where
+            gu.keyId = #keyId#
+            AND c.level = gu.level
+            AND c.exp = 0
+    </update>
+
+    <select id="countGroupUserReject" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		select
+		    COALESCE(count(*),0)
+		from
+		    t_group_user_reject
+		where
+		    groupId = #groupId#
+		    AND userIdKeyStr = #userIdKeyStr#
+	</select>
+
+    <select id="count_group_started_table_all" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		select
+		    configId,
+		    COUNT(1) as ct
+		from
+		    t_group_table
+		where
+			groupId = #groupId#
+			AND currentState = "1"
+		GROUP BY configId
+	</select>
+
+	<select id="count_fake_table_all" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		select
+		    configId,
+		    COUNT(1) as ct
+		from
+		    t_group_fake_table
+		GROUP BY configId
+	</select>
+
+    <select id="searchGroupUserListForInvite" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            u.userId,
+            u.name,
+            u.headimgurl,
+            u.playingTableId,
+            u.playState,
+            u.isOnLine,
+            g.refuseInvite
+        FROM
+            t_group_user g,
+            user_inf u
+        WHERE
+            g.groupId = #groupId#
+            AND g.userId = #userId#
+            AND u.userId = g.userId
+        ORDER BY g.userId ASC
+	</select>
+
+    <select id="loadGroupUserFriendList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT * FROM (
+            SELECT
+                u.userId,
+                u.name,
+                u.headimgurl,
+                u.playingTableId,
+                u.playState,
+                u.isOnLine,
+                g.refuseInvite,
+                f.keyId
+            FROM
+                t_group_user_friend f,
+                t_group_user g,
+                user_inf u
+            WHERE
+                f.groupId = #groupId#
+                AND f.userId1 = #userId#
+                AND g.groupId = #groupId#
+                AND g.userId = f.userId2
+                AND u.userId = f.userId2
+            UNION
+            SELECT
+                u.userId,
+                u.name,
+                u.headimgurl,
+                u.playingTableId,
+                u.playState,
+                u.isOnLine,
+                g.refuseInvite,
+                f.keyId
+            FROM
+                t_group_user_friend f,
+                t_group_user g,
+                user_inf u
+            WHERE
+                f.groupId = #groupId#
+                AND f.userId2 = #userId#
+                AND g.groupId = #groupId#
+                AND g.userId = f.userId1
+                AND u.userId = f.userId1
+        ) AS d
+        ORDER BY
+            (CASE
+                WHEN d.isOnLine = 1 AND d.playingTableId = 0 THEN 10
+                WHEN d.isOnLine = 1 AND d.playingTableId > 0 THEN 9
+                WHEN d.isOnLine = 0 AND d.playingTableId > 0 THEN 8
+                WHEN d.isOnLine = 0 AND d.playingTableId = 0 THEN 7
+                ELSE 0
+            END)
+        DESC
+        LIMIT #startNo#,#pageSize#
+	</select>
+
+    <select id="countGroupUserFriend" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT
+		    COALESCE(count(*),0)
+		FROM
+		    t_group_user_friend
+		WHERE
+		    groupId = #groupId#
+		    AND userIdKeyStr = #userIdKeyStr#
+	</select>
+
+    <delete id="deleteGroupUserFriend" parameterClass="java.util.HashMap">
+        DELETE FROM t_group_user_friend
+        WHERE
+            keyId = #keyId#
+            AND groupId = #groupId#
+    </delete>
+
+    <insert id="createGroupUserFriend" parameterClass="java.util.HashMap">
+        INSERT INTO t_group_user_friend (
+            groupId,
+            userId1,
+            userId2,
+            createdTime,
+            userIdKeyStr
+        )
+        VALUES(
+            #groupId#,
+            #userId1#,
+            #userId2#,
+            #createdTime#,
+            #userIdKeyStr#
+        )
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+
+    <select id="load_group_user_by_userIds_or_userRoles" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            u.userId,
+            u.name,
+            u.headimgurl,
+            u.playingTableId
+        FROM
+            t_group_user gu,
+            user_inf u
+        WHERE
+            gu.groupId = #groupId#
+            $andSql$
+            AND gu.refuseInvite = 1
+            AND u.userId = gu.userId
+            AND u.isOnLine = 1
+            AND u.playState = 0
+        ORDER BY
+            gu.credit desc
+	</select>
+
+    <update id="update_group_user_score" parameterClass="java.util.HashMap">
+		UPDATE t_group_user
+		set
+		    score = score + #score#
+		WHERE
+            groupId = #groupId#
+            and userId = #userId#
+	</update>
+
+    <update id="reset_group_user_score" parameterClass="java.util.HashMap">
+		UPDATE t_group_user
+		set
+		    score = #score#
+		WHERE
+            groupId = #groupId#
+            and userId = #userId#
+	</update>
+
+    <select id="load_group_name_by_user" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            g.groupId,
+            g.groupName,
+            gu.userRole,
+            gu.promoterLevel
+        FROM
+            t_group_user gu ,
+            t_group g
+        WHERE
+            gu.userId = #userId#
+            AND g.groupId = gu.groupId
+            AND g.goldRoomSwitch = 1
+	</select>
+
+    <select id="load_gold_commission_config_bySeq" resultClass="com.sy599.game.db.bean.group.GroupGoldCommissionConfig" parameterClass="java.util.HashMap">
+		SELECT * FROM t_group_gold_commission_config
+		WHERE
+		    groupId = #groupId#
+		    AND userId = #userId#
+		    AND seq = #seq#
+		limit 1
+	</select>
+
+    <insert id="insert_group_gold_log" parameterClass="java.util.HashMap">
+		insert into t_group_gold_log$gpSeq$
+			(
+                groupId,
+                optUserId,
+                userId,
+                gold,
+                type,
+                flag,
+                tableId,
+                promoterId1,
+                promoterId2,
+                promoterId3,
+                promoterId4,
+                promoterId5,
+                promoterId6,
+                promoterId7,
+                promoterId8,
+                promoterId9,
+                promoterId10,
+                roomName,
+                createdTime
+			)
+		VALUES
+			(
+			    #groupId#,
+			    #optUserId#,
+			    #userId#,
+			    #gold#,
+			    #type#,
+			    #flag#,
+			    #tableId#,
+			    #promoterId1#,
+			    #promoterId2#,
+			    #promoterId3#,
+			    #promoterId4#,
+			    #promoterId5#,
+			    #promoterId6#,
+			    #promoterId7#,
+			    #promoterId8#,
+			    #promoterId9#,
+			    #promoterId10#,
+			    #roomName#,
+			    #createdTime#
+			)
+	</insert>
+
+	<select id="loadGroupUserListForceMaster" resultClass="com.sy599.game.db.bean.group.GroupUser" parameterClass="java.util.HashMap">
+        /*FORCE_MASTER*/ select * from t_group_user
+        WHERE
+        	groupId = #groupId#
+            AND userId in ( $userIdList$)
+    </select>
+
+	<select id="load_group_fake_table" resultClass="com.sy599.game.db.bean.group.GroupFakeTable" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT * FROM t_group_fake_table WHERE parentGroup = #groupId# and hiding = 0
+		<dynamic prepend="">
+			<isPropertyAvailable prepend=" and " property="configId">
+				configId = #configId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" and " property="gameType">
+				gameType in ($gameTypes$)
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+	<select id="select_fake_headimage" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	/*FORCE_MASTER*/ select * from t_group_fake_table_headimage where fakeTableId in ($fakeTableIds$);
+	</select>
+
+	<select id="select_table_config_order" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	/*FORCE_MASTER*/ select keyId, tableOrder from t_group_table_config where parentGroup = #parentGroup# and configState = 1;
+	</select>
+
+	<update id="settle_table_tempCredit_uid" parameterClass="java.util.HashMap">
+		UPDATE t_group_user
+		SET
+		credit = tempCredit + credit,
+		tempCredit = 0
+		WHERE
+		userId=#userId#
+	</update>
+
+	<update id="update_group_user_credit_purse" parameterClass="java.util.HashMap">
+		UPDATE t_group_user
+		set
+		creditPurse = creditPurse + #credit#
+		WHERE
+		groupId=#groupId#
+		and userId=#userId#
+	</update>
+</sqlMap>
+
+
+
+
+
+
+

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="tablelog">
+
+	<resultMap class="com.sy.sanguo.game.pdkuai.db.bean.PdkTableLog"
+		id="tablelogInf">
+		<result property="tableId" column="tableId" />
+		<result property="players" column="players" />
+		<result property="outCards1" column="outCards1" />
+		<result property="outCards2" column="outCards2" />
+		<result property="outCards3" column="outCards3" />
+		<result property="handCards1" column="handCards1" />
+		<result property="handCards2" column="handCards2" />
+		<result property="handCards3" column="handCards3" />
+		<result property="playType" column="playType" />
+		<result property="enterServer" column="enterServer" />
+		<result property="createId" column="createId" />
+		<result property="winId" column="winId" />
+		<result property="createTime" column="createTime" />
+		<result property="totalCount" column="totalCount" />
+		<result property="count" column="count" />
+		<result property="closingRes" column="closingRes" />
+		<result property="extend" column="extend" />
+	</resultMap>
+
+	<resultMap class="com.sy.sanguo.game.pdkuai.db.bean.UserPlaylog"
+		id="userlogInf">
+		<result property="id" column="id" />
+		<result property="userId" column="userId" />
+		<result property="logId" column="logId" />
+		<result property="tableId" column="tableId" />
+		<result property="count" column="count" />
+		<result property="totalCount" column="totalCount" />
+		<result property="startseat" column="startseat" />
+		<result property="time" column="time" />
+		<result property="res" column="res" />
+		<result property="outCards" column="outCards" />
+		<result property="extend" column="extend" />
+		<result property="maxPlayerCount" column="maxPlayerCount"/>
+		<result property="generalExt" column="generalExt"/>
+	</resultMap>
+
+	<insert id="savetablelogInfo" parameterClass="com.sy.sanguo.game.pdkuai.db.bean.PdkTableLog">
+		INSERT INTO table_playlog
+		(tableId,players,outCards1,outCards2,outCards3,handCards1,handCards2,handCards3,playType,enterServer,createId,winId,createTime,totalCount,count,closingRes,extend)
+		values
+		(#tableId#,#players#,#outCards1#,#outCards2#,#outCards3#,#handCards1#,#handCards2#,#handCards3#,#playType#,#enterServer#,#createId#,#winId#,#createTime#,#totalCount#,#count#,#closingRes#,#extend#);
+		<selectKey resultClass="java.lang.Long" keyProperty="tableId">
+			SELECT
+			@@IDENTITY AS id
+		</selectKey>
+	</insert>
+
+	<delete id="deleteLog" parameterClass="java.lang.Long">
+		delete from user_playlog where userId=#userId# and
+		time <![CDATA[< ]]>
+		(select min(time) from
+		(SELECT * FROM `user_playlog` where
+		userId=#userId# ORDER BY time desc
+		LIMIT 30) as a);
+
+	</delete>
+
+	<select id="selectById" parameterClass="java.util.HashMap"
+		resultMap="tablelogInf">
+		select * from table_playlog where userId =#tableId#
+	</select>
+	<delete id="deleteTable" parameterClass="java.lang.Long">
+		delete from
+		table_playlog WHERE tableId = #tableId#;
+	</delete>
+
+	<insert id="saveuserlogInfo" parameterClass="com.sy.sanguo.game.pdkuai.db.bean.UserPlaylog">
+		INSERT INTO user_playlog
+		(userId,logId,tableId,totalCount,count,startseat,time,res,outCards,extend)
+		values
+		(#userId#,#logId#,#tableId#,#totalCount#,#count#,#startseat#,#time#,#res#,#outCards#,#extend#);
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			SELECT
+			@@IDENTITY AS id
+		</selectKey>
+	</insert>
+	<delete id="deleteUserLog" parameterClass="java.lang.Long">
+		delete from
+		user_playlog WHERE id = #id#;
+	</delete>
+	<select id="selectUserLogByLogId" parameterClass="String"
+		resultMap="userlogInf">
+		select * from user_playlog where id in ($id$)
+	</select>
+	<select id="selectUserLogs" parameterClass="String" resultMap="userlogInf">
+		select * from user_playlog where id in ($ids$) ORDER BY `count` ASC
+	</select>
+	<select id="selectUserLogById" parameterClass="java.lang.Long"
+		resultMap="userlogInf">
+		SELECT * FROM `user_playlog` where userId=#userId# ORDER BY
+		time desc LIMIT 30;
+	</select>
+
+	<delete id="clearUserPlayLog"  parameterClass="java.util.HashMap">
+		DELETE from user_playlog
+		where
+		    time <![CDATA[ < ]]> #clearDate#
+		order by time asc
+		limit 10000 ;
+	</delete>
+
+    <delete id="deleteSql" parameterClass="java.lang.String">
+        $sql$
+    </delete>
+
+    <update id="transferSql" parameterClass="java.lang.String">
+        $sql$
+    </update>
+
+    <select id="loadMaxKeyId" parameterClass="java.lang.String" resultClass="java.lang.Long">
+        $sql$
+    </select>
+
+    <select id="check_table_exists" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_NAME=#tableName# and TABLE_SCHEMA=#dbName#
+	</select>
+
+</sqlMap>

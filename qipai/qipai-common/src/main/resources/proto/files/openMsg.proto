@@ -1,0 +1,13 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+// Open.proto
+message Open {
+    required string userId = 1;
+    required string t = 2;
+    required string s = 3;
+    required string c = 4;
+    optional string fromUrl=5;
+    optional int32 isCrossServer=6;
+    optional string v=7;//版本
+    repeated int32 msg = 8;//加载的信息
+}

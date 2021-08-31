@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<settings lazyLoadingEnabled="true" useStatementNamespaces="true" />
+	<transactionManager type="JDBC" commitRequired="false">
+		<dataSource type="com.sy.sanguo.common.datasource.DruidDataSourceFactory">
+			<property name="druid.driverClassName" value="${jdbc.ClassDriver}" />
+			<property name="druid.url" value="${jdbc.url}" />
+			<property name="druid.username" value="${jdbc.user}" />
+			<property name="druid.password" value="${jdbc.password}" />
+			<property name="druid.initialSize" value="5"/>
+			<property name="druid.minIdle" value="2"/>
+			<property name="druid.maxActive" value="30"/>
+			<property name="druid.maxWait" value="60000"/>
+			<property name="druid.timeBetweenEvictionRunsMillis" value="60000"/>
+			<property name="druid.minEvictableIdleTimeMillis" value="300000"/>
+			<property name="druid.validationQuery" value="SELECT 'x'"/>
+			<property name="druid.testWhileIdle" value="true"/>
+			<property name="druid.testOnBorrow" value="false"/>
+			<property name="druid.testOnReturn" value="false"/>
+			<property name="druid.poolPreparedStatements" value="true"/>
+			<property name="druid.maxPoolPreparedStatementPerConnectionSize" value="50"/>
+			<property name="druid.connectionProperties" value="config.decrypt=false,druid.stat.slowSqlMillis=5000"/>
+		</dataSource>
+	</transactionManager>
+	<sqlMap resource="config/ibatis/t_mix.xml"/>
+</sqlMapConfig>

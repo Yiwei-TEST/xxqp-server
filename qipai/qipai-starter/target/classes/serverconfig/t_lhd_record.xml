@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="lhdRecord">
+	<resultMap class="com.sy599.game.db.bean.LHDRecord" id="lhdRecord">
+		<result property="id" column="id" />
+		<result property="userId" column="userId" />
+		<result property="betInfo" column="betInfo" />
+		<result property="betGold" column="betGold" />
+		<result property="result" column="result" />
+		<result property="winGold" column="winGold" />
+		<result property="createTime" column="createTime" />
+	</resultMap>
+
+	<insert id="saveLHDRecord" parameterClass="com.sy599.game.db.bean.LHDRecord">
+		INSERT INTO
+		t_lhd_record
+		(userId,betInfo,betGold,result,winGold,createTime)
+		values
+		(#userId#,#betInfo#,#betGold#,#result#,#winGold#,#createTime#)
+		on duplicate key update
+		userId=#userId#,betInfo=#betInfo#,betGold=#betGold#,result=#result#,winGold=#winGold#,createTime=#createTime#
+	</insert>
+
+	<select id="getRecent20RichPlayer" resultClass="java.util.HashMap" parameterClass="java.lang.String">
+		SELECT
+			userId,
+			betNum,
+			winNum
+		FROM
+			(
+				SELECT
+					userId,
+					sum(betGold) AS betNum,
+					count(winGold > 0) AS winNum
+				FROM
+					t_lhd_record
+				WHERE
+					userId IN $userIds$
+				AND betGold > 0
+				GROUP BY
+					userId
+				ORDER BY
+					createTime DESC
+				LIMIT 20
+			) a
+		ORDER BY
+			a.betNum DESC limit 100;
+    </select>
+
+	<select id="getSSZRecord" resultClass="java.util.Map" parameterClass="java.lang.String">
+		SELECT
+			userId,
+			betNum,
+			winNum
+		FROM
+			(
+				SELECT
+					userId,
+					sum(betGold) AS betNum,
+					count(winGold > 0) AS winNum
+				FROM
+					t_lhd_record
+				WHERE
+					userId IN $userIds$
+				AND betGold > 0
+				GROUP BY
+					userId
+				ORDER BY
+					createTime DESC
+				LIMIT 20
+			) a
+		ORDER BY
+			a.winNum DESC,
+			a.betNum DESC
+		LIMIT 1;
+	</select>
+</sqlMap>

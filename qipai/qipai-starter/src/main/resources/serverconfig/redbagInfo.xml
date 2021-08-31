@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+		PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="redbagInfo">
+
+	<resultMap class="com.sy599.game.db.bean.RedBagInfo" id="redbagInfo">
+		<result property="userId" column="userId" />
+		<result property="redBagType" column="redBagType" />
+		<result property="redbag" column="redbag" />
+		<result property="receiveDate" column="receiveDate" />
+		<result property="drawDate" column="drawDate" />
+		<result property="sourceType" column="sourceType" />
+		<result property="sourceTypeName" column="sourceTypeName" />
+	</resultMap>
+
+	<insert id="saveRedBagInfo" parameterClass="com.sy599.game.db.bean.RedBagInfo">
+		INSERT INTO
+		redbag_info
+		(userId,redBagType,redbag,receiveDate,drawDate,sourceType,sourceTypeName)
+		values
+		(#userId#,#redBagType#,#redbag#,#receiveDate#,#drawDate#,#sourceType#,#sourceTypeName#)
+		on duplicate key update
+		redbag=#redbag#,drawDate=#drawDate#,sourceType=#sourceType#,sourceTypeName=#sourceTypeName#
+	</insert>
+
+	<select id="getUserRedBagInfos" parameterClass="java.lang.Long"
+			resultMap="redbagInfo">
+		select * from redbag_info where userId =#userId#;
+	</select>
+
+	<select id="getUserRedBagInfosBySourceType" parameterClass="java.util.HashMap"
+			resultMap="redbagInfo">
+		select * from redbag_info where userId =#userId# and sourceType = #sourceType#;
+	</select>
+
+	<select id="getBiggerRedbagNum" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select count(*) from redbag_info where redbag = 88.8 and receiveDate between #startDate# and #endDate#;
+  	</select>
+
+	<select id="getRedbagNum" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+		select count(*) from redbag_info where redbag = #redbag# and receiveDate between #startDate# and #endDate#;
+  	</select>
+
+</sqlMap>

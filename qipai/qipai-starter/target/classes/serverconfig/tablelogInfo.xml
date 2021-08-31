@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+		PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="tablelog">
+
+	<resultMap class="com.sy599.game.db.bean.PdkTableLog" id="tablelogInf">
+		<result property="tableId" column="tableId" />
+		<result property="players" column="players" />
+		<result property="outCards1" column="outCards1" />
+		<result property="outCards2" column="outCards2" />
+		<result property="outCards3" column="outCards3" />
+		<result property="handCards1" column="handCards1" />
+		<result property="handCards2" column="handCards2" />
+		<result property="handCards3" column="handCards3" />
+		<result property="playType" column="playType" />
+		<result property="enterServer" column="enterServer" />
+		<result property="createId" column="createId" />
+		<result property="winId" column="winId" />
+		<result property="createTime" column="createTime" />
+		<result property="totalCount" column="totalCount" />
+		<result property="count" column="count" />
+		<result property="closingRes" column="closingRes" />
+		<result property="extend" column="extend" />
+	</resultMap>
+
+	<resultMap class="com.sy599.game.db.bean.UserPlaylog" id="userlogInf">
+		<result property="id" column="id" />
+		<result property="userId" column="userId" />
+		<result property="logId" column="logId" />
+		<result property="tableId" column="tableId" />
+		<result property="count" column="count" />
+		<result property="totalCount" column="totalCount" />
+		<result property="startseat" column="startseat" />
+		<result property="time" column="time" />
+		<result property="res" column="res" />
+		<result property="outCards" column="outCards" />
+		<result property="extend" column="extend" />
+		<result property="maxPlayerCount" column="maxPlayerCount"/>
+	</resultMap>
+
+	<insert id="savetablelogInfo" parameterClass="com.sy599.game.db.bean.PdkTableLog">
+		INSERT INTO table_playlog
+		(tableId,players,outCards1,outCards2,outCards3,handCards1,handCards2,handCards3,playType,enterServer,createId,winId,createTime,totalCount,count,closingRes,extend)
+		values
+		(#tableId#,#players#,#outCards1#,#outCards2#,#outCards3#,#handCards1#,#handCards2#,#handCards3#,#playType#,#enterServer#,#createId#,#winId#,#createTime#,#totalCount#,#count#,#closingRes#,#extend#);
+		<selectKey resultClass="java.lang.Long" keyProperty="tableId">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	<select id="selectById" parameterClass="java.util.HashMap"
+			resultMap="tablelogInf">
+		select * from table_playlog where userId =#tableId#
+	</select>
+	<delete id="deleteTable" parameterClass="java.lang.Long">
+		delete from
+		table_playlog WHERE tableId = #tableId#;
+	</delete>
+
+	<insert id="saveuserlogInfo" parameterClass="com.sy599.game.db.bean.UserPlaylog">
+		INSERT INTO user_playlog
+		(userId,logId,tableId,count,totalCount,startseat,time,res,outCards,extend,maxPlayerCount,type,generalExt)
+		values
+		(#userId#,#logId#,#tableId#,#count#,#totalCount#,#startseat#,#time#,#res#,#outCards#,#extend#,#maxPlayerCount#,#type#,#generalExt#);
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			SELECT
+			@@IDENTITY AS id
+		</selectKey>
+	</insert>
+
+	<insert id="saveuserlogInfo0" parameterClass="com.sy599.game.db.bean.UserPlaylog">
+		INSERT INTO user_playlog
+		(id,userId,logId,tableId,count,totalCount,startseat,time,res,outCards,extend,maxPlayerCount,type,generalExt)
+		values
+		(#id#,#userId#,#logId#,#tableId#,#count#,#totalCount#,#startseat#,#time#,#res#,#outCards#,#extend#,#maxPlayerCount#,#type#,#generalExt#);
+		</insert>
+
+	<select id="selectUserLogById" parameterClass="java.util.HashMap"
+			resultMap="userlogInf">
+		select * from user_playlog where userId =#id#
+	</select>
+	<select id="selectUserLogByLogId" parameterClass="String"
+			resultMap="userlogInf">
+		select * from user_playlog where id in ($id$)
+	</select>
+	<delete id="deleteUserLog" parameterClass="java.lang.Long">
+		delete from
+		user_playlog WHERE id = #id#;
+	</delete>
+	<select id="selectBaiRenRecent20TableLog" parameterClass="java.lang.Integer" resultMap="userlogInf">
+		select * from user_playlog where logId = #logId# order by time desc limit 20;
+	</select>
+
+	<insert id="saveGroupPlayLog" parameterClass="com.sy599.game.db.bean.UserGroupPlaylog">
+		INSERT INTO user_group_playlog
+		(tableid,userid,groupid,players,count,score,creattime,overtime,playercount,gamename,totalCount,diFenScore,diFen)
+		values
+		(#tableid#,#userid#,#groupid#,#players#,#count#,#score#,#creattime#,#overtime#,#playercount#,#gamename#,#totalCount#,#diFenScore#,#diFen#);
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+			SELECT
+			@@IDENTITY AS id
+		</selectKey>
+	</insert>
+
+	<insert id="saveGroupPlayLog0" parameterClass="com.sy599.game.db.bean.UserGroupPlaylog">
+		INSERT INTO user_group_playlog
+		(tableid,userid,groupid,players,count,score,creattime,overtime,playercount,gamename,totalCount,diFenScore,diFen)
+		values
+		(#tableid#,#userid#,#groupid#,#players#,#count#,#score#,#creattime#,#overtime#,#playercount#,#gamename#,#totalCount#,#diFenScore#,#diFen#);
+	</insert>
+
+	<update id="updateGroupPlayLog" parameterClass="com.sy599.game.db.bean.UserGroupPlaylog">
+		UPDATE user_group_playlog set tableid=#tableid#,userid=#userid#,groupid=#groupid#,players=#players#,count=#count#,score=#score#,
+		creattime=#creattime#,overtime=#overtime#,playercount=#playercount#,gamename=#gamename#,totalCount=#totalCount#,diFenScore=#diFenScore#,diFen=#diFen# WHERE id=#id#
+	</update>
+
+	<update id="updateGroupPlayLog0" parameterClass="com.sy599.game.db.bean.UserGroupPlaylog">
+		UPDATE user_group_playlog set tableid=#tableid#,userid=#userid#,groupid=#groupid#,players=#players#,count=#count#,score=#score#,
+		creattime=#creattime#,overtime=#overtime#,playercount=#playercount#,gamename=#gamename#,totalCount=#totalCount#,diFenScore=#diFenScore#,diFen=#diFen# WHERE id=#id#
+	</update>
+
+    <insert id="savePlayLogTable" parameterClass="com.sy599.game.db.bean.PlayLogTable">
+        INSERT INTO playlog_table
+        (tableId,creatorId,groupId,groupMasterId,playerCount,players,scores,totalCount,finishCount,tableMsg,overTime,createTime)
+        values
+        (#tableId#,#creatorId#,#groupId#,#groupMasterId#,#playerCount#,#players#,#scores#,#totalCount#,#finishCount#,#tableMsg#,#overTime#,#createTime#);
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+
+    <insert id="savePlayLogUser" parameterClass="com.sy599.game.db.bean.PlayLogUser">
+        INSERT INTO playlog_user
+        (userId,logId,createTime)
+        values
+        (#userId#,#logId#,#createTime#);
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+
+</sqlMap>

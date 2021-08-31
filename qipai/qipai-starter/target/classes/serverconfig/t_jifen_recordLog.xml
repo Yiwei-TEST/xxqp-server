@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="jifenRecordLog">
+	<resultMap class="com.sy599.game.db.bean.JiFenRecordLog" id="jifenRecordLog">
+		<result property="id" column="id" />
+		<result property="userId" column="userId" />
+		<result property="jifen" column="jifen" />
+		<result property="sourceType" column="sourceType" />
+		<result property="createTime" column="createTime" />
+	</resultMap>
+
+	<insert id="saveJiFenRecordLog" parameterClass="com.sy599.game.db.bean.JiFenRecordLog">
+		INSERT INTO t_jifen_recordlog (userId,jifen,sourceType,createTime) values
+		(#userId#,#jifen#,#sourceType#,#createTime#)
+	</insert>
+</sqlMap>

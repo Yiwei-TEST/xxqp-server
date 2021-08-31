@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="roomcard">
+	
+	<resultMap id="RoomCard" class="com.sy599.game.db.bean.RoomCard">
+		<result property="userId" column="userId" />
+		<result property="userName" column="userName" />
+		<result property="parentId" column="parentId" />
+		<result property="agencyId" column="agencyId" />
+		<result property="commonCard" column="commonCard" />
+		<result property="freeCard" column="freeCard" />
+		<result property="createTime" column="createTime" />
+		<result property="remark" column="remark" />
+		<result property="agencyPhone" column="agencyPhone" />
+		<result property="agencyWechat" column="agencyWechat" />
+		<result property="bankName" column="bankName" />
+		<result property="bankCard" column="bankCard" />
+		<result property="agencyComment" column="agencyComment" />
+		<result property="partAdmin" column="partAdmin" />
+		<result property="updateTime" column="updateTime" />
+	</resultMap>
+	
+	<select id="queryAgencyInfo" parameterClass="java.lang.Integer" resultMap="RoomCard">
+		select userId, userName, parentId, agencyId, commonCard, freeCard, createTime, remark, agencyPhone, agencyWechat, bankName, bankCard, agencyComment, partAdmin, updateTime from roomcard where agencyId = #agencyId#
+	</select>
+
+	<select id="queryAgencyByAgencyId" parameterClass="java.lang.Integer" resultClass="java.util.HashMap">
+		select * from roomcard where agencyId=#agencyId# limit 1
+	</select>
+	
+	<select id="queryAgencyInfoByUserId" parameterClass="java.lang.Integer" resultMap="RoomCard">
+		select userId, userName, parentId, agencyId, commonCard, freeCard, createTime, remark, agencyPhone, agencyWechat, bankName, bankCard, agencyComment, partAdmin, updateTime from roomcard where userId = #userId#
+	</select>
+
+	<select id="queryMyAgencyByMyUserId" parameterClass="java.lang.Integer" resultClass="java.util.HashMap">
+		select userId, userName, parentId, agencyId from roomcard where parentId = #userId#
+	</select>
+
+	<select id="queryMyAgencyByMyAgencyId" parameterClass="java.lang.Integer" resultClass="java.util.HashMap">
+		select userId, userName, parentId, agencyId from roomcard where parentId =
+		(select userId from roomcard where agencyId = #agencyId#)
+	</select>
+</sqlMap>

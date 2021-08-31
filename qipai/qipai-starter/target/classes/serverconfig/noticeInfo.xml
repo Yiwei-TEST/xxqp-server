@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="notice">
+
+	<cacheModel id="code-CacheModel" type="LRU" readOnly="true"
+		serialize="false">
+		<flushInterval minutes="1" />
+		<property name="cache-size" value="1000" />
+	</cacheModel>
+
+	<resultMap class="com.sy599.game.db.bean.DBNotice" id="systemnotice">
+		<result property="id" column="id" />
+		<result property="serverIds" column="serverIds" />
+		<result property="pfs" column="pfs" />
+		<result property="name" column="name" />
+		<result property="content" column="content" />
+		<result property="isuse" column="isuse" />
+		<result property="updatetime" column="updatetime" />
+	</resultMap>
+
+	<select id="selectSystemNotice" resultMap="systemnotice"
+		cacheModel="code-CacheModel">
+		SELECT id,serverIds,pfs,name,content,isuse,updatetime FROM
+		system_notice ORDER BY pfs desc
+	</select>
+
+	<select id="selectSystem1Notice" resultClass="java.lang.String"
+			cacheModel="code-CacheModel">
+		SELECT content FROM system_notice where id=1 limit 1
+	</select>
+
+	<select id="selectNewNoticeTime" cacheModel="code-CacheModel" resultClass="Date">
+		SELECT
+		MAX(updatetime) FROM `system_notice` LIMIT 1;
+	</select>
+</sqlMap>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="room">
+	<resultMap class="com.sy.sanguo.game.bean.Room" id="room">
+		<result property="id" column="id" />
+		<result property="roomId" column="roomId" />
+		<result property="userId" column="userId" />
+		<result property="serverId" column="serverId" />
+		<result property="players" column="players" />
+		<result property="createTime" column="createTime" />
+		<result property="type" column="type" />
+		<result property="used" column="used" />
+		<result property="extend" column="extend" />
+	</resultMap>
+
+	<insert id="addRoom" parameterClass="com.sy.sanguo.game.bean.Room">
+		insert into room
+		(roomId,userId,serverId,players,createTime,type,used,extend)
+		VALUES
+		(#roomId#,#userId#,#serverId#,#players#,#createTime#,#type#,#used#,#extend#);
+	</insert>
+
+	<update id="updateRoomCreateTime" parameterClass="java.util.Date">
+		update room set
+		userId=0,serverId=0,players=null,
+		createTime=null,used=0,type=0
+		where
+		createTime &lt; NOW() - INTERVAL 7 DAY
+	</update>
+
+	<update id="recoverRoom" parameterClass="java.util.Map">
+		update room set
+		userId=0,serverId=0,players='',
+		createTime=#createdTime#,used=0,type=0,extend=''
+		where used>0 and createTime <![CDATA[<]]>#createdTime#
+	</update>
+
+	<select id="queryRoomUsed" resultClass="java.lang.Long">
+		select count(*) from room
+	</select>
+
+	<select id="queryRoom" resultMap="room" parameterClass="java.lang.Long">
+		/*FORCE_MASTER*/ select * from room where roomId=#roomId# and used=1
+	</select>
+
+	<select id="queryRoomByRoomId" resultMap="room" parameterClass="java.lang.Long">
+		/*FORCE_MASTER*/ select * from room where roomId=#roomId#
+	</select>
+
+	<update id="updateRoom" parameterClass="java.util.HashMap">
+		update room
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="userId">
+				userId=#userId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="serverId">
+				serverId=#serverId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="players">
+				players=#players#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="createTime">
+				createTime=#createTime#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="type">
+				type=#type#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="extend">
+				extend=#extend#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="used">
+				used=#used#
+			</isPropertyAvailable>
+		</dynamic>
+		WHERE roomId = #roomId#
+	</update>
+
+</sqlMap>
+
+
+
+
+
+
+

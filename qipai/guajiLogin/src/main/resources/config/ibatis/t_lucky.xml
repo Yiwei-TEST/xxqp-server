@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"  
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="lucky">
+	<resultMap id="UserLucky" class="com.sy.sanguo.game.bean.UserLucky">
+		<result property="userId" column="userId" />
+		<result property="username" column="username" />
+		<result property="sex" column="sex" />
+		<result property="inviteeCount" column="inviteeCount" />
+		<result property="invitorId" column="invitorId" />
+		<result property="feedbackCount" column="feedbackCount" />
+		<result property="openCount" column="openCount" />
+		<result property="activityStartTime" column="activityStartTime" />
+		<result property="prizeFlag" column="prizeFlag" />
+	</resultMap>
+
+	<select id="getUserLucky" resultMap="UserLucky" parameterClass="java.lang.Long">
+		select * from user_lucky where userId = #userId#
+	</select>
+
+	<select id="getInviteeInfo" resultMap="UserLucky" parameterClass="java.lang.Long">
+		select * from user_lucky where invitorId = #invitorId#
+	</select>
+
+	<select id="getRankingList" resultClass="java.util.HashMap" parameterClass="java.lang.Integer">
+		SELECT t1.*,username name FROM
+		(SELECT invitorId,SUM(feedbackCount) sumCards,SUM(FLOOR(feedbackCount/5)+1)
+		num
+		FROM user_lucky WHERE invitorId != 0
+		GROUP BY invitorId
+		ORDER BY num
+		DESC,sumCards DESC,invitorId DESC
+		LIMIT 0, #number#) t1 LEFT JOIN
+		user_lucky t2
+		ON t2.userId = t1.invitorId
+	</select>
+
+	<insert id="insertUserLucky" parameterClass="com.sy.sanguo.game.bean.UserLucky">
+		insert into user_lucky (userId, username, sex, inviteeCount, invitorId, feedbackCount, openCount, activityStartTime, prizeFlag)
+		values(#userId#, #username#, #sex#, #inviteeCount#, #invitorId#, #feedbackCount#, #openCount#, #activityStartTime#, #prizeFlag#)
+	</insert>
+
+	<update id="updateUserLucky" parameterClass="java.util.HashMap">
+		update user_lucky
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="username">
+				username = #username#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="sex">
+				sex = #sex#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="inviteeCount">
+				inviteeCount = #inviteeCount#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="invitorId">
+				invitorId = #invitorId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="feedbackCount">
+				feedbackCount = #feedbackCount#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="openCount">
+				openCount = #openCount#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="activityStartTime">
+				activityStartTime = #activityStartTime#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="prizeFlag">
+				prizeFlag = #prizeFlag#
+			</isPropertyAvailable>		
+		</dynamic>
+		where userId = #userId#
+	</update>
+
+</sqlMap>

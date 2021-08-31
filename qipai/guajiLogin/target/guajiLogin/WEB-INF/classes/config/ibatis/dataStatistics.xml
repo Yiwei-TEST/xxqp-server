@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="dataStatistics">
+
+	<select id="page_range_desc" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT * FROM t_data_statistics
+		WHERE
+			dataDate=#dataDate#
+			AND dataCode=#dataCode#
+			AND dataType=#dataType#
+			<dynamic prepend="">
+				<isPropertyAvailable prepend=" and " property="userIdKey">
+					userId=#userIdKey#
+				</isPropertyAvailable>
+			</dynamic>
+		ORDER BY dataValue DESC,keyId
+		LIMIT #startNo#,#pageSize#
+	</select>
+
+    <select id="page_range_asc" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT * FROM t_data_statistics WHERE dataDate=#dataDate# AND dataCode=#dataCode# AND dataType=#dataType# ORDER BY dataValue ASC,keyId LIMIT #startNo#,#pageSize#
+    </select>
+
+	<select id="page_range_sum" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT userId,SUM(dataValue) dataValue
+		FROM t_data_statistics
+		WHERE
+			dataDate<![CDATA[>=]]>#startDate#
+			AND dataDate<![CDATA[<=]]>#endDate#
+			AND dataCode=#dataCode#
+			AND dataType=#dataType#
+			<dynamic prepend="">
+				<isPropertyAvailable prepend=" and " property="userIdKey">
+					userId=#userIdKey#
+				</isPropertyAvailable>
+			</dynamic>
+		
+		GROUP BY userId
+		
+		
+		ORDER BY 
+		  <dynamic prepend="">
+				<isPropertyAvailable prepend="" property="orderRule">
+					dataValue $orderRule$ ,
+				</isPropertyAvailable>
+			</dynamic>
+		
+		userId
+		LIMIT #startNo#,#pageSize#
+	</select>
+
+	<select id="page_range_max" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT userId,MAX(dataValue) dataValue FROM t_data_statistics WHERE dataDate<![CDATA[>=]]>#startDate# AND dataDate<![CDATA[<=]]>#endDate# AND dataCode=#dataCode# AND dataType=#dataType# GROUP BY userId ORDER BY dataValue DESC,userId LIMIT #startNo#,#pageSize#
+	</select>
+
+	<select id="page_range_min" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT userId,MIN(dataValue) dataValue FROM t_data_statistics WHERE dataDate<![CDATA[>=]]>#startDate# AND dataDate<![CDATA[<=]]>#endDate# AND dataCode=#dataCode# AND dataType=#dataType# GROUP BY userId ORDER BY dataValue ASC,userId LIMIT #startNo#,#pageSize#
+	</select>
+
+	<select id="page_range_sum_returnOne" resultClass="java.util.HashMap" parameterClass="java.util.HashMap" remapResults="true">
+		SELECT userId,SUM(dataValue) #dataType# FROM t_data_statistics WHERE dataDate<![CDATA[>=]]>#startDate# AND dataDate<![CDATA[<=]]>#endDate# AND dataCode=#dataCode# AND dataType=#dataType# AND userId in ($userIdStr$) GROUP BY userId
+	</select>
+
+	<select id="page_range_returnOne_desc" resultClass="java.util.HashMap" parameterClass="java.util.HashMap" remapResults="true">
+		SELECT userId,SUM(dataValue) #dataType# FROM t_data_statistics WHERE dataDate=#dataDate# AND dataCode=#dataCode# AND dataType=#dataType# AND userId in ($userIdStr$) GROUP BY userId
+	</select>
+
+	<select id="all_club_range_count" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT dataValue,dataCode FROM t_data_statistics WHERE dataDate=#dataDate# AND dataType=#dataType# ORDER BY dataValue DESC,dataCode asc LIMIT #startNo#,#pageSize#
+	</select>
+
+	<select id="megabucks_club_count" resultClass="java.lang.Integer" parameterClass="java.util.HashMap" >
+		SELECT dataValue FROM t_data_statistics WHERE dataDate=#dataDate# AND dataCode=#dataCode# AND dataType=#dataType#;
+	</select>
+
+	<select id="data_type_sum" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+		SELECT SUM(dataValue) dataValue
+		FROM t_data_statistics
+		WHERE
+			dataDate<![CDATA[>=]]>#startDate#
+			AND dataDate<![CDATA[<=]]>#endDate#
+			AND dataCode=#dataCode#
+			AND dataType=#dataType#
+			<dynamic prepend="">
+				<isPropertyAvailable prepend=" and " property="userIdKey">
+					userId=#userIdKey#
+				</isPropertyAvailable>
+			</dynamic>
+	</select>
+
+    <select id="load_group_decdiamond" resultClass="java.util.HashMap" parameterClass="java.util.HashMap" >
+		SELECT DATE_FORMAT(dataDate,'%Y-%m-%d')  as ctime , dataValue as c FROM t_data_statistics WHERE dataCode=#dataCode# AND userId=#userId# AND dataType=#dataType#;
+	</select>
+	
+	<select id="load_group_djs" resultClass="java.util.HashMap" parameterClass="java.util.HashMap" >
+		SELECT dataDate as ctime , dataValue as c FROM t_data_statistics WHERE dataCode=#dataCode# AND dataType=#dataType#;
+	</select>
+
+</sqlMap>

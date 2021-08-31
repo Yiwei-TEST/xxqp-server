@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5"
+         xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+  <context-param>
+    <param-name>webAppRootKey</param-name>
+    <param-value>guajiLogin.root</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>log4jConfigLocation</param-name>
+    <param-value>WEB-INF/config/log4j.properties</param-value>
+  </context-param>
+
+  <!-- 配置Spring -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      classpath:config/applicationContext.xml,classpath:config/applicationContext/*.xml
+    </param-value>
+  </context-param>
+  <listener>
+    <listener-class>
+      org.springframework.web.util.Log4jConfigListener
+    </listener-class>
+  </listener>
+  <listener>
+    <listener-class>
+      org.springframework.web.context.ContextLoaderListener
+    </listener-class>
+  </listener>
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+
+  <!-- Tomcat, Jetty, JBoss, and GlassFish 自带的默认Servlet的名字 "default" -->
+  <!-- Google App Engine 自带的 默认Servlet的名字"_ah_default" -->
+  <!-- Resin 自带的 默认Servlet的名字 "resin-file" -->
+  <!-- WebLogic 自带的 默认Servlet的名字 "FileServlet" -->
+  <!-- WebSphere 自带的 默认Servlet的名字 "SimpleFileServlet" -->
+  <!--<servlet-mapping>-->
+  <!--<servlet-name>default</servlet-name>-->
+  <!--<url-pattern>*.jpg</url-pattern>-->
+  <!--</servlet-mapping>-->
+  <!--<servlet-mapping>-->
+  <!--<servlet-name>default</servlet-name>-->
+  <!--<url-pattern>*.png</url-pattern>-->
+  <!--</servlet-mapping>-->
+  <!--<servlet-mapping>-->
+  <!--<servlet-name>default</servlet-name>-->
+  <!--<url-pattern>*.gif</url-pattern>-->
+  <!--</servlet-mapping>-->
+  <!--<servlet-mapping>-->
+  <!--<servlet-name>default</servlet-name>-->
+  <!--<url-pattern>*.ico</url-pattern>-->
+  <!--</servlet-mapping>-->
+  <!--<servlet-mapping>-->
+  <!--<servlet-name>default</servlet-name>-->
+  <!--<url-pattern>*.js</url-pattern>-->
+  <!--</servlet-mapping>-->
+  <!--<servlet-mapping>-->
+  <!--<servlet-name>default</servlet-name>-->
+  <!--<url-pattern>*.css</url-pattern>-->
+  <!--</servlet-mapping>-->
+
+  <!--&lt;!&ndash; WebStatFilter用于采集web-jdbc关联监控的数据。 &ndash;&gt;-->
+  <!--<filter>-->
+  <!--<filter-name>DruidWebStatFilter</filter-name>-->
+  <!--<filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>-->
+  <!--<init-param>-->
+  <!--<param-name>exclusions</param-name>-->
+  <!--<param-value>*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*</param-value>-->
+  <!--</init-param>-->
+  <!--<init-param>-->
+  <!--&lt;!&ndash; 配置profileEnable能够监控单个url调用的sql列表 &ndash;&gt;-->
+  <!--<param-name>profileEnable</param-name>-->
+  <!--<param-value>true</param-value>-->
+  <!--</init-param>-->
+  <!--</filter>-->
+  <!--<filter-mapping>-->
+  <!--<filter-name>DruidWebStatFilter</filter-name>-->
+  <!--<url-pattern>/*</url-pattern>-->
+  <!--</filter-mapping>-->
+
+  <!-- 配置Struts2 -->
+  <filter>
+    <filter-name>struts2</filter-name>
+    <filter-class>
+      com.sy.sanguo.common.struts.MangoFilterDispatcher
+    </filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>struts2</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <!--<servlet>-->
+  <!--<servlet-name>DruidStatView</servlet-name>-->
+  <!--<servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>-->
+  <!--&lt;!&ndash; allow为空，允许所有ip访问 &ndash;&gt;-->
+  <!--&lt;!&ndash; <init-param> &ndash;&gt;-->
+  <!--&lt;!&ndash; <param-name>allow</param-name> &ndash;&gt;-->
+  <!--&lt;!&ndash; <param-value></param-value> &ndash;&gt;-->
+  <!--&lt;!&ndash; </init-param> &ndash;&gt;-->
+  <!--<init-param>-->
+  <!--<param-name>loginUsername</param-name>-->
+  <!--<param-value>sy</param-value>-->
+  <!--</init-param>-->
+  <!--<init-param>-->
+  <!--<param-name>loginPassword</param-name>-->
+  <!--<param-value>sy2018</param-value>-->
+  <!--</init-param>-->
+  <!--&lt;!&ndash; 排除在外，优先级最高 &ndash;&gt;-->
+  <!--&lt;!&ndash; <init-param> &ndash;&gt;-->
+  <!--&lt;!&ndash; <param-name>deny</param-name> &ndash;&gt;-->
+  <!--&lt;!&ndash; <param-value></param-value> &ndash;&gt;-->
+  <!--&lt;!&ndash; </init-param> &ndash;&gt;-->
+  <!--<load-on-startup>4</load-on-startup>-->
+  <!--</servlet>-->
+  <!--<servlet-mapping>-->
+  <!--<servlet-name>DruidStatView</servlet-name>-->
+  <!--<url-pattern>/druid/*</url-pattern>-->
+  <!--</servlet-mapping>-->
+
+</web-app>

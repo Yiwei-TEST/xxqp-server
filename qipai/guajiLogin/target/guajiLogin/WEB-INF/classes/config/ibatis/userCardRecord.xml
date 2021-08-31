@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="userCardRecord">
+	<resultMap class="com.sy.sanguo.game.bean.UserCardRecordInfo" id="playerCardRecordInfo">
+		<result property="id" column="id" />
+		<result property="userId" column="userId" />
+		<result property="freeCard" column="freeCard" />
+		<result property="cards" column="cards" />
+		<result property="addFreeCard" column="addFreeCard" />
+		<result property="addCard" column="addCard" />
+		<result property="recordType" column="recordType" />
+		<result property="playType" column="playType" />
+		<result property="sourceType" column="sourceType" />
+		<result property="sourceName" column="sourceName" />
+		<result property="createTime" column="createTime" />
+	</resultMap>
+
+	<insert id="saveUserCardRecord" parameterClass="com.sy.sanguo.game.bean.UserCardRecordInfo">
+		INSERT INTO
+		user_card_record
+		(userId,freeCard,cards,addFreeCard,addCard,recordType,playType,sourceType,sourceName,createTime)
+		values
+		(#userId#,#freeCard#,#cards#,#addFreeCard#,#addCard#,#recordType#,#playType#,#sourceType#,#sourceName#,#createTime#)
+	</insert>
+
+	<delete id="clearExpireUserCardRecords" parameterClass="java.lang.Long">
+		delete from
+		user_card_record where  DATE(createTime) <![CDATA[< ]]>
+		DATE(DATE_SUB(NOW(),INTERVAL 30 day)) ;
+	</delete>
+</sqlMap>

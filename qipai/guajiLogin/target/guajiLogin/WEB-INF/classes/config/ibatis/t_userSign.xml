@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="userSign">
+
+	<resultMap class="com.sy.sanguo.game.bean.UserSign" id="UserSign">
+		<result property="userId" column="userId" />
+		<result property="signTime" column="signTime" />
+	</resultMap>
+	
+	<select id="getSigns" parameterClass="java.lang.Long" resultMap="UserSign">
+		select * from user_sign where userId = #userId#
+	</select>
+
+</sqlMap>
+
+
+
+
+
+
+

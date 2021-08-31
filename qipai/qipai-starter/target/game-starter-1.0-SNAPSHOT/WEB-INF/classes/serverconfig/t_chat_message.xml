@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="chat_message">
+	<select id="select_all" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		select * from t_chat_message where groupId=#groupId# AND toUser="0" ORDER  BY keyId DESC LIMIT #startNo#,#pageSize#
+	</select>
+	<select id="select_one" resultClass="java.util.HashMap" parameterClass="java.lang.String">
+		select * from t_chat_message where keyId=#keyId#
+	</select>
+	<insert id="insert" parameterClass="java.util.HashMap">
+		insert into t_chat_message (msgType,msgContent,createdTime,groupId,fromUser,toUser) VALUES (#msgType#,#msgContent#,#createdTime#,#groupId#,#fromUser#,#toUser#)
+		<selectKey resultClass="java.lang.Long" keyProperty="keyId">
+			SELECT
+			@@IDENTITY AS keyId
+		</selectKey>
+	</insert>
+</sqlMap>
+
+
+
+
+
+
+

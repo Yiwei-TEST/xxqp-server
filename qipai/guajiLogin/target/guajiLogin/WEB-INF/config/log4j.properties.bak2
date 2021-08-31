@@ -1,0 +1,56 @@
+log4j.rootCategory=debug,Root
+log4j.appender.Root=org.apache.log4j.ConsoleAppender
+log4j.appender.Root.Threshold=debug
+log4j.appender.Root.layout=org.apache.log4j.PatternLayout
+log4j.appender.Root.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss,S} %5p (%c:%L) - %m%n
+
+log4j.logger.db=debug,db
+log4j.additivity.db=false
+log4j.appender.db=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.db.Threshold=debug
+log4j.appender.db.Append=true
+log4j.appender.db.File=E:\\2dlogs\\login\\logs\\login_db.log
+log4j.appender.db.layout=org.apache.log4j.PatternLayout
+log4j.appender.db.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss,S} %5p (%c:%L) - %m%n
+
+log4j.logger.service=debug,service
+log4j.additivity.service=false
+log4j.appender.service=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.service.Threshold=debug
+log4j.appender.service.Append=true
+log4j.appender.service.File=E:\\2dlogs\\login\\logs\\login_service.log
+log4j.appender.service.layout=org.apache.log4j.PatternLayout
+log4j.appender.service.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss,S} %5p (%c:%L) - %m%n
+
+log4j.logger.monitor=debug,monitor
+log4j.additivity.monitor=false
+log4j.appender.monitor=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.monitor.Threshold=debug
+log4j.appender.monitor.Append=true
+log4j.appender.monitor.File=E:\\2dlogs\\login\\logs\\login_monitor.log
+log4j.appender.monitor.layout=org.apache.log4j.PatternLayout
+log4j.appender.monitor.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss,S} %5p (%c:%L) - %m%n
+
+log4j.logger.sys=debug,sys
+log4j.additivity.sys=true
+log4j.appender.sys=org.apache.log4j.DailyRollingFileAppender
+log4j.appender.sys.Append=true
+log4j.appender.sys.File=E:\\2dlogs\\login\\logs\\login_sys.log
+log4j.appender.sys.layout=org.apache.log4j.PatternLayout
+log4j.appender.sys.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss,S} %5p (%c:%L) - %m%n
+
+#log4j.logger.com.opensymphony=debug
+#log4j.logger.org.apache.struts2=debug
+#log4j.logger.org.springframework=debug
+#log4j.logger.com.sys=DEBUG
+log4j.logger.com.ibatis=DEBUG
+log4j.logger.com.ibatis.common.jdbc.SimpleDataSource=DEBUG
+log4j.logger.com.ibatis.common.jdbc.ScriptRunner=DEBUG
+log4j.logger.com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate=DEBUG
+#log4j.logger.java.sql.Connection=DEBUG
+#log4j.logger.java.sql.Statement=debug
+#log4j.logger.java.sql.PreparedStatement=debug
+#log4j.logger.java.sql.ResultSet=DEBUG
+
+log4j.logger.com.ibatis.common.logging.log4j.Log4jImpl=DEBUG
+

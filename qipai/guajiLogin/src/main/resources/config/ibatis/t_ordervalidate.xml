@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="orderVali">
+
+	<resultMap class="com.sy.sanguo.game.bean.OrderValidate" id="orderInfo">
+		<result property="flat_id" column="flat_id" />
+		<result property="order_id" column="order_id" />
+		<result property="server_id" column="server_id" />
+		<result property="pf" column="pf" />
+		<result property="item_id" column="item_id" />
+		<result property="pay_channel" column="pay_channel" />
+		<result property="amount" column="amount" />
+		<result property="status" column="status" />
+		<result property="create_time" column="create_time" />
+		<result property="sdk_order_id" column="sdk_order_id" />
+		<result property="agencyUserId" column="for_id"/>
+		<result property="userId" column="userId"/>
+	</resultMap>
+	<select id="getOne" resultMap="orderInfo" parameterClass="java.lang.String">
+		select
+		* from order_validate where order_id=#order_id#;
+	</select>
+	<select id="getOneByMap" resultMap="orderInfo" parameterClass="java.util.HashMap">
+		select * from order_validate
+		<dynamic prepend="where">
+			<isPropertyAvailable prepend="and" property="flat_id">
+				flat_id=#flat_id#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="and" property="pf">
+				pf=#pf#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="and" property="pay_channel">
+				pay_channel=#pay_channel#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="and" property="amount">
+				amount=#amount#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="and" property="server_id">
+				server_id=#server_id#
+			</isPropertyAvailable>
+		</dynamic>
+		ORDER BY create_time desc LIMIT 1
+	</select>
+
+	<insert id="insert" parameterClass="com.sy.sanguo.game.bean.OrderValidate">
+		insert into order_validate
+		(flat_id,order_id,server_id,pf,item_id,pay_channel,amount,status,create_time,sdk_order_id,for_id,userId)
+		VALUES(#flat_id#,#order_id#,#server_id#,#pf#,#item_id#,#pay_channel#,#amount#,0,now(),#sdk_order_id#,#agencyUserId#,#userId#);
+	</insert>
+	<update id="validate" parameterClass="java.lang.String">
+		UPDATE order_validate set
+		status=1 WHERE order_id = #order_id#;
+	</update>
+</sqlMap>
+
+
+
+
+
+
+

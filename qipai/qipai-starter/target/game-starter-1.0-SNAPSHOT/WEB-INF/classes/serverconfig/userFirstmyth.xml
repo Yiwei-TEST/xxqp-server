@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="userFirstmyth">
+
+	<resultMap class="com.sy599.game.db.bean.UserFirstmyth" id="userFirstmyth">
+		<result property="recordDate" column="recordDate" />
+		<result property="userId" column="userId" />
+		<result property="gameType" column="gameType" />
+		<result property="groupId" column="groupId" />
+		<result property="userName" column="userName" />
+		<result property="record1" column="record1" />
+		<result property="record2" column="record2" />
+		<result property="record3" column="record3" />
+		<result property="record4" column="record4" />
+		<result property="record5" column="record5" />
+		<result property="record6" column="record6" />
+		<result property="record7" column="record7" />
+		<result property="record8" column="record8" />
+		<result property="record9" column="record9" />
+		<result property="record10" column="record10" />
+		<result property="record11" column="record11" />
+		<result property="record12" column="record12" />
+		<result property="record13" column="record13" />
+		<result property="record14" column="record14" />
+	</resultMap>
+
+	<insert id="saveUserFirstmyth" parameterClass="com.sy599.game.db.bean.UserFirstmyth">
+		INSERT INTO
+		user_firstmyth
+		(recordDate,userId,gameType,groupId,userName,record1,record2,record3,record4,record5,record6,record7,record8,record9,record10,record11,record12,record13,record14)
+		values
+		(#recordDate#,#userId#,#gameType#,#groupId#,#userName#,#record1#,#record2#,#record3#,#record4#,#record5#,#record6#,#record7#,#record8#,#record9#,#record10#,#record11#,#record12#,#record13#,#record14#)
+		on duplicate key update
+		recordDate=#recordDate#,userId=#userId#,gameType=#gameType#,groupId=#groupId#,userName=#userName#,record1=#record1#,record2=#record2#,record3=#record3#,record4=#record4#,record5=#record5#,record6=#record6#,record7=#record7#,record8=#record8#,record9=#record9#,record10=#record10#,record11=#record11#,record12=#record12#,record13=#record13#,record14=#record14#
+	</insert>
+</sqlMap>

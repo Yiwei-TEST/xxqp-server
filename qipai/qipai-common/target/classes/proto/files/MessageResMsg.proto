@@ -1,0 +1,15 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+//创建一个牌桌
+message NoticelistRes {
+    repeated NoticeRes messages=1;
+}
+
+message NoticeRes {
+    required string id = 1;//id
+    required string userId = 2;//用户Id
+    required int32 type = 3;//类型
+    required string content=4;//内容
+    optional string award=5;//奖励
+    required string time=6;//时间
+}

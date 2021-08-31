@@ -1,0 +1,122 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+//跑得快
+message PlayCardRes {
+    required string userId = 1;	//出牌人的userId
+    required int32 isPlay = 2;//0要不起 1可以出牌
+    repeated int32 cardIds = 3;//牌组id
+    optional int32 cardType = 4;//牌型
+    optional int32 isBt = 5;
+    optional int32 seat = 6;//出牌人的座位
+    optional int32 isLet = 7;//自己是否打得起
+    optional int32 nextSeat = 8; //下一个应该出牌的玩家
+    optional int32 curScore = 9; //
+    optional int32 isFirstOut = 10;
+    repeated int32 scoreCard = 11;//打出的分数牌
+    optional int32 leftCount = 12;//剩余牌数量
+    optional int32 isClearDesk = 13;//是否清桌子
+}
+
+//跑胡子
+message PlayPaohuziRes {
+    required string userId = 1;//出牌人的userId
+    repeated int32 phzIds = 2;//牌组id  如果有摸的牌放第0位 id为0则表示不能让人看到(如0,0,0,0)
+    optional int32 action = 3;//动作 
+    optional int32 seat=4;//出牌人的座位
+    repeated int32 selfAct=5;//自己的动作  0胡 1碰 2栽 3提 4吃 5跑
+    optional int32 fromSeat=6;//跑的时候出牌人的座位
+    optional int32 actType = 7;//0特殊动作 1摸 2出一个单牌
+    optional int32 remain = 8;//剩余牌的张数
+    optional int32 nextSeat = 9;//下次出牌的人
+    optional int32 huxi = 10;//打出去的牌的胡息   
+    optional int32 isZaiPao=11;//是否是栽过的牌跑了牌
+    optional int32 isChongPao = 12;// 是否重跑
+    optional int32 timeSeat=13;//闹钟位置
+}
+
+
+//麻将
+message PlayMajiangRes {
+    required string userId = 1;	//出牌人的userId
+    repeated int32 majiangIds = 2;//牌组id
+    optional int32 action = 3;//动作 1胡 2碰 3明刚 4暗杠
+    optional int32 seat=4;//出牌人的座位
+    repeated int32 selfAct=5;//自己的动作 
+    optional int32 fromSeat=6;//碰杠的时候出牌人的座位
+    optional int32 zimo=7;//胡牌是否是自摸
+    repeated int32 huArray=8;//长沙麻将胡牌的各种类型  (前台显示)
+    repeated int32 xiaohu=9;//按钮显示
+    repeated string ext=10;//
+}
+
+//摸牌
+message MoMajiangRes {
+    required string userId = 1;	//出牌人的userId
+    optional int32 majiangId = 2;//牌组id
+    optional int32 seat=3;//出牌人的座位
+    repeated int32 selfAct=4;//自己的动作 
+    optional int32 remain=5;
+    optional int32 nextDisCardIndex=6; //下个地牌出现位置
+}
+
+message BuFaMoMajiangRes {
+    required string userId = 1;	//出牌人的userId
+    repeated int32 majiangId = 2;//补摸的麻将组
+    optional int32 seat=3;//出牌人的座位
+    repeated int32 selfAct=4;//自己的动作
+    optional int32 remain=5;
+    optional int32 huaCount=6;
+}
+
+//长沙麻将杠后摸牌
+message GangMoMajiangRes {
+    required string userId = 1;//出牌人的userId
+    required string name = 2;	//名字
+    optional int32 seat=3;//出牌人的座位
+    required int32 gangId=4;//杠的牌id
+    repeated GangPlayMajiangRes gangActs=5;
+    optional int32 reconnect=6;//重连
+    optional int32 remain=7;
+    optional int32 dice=8;              //色子值
+    optional int32 hasAct=9;            //是否有玩家有操作：0否，1是
+    optional int32 mjNum=10;            //打色子打到的麻将数量
+    optional int32 nextDisCardIndex=11; //下个地牌出现位置
+}
+
+//长沙麻将杠之后出的牌
+message GangPlayMajiangRes {
+    required int32 majiangId = 1;//牌组id
+    repeated int32 selfAct=2;//自己的动作 
+	    
+}
+
+//听那些牌
+message TingPaiRes{
+	repeated int32 majiangIds = 1;	//听哪些牌
+}
+
+//打牌后听哪些牌
+message DaPaiTingPaiInfo {
+	optional int32 majiangId = 1;		//打哪张牌
+	repeated int32 tingMajiangIds = 2;  //听哪些牌
+}
+
+//打掉哪些牌后可以听哪些牌
+message DaPaiTingPaiRes{
+	repeated DaPaiTingPaiInfo info = 1;	//打掉哪些牌后可以听哪些牌
+}
+
+//操作输赢分
+message ActOperatorRes {
+	optional int32 act = 1;		//操作
+	optional string operatorId = 2;  //操作人id
+	optional int32 operatorSeat = 3;//操作人坐位
+	optional int32 point = 4;//输赢分
+}
+
+//重庆血战麻将计分板
+message CqxzMjScoreboardRes {
+    optional int32 observerSeat = 1;   //查看人座位号
+	repeated ActOperatorRes aor = 2; //每一条积分明细
+	optional int32 countPoint =3; //累计实时输赢
+}

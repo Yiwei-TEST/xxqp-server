@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="userBindGameBureau">
+	<resultMap class="com.sy599.game.db.bean.UserBindGameBureau" id="userBindGameBureau">
+		<result property="userId" column="userId" />
+		<result property="wanfaId" column="wanfaId" />
+		<result property="gameTime" column="gameTime" />
+		<result property="name" column="name" />
+		<result property="number" column="number" />
+		<result property="payBindId" column="payBindId" />
+	</resultMap>
+
+	<insert id="saveUserBindGameBureau" parameterClass="com.sy599.game.db.bean.UserBindGameBureau">
+		INSERT INTO
+		activity_bind_game_bureau
+		(userId,wanfaId,gameTime,name,number,payBindId)
+		values
+		(#userId#,#wanfaId#,#gameTime#,#name#,#number#,#payBindId#)
+		on duplicate key update
+		userId=#userId#,wanfaId=#wanfaId#,gameTime=#gameTime#,name=#name#,number=number+#number#,payBindId=#payBindId#
+	</insert>
+</sqlMap>

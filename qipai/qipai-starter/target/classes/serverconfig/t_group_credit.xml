@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="groupCredit">
+
+	<select id="getConfigCreditValue" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		SELECT credit FROM t_group_credit_config
+		WHERE
+		    groupId=#groupId#
+		    AND preUserId=#preUserId#
+		    AND userId=#userId#
+		    AND configId=#configId#
+	</select>
+
+    <select id="loadConfigCreditValue" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		SELECT credit FROM t_group_credit_config
+		WHERE
+		    groupId=#groupId#
+		    AND preUserId=#preUserId#
+		    AND userId=#userId#
+		    AND configId=#configId#
+	</select>
+
+    <select id="loadGroupUserCredit" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+		SELECT credit FROM t_group_user
+		WHERE
+		    groupId=#groupId#
+		    AND userId=#userId#
+	</select>
+
+</sqlMap>
+
+
+
+
+
+
+

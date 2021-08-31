@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="systemMarquee">
+	<cacheModel id="code-CacheModel" type="LRU" readOnly="true"
+		serialize="false">
+		<flushInterval minutes="1" />
+		<property name="cache-size" value="1000" />
+	</cacheModel>
+
+
+	<resultMap class="com.sy599.game.db.bean.SystemMarquee" id="systemMarquee">
+		<result property="id" column="id" />
+		<result property="type" column="type" />
+		<result property="round" column="round" />
+		<result property="delay" column="delay" />
+		<result property="content" column="content" />
+		<result property="updateTime" column="updateTime" />
+		<result property="startTime" column="startTime" />
+		<result property="endTime" column="endTime" />
+		<result property="isuse" column="isuse" />
+	</resultMap>
+
+	<select id="getUseMarquee" resultMap="systemMarquee" 
+		parameterClass="java.util.HashMap">
+		select * from system_marquee where isuse=1 limit 10;
+	</select>
+
+	<select id="selectNewMarqueeTime"
+		resultClass="Date">
+		SELECT
+		MAX(updateTime) FROM `system_marquee` LIMIT 1;
+	</select>
+</sqlMap>
+

@@ -1,0 +1,6 @@
+com\sy599\game\qipai\wzq\command\WzqCommandProcessor.class
+com\sy599\game\qipai\wzq\command\play\WzqPlayCommand.class
+com\sy599\game\qipai\wzq\bean\WzqTable.class
+com\sy599\game\qipai\wzq\bean\WzqPlayer.class
+com\sy599\game\qipai\wzq\command\com\WzqComCommand.class
+com\sy599\game\qipai\wzq\tool\WzqUtil.class

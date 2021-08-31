@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+	   http://www.springframework.org/schema/mvc/spring-mvc.xsd"
+	   default-autowire="byName">
+
+	<!-- executor="myExecutor" scheduler="myScheduler" -->
+	<!-- <task:executor id="myExecutor" pool-size="5"/> -->
+	<!-- <task:scheduler id="myScheduler" pool-size="10"/> -->
+
+	<mvc:annotation-driven />
+	<context:annotation-config />
+	<!-- 需要扫描的包 -->
+	<context:component-scan base-package="com.sy" />
+	<!-- AOP配置 -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	<!-- 静态资源访问配置 -->
+	<mvc:default-servlet-handler />
+
+	<bean class="com.sy.mainland.util.PropertiesFileLoader"
+		  init-method="init" destroy-method="destroy" scope="singleton">
+		<!-- 自动检测间隔时间(s) -->
+		<property name="intervalTime">
+			<value>10</value>
+		</property>
+	</bean>
+
+	<!-- 引入配置文件 -->
+	<bean id="propertyConfiguer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>WEB-INF/config/jdbc.properties</value>
+				<value>WEB-INF/config/game.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 写库设置(默认) -->
+	<!--<bean id="default-master-wall-filter-config" class="com.alibaba.druid.wall.WallConfig"-->
+		  <!--init-method="init">-->
+		<!--<property name="dir" value="META-INF/druid/wall/default/master" />-->
+		<!--<property name="selelctAllow" value="true" />-->
+		<!--<property name="selectIntoAllow" value="true" />-->
+		<!--<property name="deleteAllow" value="true" />-->
+		<!--<property name="updateAllow" value="true" />-->
+		<!--<property name="insertAllow" value="true" />-->
+		<!--<property name="mergeAllow" value="true" />-->
+	<!--</bean>-->
+	<!--&lt;!&ndash; 读库设置(默认) &ndash;&gt;-->
+	<!--<bean id="default-slave-wall-filter-config" class="com.alibaba.druid.wall.WallConfig"-->
+		  <!--init-method="init">-->
+		<!--<property name="dir" value="META-INF/druid/wall/default/slave" />-->
+		<!--<property name="selelctAllow" value="true" />-->
+		<!--<property name="selectIntoAllow" value="false" />-->
+		<!--<property name="deleteAllow" value="false" />-->
+		<!--<property name="updateAllow" value="false" />-->
+		<!--<property name="insertAllow" value="false" />-->
+		<!--<property name="mergeAllow" value="false" />-->
+	<!--</bean>-->
+
+	<!--<bean id="default-master-wall-filter" class="com.alibaba.druid.wall.WallFilter">-->
+		<!--<property name="dbType" value="mysql" />-->
+		<!--<property name="config" ref="default-master-wall-filter-config" />-->
+	<!--</bean>-->
+	<!--<bean id="default-slave-wall-filter" class="com.alibaba.druid.wall.WallFilter">-->
+		<!--<property name="dbType" value="mysql" />-->
+		<!--<property name="config" ref="default-slave-wall-filter-config" />-->
+	<!--</bean>-->
+
+	<!-- 写库 (默认) -->
+	<bean id="defaultMasterDataSource" class="com.sy.sanguo.common.datasource.MySqlDruidDataSource"
+		  init-method="init" destroy-method="close">
+		<property name="name" value="defaultMasterDataSource" />
+		<!-- 基本属性 url、user、password -->
+		<property name="url">
+			<value>${jdbc.url}</value>
+		</property>
+		<property name="username">
+			<value>${jdbc.user}</value>
+		</property>
+		<property name="password">
+			<bean class="com.sy.sanguo.common.util.SyPropertiesEncryptFactoryBean">
+				<property name="property" value="${jdbc.password}" />
+			</bean>
+		</property>
+
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="5" />
+		<property name="minIdle" value="2" />
+		<property name="maxActive" value="30" />
+
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+
+		<!-- 是否打开PSCache，并且指定每个连接上PSCache的大小 ,分库分表较多的数据库建议设为false,默认设为true -->
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+				  value="50" />
+
+		<!-- 配置监控统计拦截的filters -->
+		<!--<property name="proxyFilters">-->
+			<!--<list>-->
+				<!--<ref bean="default-master-wall-filter" />-->
+			<!--</list>-->
+		<!--</property>-->
+		<!--<property name="filters" value="stat,config,log4j,mergeStat" />-->
+		<!-- 是否对密码解密 -->
+		<!--密码加密 java -cp druid-1.0.11.jar com.alibaba.druid.filter.config.ConfigTools
+			you_password -->
+		<!-- 显示执行慢的sql，默认时间是3000ms -->
+		<property name="connectionProperties"
+				  value="config.decrypt=false,druid.stat.slowSqlMillis=5000" />
+	</bean>
+	<!-- 读库(默认) -->
+	<bean id="defaultSlaveDataSource" class="com.sy.sanguo.common.datasource.MySqlDruidDataSource"
+		  init-method="init" destroy-method="close">
+		<property name="name" value="defaultSlaveDataSource" />
+		<!-- 基本属性 url、user、password -->
+		<property name="url">
+			<value>${jdbc.read_url}</value>
+		</property>
+		<property name="username">
+			<value>${jdbc.user}</value>
+		</property>
+		<property name="password">
+			<bean class="com.sy.sanguo.common.util.SyPropertiesEncryptFactoryBean">
+				<property name="property" value="${jdbc.password}" />
+			</bean>
+		</property>
+
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="5" />
+		<property name="minIdle" value="2" />
+		<property name="maxActive" value="30" />
+
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000" />
+
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+
+		<!-- 是否打开PSCache，并且指定每个连接上PSCache的大小 ,分库分表较多的数据库建议设为false,默认设为true -->
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+				  value="50" />
+
+		<!-- 配置监控统计拦截的filters -->
+		<!--<property name="proxyFilters">-->
+			<!--<list>-->
+				<!--<ref bean="default-slave-wall-filter" />-->
+			<!--</list>-->
+		<!--</property>-->
+		<!--<property name="filters" value="stat,config,log4j,mergeStat" />-->
+		<!-- 是否对密码解密 -->
+		<!--密码加密 java -cp druid-1.0.11.jar com.alibaba.druid.filter.config.ConfigTools
+			you_password -->
+		<!-- 显示执行慢的sql，默认时间是3000ms -->
+		<property name="connectionProperties"
+				  value="config.decrypt=false,druid.stat.slowSqlMillis=5000" />
+	</bean>
+
+	<bean id="defaultReadWriteSwitch" class="com.sy.mainland.util.db.SingleReadWriteSwitch">
+		<!-- 主从配置，支持一主多从 -->
+		<property name="write" ref="defaultMasterDataSource" />
+		<!-- 单个从 -->
+		<property name="read" ref="defaultSlaveDataSource" />
+		<!-- 多个从 -->
+		<!-- 支持map,list,array,set -->
+		<!--
+		<property name="read">
+			<map>
+				<entry value-ref="readDataSource" key="slave"></entry>
+			</map>
+		</property>
+		-->
+	</bean>
+	<!-- 多个数据源 -->
+	<!--
+	<bean id="multiReadWriteSwitch" class="com.efun.mainland.util.db.MultiReadWriteSwitch">
+		<property name="multiReadWriteSwitchMap">
+			<map>
+				<entry value-ref="defaultReadWriteSwitch" key="DB_0"></entry>
+			</map>
+		</property>
+	</bean>
+	-->
+	<bean id="dynamicDataSource" class="com.sy.mainland.util.db.DBDataSource">
+		<!-- 默认数据源 -->
+		<property name="defaultReadWriteSwitch" ref="defaultReadWriteSwitch" />
+		<!-- 指定数据源 -->
+		<property name="readWriteSwitch" ref="defaultReadWriteSwitch" />
+		<!-- 默认为DB_0 -->
+		<!-- <property name="db" value="DB_0"/> -->
+	</bean>
+
+	<bean id="readWriteDataSourceTransactionProcessor" class="com.sy.mainland.util.db.DBProcessor">
+		<property name="forceChoiceReadWhenWrite" value="true" />
+	</bean>
+
+	<bean id="txManager"
+		  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dynamicDataSource" />
+	</bean>
+
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="create*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="merge*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="batch*" propagation="REQUIRED" />
+
+			<tx:method name="load*" read-only="true" />
+			<tx:method name="select*" read-only="true" />
+			<tx:method name="query*" read-only="true" />
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="count*" read-only="true" />
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="check*" read-only="true" />
+			<tx:method name="is*" read-only="true" />
+
+			<tx:method name="*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+
+	<bean id="performanceAOP" class="com.sy.sanguo.common.interceptor.PerformanceAOP"/>
+	<aop:config expose-proxy="true">
+		<!-- DB切入 -->
+		<aop:pointcut id="dbPointcut"
+					  expression="execution(* com.ibatis.sqlmap.client.SqlMapExecutor.*(..))" />
+		<aop:aspect order="-2147483648" ref="performanceAOP">
+			<aop:around pointcut-ref="dbPointcut" method="aroundDb" />
+		</aop:aspect>
+	</aop:config>
+
+    <bean id="actionPerformanceAOP" class="com.sy.sanguo.common.interceptor.ActionPerformanceAOP"/>
+    <aop:config expose-proxy="true">
+        <!-- action切入 -->
+        <aop:pointcut id="actionPointcut" expression="within(com.sy.sanguo.game.action..*)" />
+        <aop:aspect order="-2147483648" ref="actionPerformanceAOP">
+            <aop:around pointcut-ref="actionPointcut" method="actionProcess" />
+        </aop:aspect>
+    </aop:config>
+
+	<aop:config expose-proxy="true">
+		<!--<aop:pointcut id="txPointcut" expression="execution(* com.sy.sanguo.game.dao..*.*(..))" />-->
+		<aop:pointcut id="txPointcut"
+					  expression="execution(* com.ibatis.sqlmap.client.SqlMapExecutor.*(..)) || execution(* com.sy.sanguo.game.competition.service.CompetitionPlayingService.clearingCallBack(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointcut" />
+		<aop:aspect order="-2147483647" ref="readWriteDataSourceTransactionProcessor">
+			<aop:around pointcut-ref="txPointcut" method="determineReadOrWriteDB" />
+		</aop:aspect>
+	</aop:config>
+
+	<!-- 事物配置 -->
+<!--
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+	</bean>
+
+
+
+	 <aop:config>
+		<aop:pointcut id="allMangoMethod"
+			expression="execution(* com.sy.mango.service.*.biz.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="allMangoMethod" />
+		<aop:advisor advice-ref="mangoAdvice" pointcut-ref="allMangoMethod" />
+	</aop:config>
+
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" rollback-for="Exception" />
+		</tx:attributes>
+	</tx:advice>
+
+-->
+
+	<!-- SqlMap setup for iBATIS Database Layer -->
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation" value="classpath:config/sqlMapConfig.xml" />
+		<property name="dataSource" ref="dynamicDataSource" />
+	</bean>
+
+	<bean id="resultType" class="com.sy.sanguo.common.struts.StringResultType"
+		scope="prototype" />
+
+	<!-- Spring中的jdbc模型 -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource">
+			<ref bean="dynamicDataSource" />
+		</property>
+	</bean>
+
+	<!-- 返回给客户端的信息
+	<bean id="sendxml" class="common.readsend.xml.SendClientXml" /> -->
+
+	<!-- 把拦截器依赖注入到spring容器中
+	<bean id="interceptor" class="com.sy.mango.common.struts.MangoCheckInterceptor"
+		destroy-method="destroy">
+	</bean> -->
+
+	 <bean id="guajiLoginCachecontext" class="com.sy.sanguo.common.util.LoginCacheContext" init-method="initData">
+	         <property name="userDao" ref="userDao" />
+	         <property name="orderDao" ref="orderDao" />
+	         <property name="isDebug">
+	             <value>${isDebug}</value>
+	         </property>
+	         <property name="gameloginkey">
+	             <value>${sanguo.loginkey}</value>
+	         </property>
+	         <property name="isMemcache">
+	             <value>${memcache.enable}</value>
+	         </property>
+	         <property name="memcacheServer">
+	             <value>${memcache.servers}</value>
+	         </property>
+	         <property name="callbackUrl">
+	         	<value>${callbackUrl}</value>
+	         </property>
+	         <property name="pf">
+	             <value>${pf}</value>
+	         </property>
+	         <property name="gameName">
+	             <value>${gameName}</value>
+	         </property>
+	         <property name="userMaxCount">
+	             <value>${userMaxCount}</value>
+	         </property>
+	         <property name="headImgUrl">
+	             <value>${headImgUrl}</value>
+	         </property>
+
+		 	<property name="minPlayerId">
+				 <value>${minPlayerId}</value>
+		 	</property>
+		 	<property name="withFilterUserId">
+			 	<value>${withFilterUserId}</value>
+			</property>
+		 	<property name="tipWithCard">
+			 	<value>${tipWithCard}</value>
+		 	</property>
+	 </bean>
+
+	<bean id="commonDao" class="com.sy.sanguo.common.parent.impl.CommonDaoImpl">
+		 <property name="sqlMapClient" ref="sqlMapClient" />
+	</bean>
+
+	<bean id="initdata" class="com.sy.sanguo.common.init.InitData" init-method="init" destroy-method="destroy">
+		<property name="maskWordDao" ref="maskWordDao"/>
+		<property name="sqlDao" ref="sqlDao"/>
+		<property name="userDao" ref="userDao"/>
+		<property name="sqlMapClient" ref="sqlMapClient"/>
+		<property name="blackDaoImpl" ref="blackDaoImpl"/>
+		<property name="state" value="0"/>
+		<property name="maxIpCount" value="20"/>
+		<property name="maxMacCount" value="5"/>
+		<property name="ipWhite" value="127.0.0.1,113.240.222.140"/>
+		<property name="macWhite" value="00:00:00:00:00:00"/>
+	</bean>
+
+
+</beans>

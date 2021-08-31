@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="order">
+
+	<resultMap class="com.sy.sanguo.game.bean.OrderInfo" id="orderInfo">
+		<result property="id" column="id" />
+		<result property="flat_id" column="flat_id" />
+		<result property="order_id" column="order_id" />
+		<result property="server_id" column="server_id" />
+		<result property="order_amount" column="order_amount" />
+		<result property="item_id" column="item_id" />
+		<result property="item_num" column="item_num" />
+		<result property="platform" column="platform" />
+		<result property="create_time" column="create_time" />
+		<result property="userId" column="userId" />
+		<result property="payMoney" column="payMoney" />
+		<result property="payPf" column="payPf" />
+		<result property="payType" column="payType" />
+	</resultMap>
+
+	<resultMap class="com.sy.sanguo.game.bean.RoomcardOrder" id="roomCardOrder">
+		<result property="roleId" column="roleId" />
+		<result property="orderId" column="orderId" />
+		<result property="registerBindAgencyId" column="registerBindAgencyId" />
+		<result property="rechargeBindAgencyId" column="rechargeBindAgencyId" />
+		<result property="isFirstPayBindId" column="isFirstPayBindId" />
+		<result property="commonCards" column="commonCards" />
+		<result property="freeCards" column="freeCards" />
+		<result property="orderStatus" column="orderStatus" />
+		<result property="isDirectRecharge" column="isDirectRecharge" />
+		<result property="rechargeWay" column="rechargeWay" />
+		<result property="rechargeAgencyId" column="rechargeAgencyId" />
+		<result property="createTime" column="createTime" />
+	</resultMap>
+	
+	<select id="getOne" resultMap="orderInfo" parameterClass="java.util.HashMap">
+		select
+		* from order_info where order_id=#order_id# and flat_id=#flat_id#
+	</select>
+
+	<select id="getOneCardOrder" resultMap="roomCardOrder" parameterClass="java.util.HashMap">
+		select
+		* from roomcard_order where orderId=#orderId# and
+		roleId=#roleId#
+	</select>
+	
+	<insert id="insertCardOrder" parameterClass="com.sy.sanguo.game.bean.RoomcardOrder">
+		insert into
+		roomcard_order
+		(roleId,orderId,registerBindAgencyId,rechargeBindAgencyId,isFirstPayBindId,isFirstPayAmount,commonCards,freeCards,orderStatus,isDirectRecharge,rechargeWay,rechargeAgencyId,createTime,remark)
+		VALUES(#roleId#,#orderId#,#registerBindAgencyId#,#rechargeBindAgencyId#,#isFirstPayBindId#,#isFirstPayAmount#,#commonCards#,#freeCards#,#orderStatus#,#isDirectRecharge#,#rechargeWay#,#rechargeAgencyId#,#createTime#,#remark#);
+	</insert>
+
+	<update id="updateStatisticsInf" parameterClass="java.util.HashMap">
+		update statistics_platform set firstChargeNum=firstChargeNum+#firstChargeNum#,
+		firstChargeMoney=firstChargeMoney+#firstChargeNum# 
+		where pf=#pf# and dateTime=#dateTime#
+	</update>
+
+	<update id="updateCardOrder" parameterClass="java.util.HashMap">
+		UPDATE roomcard_order
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend=","
+				property="registerBindAgencyId">
+				registerBindAgencyId=#registerBindAgencyId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=","
+				property="rechargeBindAgencyId">
+				rechargeBindAgencyId=#rechargeBindAgencyId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="isFirstPayBindId">
+				isFirstPayBindId=#isFirstPayBindId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="orderStatus">
+				orderStatus=#orderStatus#
+			</isPropertyAvailable>
+		</dynamic>
+		WHERE roleId = #roleId# and orderId= #orderId#
+	</update>
+
+
+	<insert id="insert" parameterClass="com.sy.sanguo.game.bean.OrderInfo">
+		insert into order_info
+		(flat_id,order_id,server_id,order_amount,item_id,item_num,platform,create_time,extend,userId,payMoney,payPf,payType)
+		VALUES(#flat_id#,#order_id#,#server_id#,#order_amount#,#item_id#,#item_num#,#platform#,#create_time#,#extend#,#userId#,#payMoney#,#payPf#,#payType#);
+	</insert>
+	
+	<select id="isFirstRecharge" parameterClass="java.lang.Long" resultClass="java.lang.Integer">
+		select count(*) from roomcard_order where roleId = #roleId# and isFirstPayBindId = 1
+	</select>
+
+	<select id="isFirstRechargeGold" parameterClass="java.lang.Long" resultClass="java.lang.Integer">
+		select count(*) from roomcard_order where roleId = #roleId# and isFirstPayBindId = 1 AND  remark LIKE '%gold%';
+	</select>
+
+	<select id="selectMyPlayersByDatetime" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select roleId,createTime from roomcard_order
+		where rechargeBindAgencyId = #rechargeBindAgencyId# and isFirstPayBindId = 1
+			AND createTime <![CDATA[>= ]]> #startTime# AND createTime <![CDATA[<= ]]> #endTime#
+	</select>
+
+	<select id="selectMyPlayersDetailByDatetime" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select t1.roleId,t1.createTime,t1.isFirstPayBindId,t1.orderId,t2.order_amount AS orderAmount from roomcard_order t1,order_info t2
+		where t2.order_id=t1.orderId AND t1.rechargeBindAgencyId = #rechargeBindAgencyId#
+		AND t1.createTime <![CDATA[>= ]]> #startTime# AND t1.createTime <![CDATA[<= ]]> #endTime#
+	</select>
+
+	<select id="isFirstPay" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		select * from order_info where userId = #userId# and server_id NOT LIKE "%Z" AND is_sent>0 AND item_id <![CDATA[>= ]]> #minItem# AND item_id <![CDATA[<= ]]> #maxItem#
+		<dynamic prepend="">
+			<isPropertyAvailable prepend=" AND "
+								 property="startTime">
+				create_time <![CDATA[>= ]]> #startTime#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" AND "
+								 property="endTime">
+				create_time <![CDATA[<= ]]> #endTime#
+			</isPropertyAvailable>
+		</dynamic>
+		 limit 1
+	</select>
+</sqlMap>
+
+
+
+
+
+
+

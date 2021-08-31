@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="userSign">
+	<resultMap class="com.sy599.game.db.bean.UserSign" id="UserSign">
+		<result property="userId" column="userId"/>
+		<result property="signTime" column="signTime"/>
+		<result property="extend" column="extend"/>
+	</resultMap>
+	
+	<select id="getSigns" parameterClass = "java.util.Map"  resultMap="UserSign">
+		select * from user_sign where userId = #userId# AND signTime <![CDATA[>= ]]> #begin# AND signTime <![CDATA[<= ]]> #end# order BY signTime ASC
+	</select>
+	
+	<insert id="sign" parameterClass="com.sy599.game.db.bean.UserSign">
+		insert into user_sign (userId, signTime, extend) values (#userId#, #signTime#, #extend#)
+	</insert>
+</sqlMap>

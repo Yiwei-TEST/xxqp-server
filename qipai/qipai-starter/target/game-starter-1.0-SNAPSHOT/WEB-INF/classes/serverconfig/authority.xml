@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="authority">
+	<resultMap class="com.sy599.game.db.bean.Authority" id="Authority">
+		<result property="userId" column="userId"/>
+		<result property="name" column="name"/>
+		<result property="quanxianId" column="quanxianId"/>
+		<result property="createTime" column="createTime"/>
+	</resultMap>
+	
+	<select id="getAuthorityByQxId" parameterClass = "java.util.Map"  resultMap="Authority">
+		select u.userId,u.`name`,a.quanxianId,a.createTime from authority a,user_inf u
+		where u.userId = a.userId and a.quanxianId = #quanxianId# ORDER BY a.createTime desc  limit #indexBegin#,10;
+	</select>
+
+	<select id="getAuthorityByQxIdUserId" parameterClass = "java.util.Map"  resultMap="Authority">
+		select u.userId,u.`name`,a.quanxianId,a.createTime from authority a,user_inf u
+		where u.userId = a.userId and a.userId = #userId# and a.quanxianId = #quanxianId# ORDER BY a.createTime desc limit #indexBegin#,10;
+	</select>
+
+	<insert id="insertAuthority" parameterClass="com.sy599.game.db.bean.Authority">
+		insert into authority (userId, quanxianId, createTime) values (#userId#, #quanxianId#, #createTime#)
+	</insert>
+
+	<delete id="deleteAuthority"  parameterClass = "java.util.Map">
+		delete from authority
+		WHERE userId = #userId# and quanxianId = #quanxianId#;
+	</delete>
+</sqlMap>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"  
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="sql">
+	<select id="showcolumns" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		SHOW COLUMNS from $tablename$;
+
+	</select>
+
+	<update id="updateSql" parameterClass="java.lang.String">
+		$sql$
+	</update>
+
+	<select id="querySql" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		$sql$
+	</select>
+
+	<update id="createTable" parameterClass="java.lang.String">
+		$sql$
+	</update>
+	<select id="showIndex" parameterClass="java.util.Map"
+		resultClass="java.util.HashMap">
+		show index from $tablename$
+	</select>
+
+	<select id="check_table_exists" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_NAME=#tableName# and TABLE_SCHEMA=#dbName#
+	</select>
+
+    <delete id="deleteSql" parameterClass="java.lang.String">
+        $sql$
+    </delete>
+
+    <update id="transferSql" parameterClass="java.lang.String">
+        $sql$
+    </update>
+
+    <select id="loadMaxKeyId" parameterClass="java.lang.String" resultClass="java.lang.Long">
+        $sql$
+    </select>
+</sqlMap>
+

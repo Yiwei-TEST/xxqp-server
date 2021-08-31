@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="missionAbout">
+	<resultMap class="com.sy599.game.db.bean.MissionAbout" id="MissionAbout">
+		<result property="userId" column="userId"/>
+		<result property="dayMissionState" column="dayMissionState"/>
+		<result property="otherMissionState" column="otherMissionState"/>
+		<result property="brokeAward" column="brokeAward"/>
+		<result property="brokeShare" column="brokeShare"/>
+		<result property="dayTime" column="dayTime"/>
+		<result property="ext" column="ext"/>
+	</resultMap>
+	
+	<select id="selectMissionStateByUserId" parameterClass = "java.util.Map"  resultMap="MissionAbout">
+		/*FORCE_MASTER*/ select * from mission_about where userId = #userId#
+	</select>
+
+	<insert id="insert" parameterClass="com.sy599.game.db.bean.MissionAbout">
+		insert into mission_about (userId, dayMissionState,otherMissionState,brokeAward,dayTime,ext)
+		values (#userId#, #dayMissionState#, #otherMissionState#, #brokeAward#,now(),#ext#)
+	</insert>
+
+	<update id="update" parameterClass="com.sy599.game.db.bean.MissionAbout">
+		UPDATE mission_about SET dayMissionState=#dayMissionState#,
+		otherMissionState=#otherMissionState#,brokeAward=#brokeAward#,brokeShare=#brokeShare#,
+		dayTime=#dayTime#,ext=#ext#
+		WHERE userId=#userId#
+	</update>
+
+</sqlMap>

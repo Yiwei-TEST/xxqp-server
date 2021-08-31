@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"  
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="black">
+
+	<cacheModel id="code-CacheModel" type="LRU" readOnly="true"
+		serialize="false">
+		<flushInterval minutes="10" />
+		<property name="cache-size" value="1000" />
+	</cacheModel>
+
+	<resultMap class="com.sy.sanguo.game.bean.SystemBlack" id="SystemBlack">
+		<result property="flatId" column="flatId" />
+		<result property="ip" column="ip" />
+		<result property="mac" column="mac" />
+		<result property="deviceCode" column="deviceCode" />
+		<result property="time" column="time" />
+		<result property="isLoad" column="isLoad" />
+	</resultMap>
+
+	<select id="selectSystemBlack" resultMap="SystemBlack"
+		cacheModel="code-CacheModel">
+		SELECT flatId,ip,mac,deviceCode,time,isLoad FROM
+		system_black
+	</select>
+
+	<select id="selectNoLoadSystemBlack" resultMap="SystemBlack">
+		SELECT
+		flatId,ip,mac,deviceCode,time,isLoad FROM
+		system_black where isLoad=0;
+	</select>
+
+	<update id="updateLoad">
+		update system_black set isLoad=1 where isLoad!=1;
+	</update>
+
+	<insert id="addSystemBlack" parameterClass="java.util.HashMap">
+		insert into
+		system_black(flatId,ip,mac,deviceCode)
+		values(#flatId#,#ip#,#mac#,#deviceCode#);
+	</insert>
+</sqlMap>
+

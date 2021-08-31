@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="systemMarquee">
+	<cacheModel id="code-CacheModel" type="LRU" readOnly="true"
+		serialize="false">
+		<flushInterval minutes="1" />
+		<property name="cache-size" value="1000" />
+	</cacheModel>
+
+
+	<resultMap class="com.sy.sanguo.game.bean.SystemMarquee" id="systemMarquee">
+		<result property="id" column="id" />
+		<result property="type" column="type" />
+		<result property="round" column="round" />
+		<result property="delay" column="delay" />
+		<result property="content" column="content" />
+		<result property="updateTime" column="updateTime" />
+		<result property="startTime" column="startTime" />
+		<result property="endTime" column="endTime" />
+		<result property="isuse" column="isuse" />
+	</resultMap>
+
+	<insert id="insertMarquee" parameterClass="java.util.HashMap">
+		insert into
+		system_marquee(content,updateTime,startTime,endTime,isuse)
+		values(#content#,sysdate(),sysdate(),DATE_SUB(sysdate(),INTERVAL -2 DAY),1 );
+	</insert>
+
+</sqlMap>
+

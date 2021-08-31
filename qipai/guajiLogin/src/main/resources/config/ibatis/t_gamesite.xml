@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="gamesite">
+
+    <resultMap class="com.sy.sanguo.game.pdkuai.db.bean.GameSite" id="GameSite">
+		<result property="id" column="id"/>
+		<result property="gameName" column="gameName"/>
+		<result property="gameType" column="gameType"/>
+		<result property="gameIcon" column="gameIcon"/>
+		<result property="gameNumber" column="gameNumber"/>		
+		<result property="gameMaxNumber" column="gameMaxNumber"/>		
+		<result property="configRound" column="configRound"/>		
+		<result property="configBout" column="configBout"/>	
+		<result property="configTimes" column="configTimes"/>	
+		<result property="applyTime" column="applyTime"/>
+		<result property="beginTime" column="beginTime"/>
+		<result property="durationTime" column="durationTime"/>
+		<result property="gameCondition" column="gameCondition"/>
+		<result property="needPropCount" column="needPropCount"/>
+		<result property="inviteCode" column="inviteCode"/>
+		<result property="gameReward" column="gameReward"/>
+		<result property="serverId" column="serverId"/>
+		<result property="applyMaxNumber" column="applyMaxNumber"/>
+	</resultMap>
+	
+    <resultMap class="com.sy.sanguo.game.pdkuai.db.bean.UserGameSite" id="UserGameSite">
+		<result property="userId" column="userId"/>
+		<result property="gameSiteId" column="gameSiteId"/>
+		<result property="integral" column="integral"/>
+		<result property="roundNum" column="roundNum"/>
+		<result property="playGame" column="playGame"/>
+		<result property="turnBlank" column="turnBlank"/>
+		<result property="tableId" column="tableId"/>
+		<result property="serverId" column="serverId"/>
+		<result property="applyTime" column="applyTime"/>
+		<result property="passInviteCode" column="passInviteCode"/>
+	</resultMap>
+	
+	<resultMap class="com.sy.sanguo.game.pdkuai.db.bean.GameSiteAward" id="GameSiteAward">
+		<result property="id" column="id"/>
+		<result property="userId" column="userId"/>
+		<result property="gameSiteName" column="gameSiteName"/>
+		<result property="gameSiteRank" column="gameSiteRank"/>
+		<result property="gameSiteTime" column="gameSiteTime"/>
+		<result property="awardId" column="awardId"/>
+		<result property="awardCnt" column="awardCnt"/>
+		<result property="awardName" column="awardName"/>
+		<result property="awardStatus" column="awardStatus"/>
+		<result property="receiveTime" column="receiveTime"/>
+		<result property="telephone" column="telephone"/>
+	</resultMap>
+	
+	<resultMap class="com.sy.sanguo.game.pdkuai.db.bean.MatchInviteCode" id="MatchInviteCode">
+		<result property="id" column="id"/>
+		<result property="gameSiteId" column="gameSiteId"/>
+		<result property="inviteCode" column="inviteCode"/>
+		<result property="useFlag" column="useFlag"/>
+		<result property="useUserId" column="useUserId"/>
+		<result property="useServer" column="useServer"/>
+		<result property="useTime" column="useTime"/>
+	</resultMap>
+	
+	<insert id="addMatchInviteCode" parameterClass="java.util.HashMap">
+		insert into match_invite_code (gameSiteId, inviteCode, useFlag, useUserId, useServer, useTime) 
+		values (#gameSiteId#, #inviteCode#, #useFlag#, #useUserId#, #useServer#, #useTime#)
+	</insert>
+	
+	<select id="oneMatchInviteCodeCnt" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(*) from match_invite_code where gameSiteId = #gameSiteId#
+	</select>
+
+	<select id="getMatchInviteCode" resultMap="MatchInviteCode" parameterClass="java.util.HashMap">
+		select * from match_invite_code where gameSiteId = #gameSiteId# and inviteCode = #inviteCode#
+	</select>
+	
+	<update id="updateMatchInviteCode" parameterClass="java.util.HashMap">
+		update match_invite_code
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="useUserId">
+				useUserId=#useUserId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="useFlag">
+				useFlag=#useFlag#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="useServer">
+				useServer=#useServer#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="useTime">
+				useTime=#useTime#
+			</isPropertyAvailable>
+		</dynamic>
+		where id= #id#;
+	</update>
+	
+	<insert id="addUserGameSite" parameterClass="java.util.HashMap">
+		insert into user_game_site (userId, gameSiteId, integral, roundNum, playGame, turnBlank, tableId, serverId, applyTime, passInviteCode) 
+		values (#userId#, #gameSiteId#, #integral#, #roundNum#, #playGame#, #turnBlank#, #tableId#, #serverId#, #applyTime#, #passInviteCode#);
+	</insert>
+	
+	<select id="queryUserGameSite" resultMap="UserGameSite" parameterClass="java.lang.Long">
+		select * from user_game_site where userId = #userId#
+	</select>
+	
+	<select id="queryAllGameSite" resultMap="GameSite">
+		select * from game_site where 1 = 1 order by beginTime
+		<!-- select * from game_site where 1 = 1 order by beginTime -->
+	</select>
+	
+	<select id="getApplyNumber" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+		select count(*) from user_game_site where gameSiteId = #gameSiteId#
+	</select>
+	
+	<select id="getGameSiteById" resultMap="GameSite" parameterClass="java.lang.Integer">
+		select * from game_site where id = #gameSiteId#
+	</select>
+	
+	<update id="updateApplyMaxNumber" parameterClass="java.util.HashMap">
+		update game_site set applyMaxNumber = #applyMaxNumber# where id = #gameSiteId#
+	</update>
+	
+	<update id="updateUserGameSite" parameterClass="java.util.HashMap">
+		update user_game_site
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="gameSiteId">
+				gameSiteId=#gameSiteId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="integral">
+				integral=#integral#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="roundNum">
+				roundNum=#roundNum#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="playGame">
+				playGame=#playGame#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="turnBlank">
+				turnBlank=#turnBlank#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="tableId">
+				tableId=#tableId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="serverId">
+				serverId=#serverId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="applyTime">
+				applyTime=#applyTime#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="applyTime">
+				applyTime=#applyTime#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="passInviteCode">
+				passInviteCode=#passInviteCode#
+			</isPropertyAvailable>
+		</dynamic>
+		where userId= #userId#;
+	</update>
+	
+	<update id="updateAwardStatus" parameterClass="java.util.HashMap">
+		update game_site_award
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="awardStatus">
+				awardStatus=#awardStatus#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="telephone">
+				telephone=#telephone#
+			</isPropertyAvailable>
+		</dynamic>
+		where id= #id#;
+	</update>
+
+	<select id="takeAwardList" resultMap="GameSiteAward" parameterClass="java.lang.Long">
+		select * from game_site_award where userId = #userId#
+	</select>
+	
+	<select id="takeAwardById" resultMap="GameSiteAward" parameterClass="java.lang.Long">
+		select * from game_site_award where id = #id#
+	</select>
+	
+	<select id="userCanAwardCnt" resultClass="java.lang.Integer" parameterClass="java.lang.Long">
+		SELECT COUNT(*) FROM game_site_award WHERE userId = #userId# AND awardStatus = 1
+	</select>
+	
+	<select id="userGameSiteRank_bak" resultMap="UserGameSite" parameterClass="java.util.HashMap">
+		select * from user_game_site where gameSiteId = #gameSiteId# ORDER BY integral DESC, applyTime asc 
+		<dynamic prepend="limit">
+			<isNotNull property="amount">
+				0, #amount# 
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<resultMap class="com.sy.sanguo.game.pdkuai.db.bean.UserGameSite" id="UserGameSite_name">
+		<result property="userId" column="userId"/>
+		<result property="gameSiteId" column="gameSiteId"/>
+		<result property="integral" column="integral"/>
+		<result property="roundNum" column="roundNum"/>
+		<result property="playGame" column="playGame"/>
+		<result property="turnBlank" column="turnBlank"/>
+		<result property="tableId" column="tableId"/>
+		<result property="serverId" column="serverId"/>
+		<result property="applyTime" column="applyTime"/>
+		<result property="passInviteCode" column="passInviteCode"/>
+		<result property="name" column="name"/>
+	</resultMap>
+	
+	<select id="userGameSiteRank" resultMap="UserGameSite_name" parameterClass="java.util.HashMap">
+		SELECT a.userId, a.gameSiteId, a.integral, a.roundNum, a.playGame, a.turnBlank, a.tableId, a.serverId, a.applyTime, a.passInviteCode, b.name
+		FROM user_game_site AS a JOIN user_inf AS b ON a.userId = b.userId WHERE a.gameSiteId = #gameSiteId# ORDER BY a.integral DESC, a.applyTime ASC 
+		<dynamic prepend="limit">
+			<isNotNull property="amount">
+				0, #amount# 
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+    <resultMap class="com.sy.sanguo.game.pdkuai.db.bean.UserGameSite" id="UserGameSite_userId">
+		<result property="userId" column="userId"/>
+	</resultMap>
+	
+	<select id="gameSiteApplyUserId" resultMap="UserGameSite_userId" parameterClass="java.lang.Integer">
+		select userId from user_game_site where gameSiteId = #gameSiteId#
+	</select>
+	
+</sqlMap>

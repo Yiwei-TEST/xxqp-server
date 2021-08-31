@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="redbagInfo">
+
+	<resultMap class="com.sy.sanguo.game.bean.redbag.RedBagInfo" id="redbagInfo">
+		<result property="userId" column="userId" />
+		<result property="redBagType" column="redBagType" />
+		<result property="redbag" column="redbag" />
+		<result property="receiveDate" column="receiveDate" />
+		<result property="drawDate" column="drawDate" />
+		<result property="sourceType" column="sourceType" />
+		<result property="sourceTypeName" column="sourceTypeName" />
+	</resultMap>
+
+	<insert id="saveRedBagInfo" parameterClass="com.sy.sanguo.game.bean.redbag.RedBagInfo">
+		INSERT INTO
+		redbag_info
+		(userId,redBagType,redbag,receiveDate,drawDate,sourceType,sourceTypeName)
+		values
+		(#userId#,#redBagType#,#redbag#,#receiveDate#,#drawDate#,#sourceType#,#sourceTypeName#)
+		on duplicate key update
+		redbag=#redbag#,drawDate=#drawDate#,sourceType=#sourceType#,sourceTypeName=#sourceTypeName#
+	</insert>
+
+	<select id="getUserRedBagInfos" parameterClass="java.lang.Long"
+			resultMap="redbagInfo">
+		select * from redbag_info where userId =#userId#;
+	</select>
+
+	<select id="getTodayUserRedBagNum" resultClass = "java.lang.Float">
+		select sum(redbag) from redbag_info where redBagType = 2 and date_format(drawDate,'%Y-%m-%d')= date_format(now(),'%Y-%m-%d')
+	</select>
+</sqlMap>

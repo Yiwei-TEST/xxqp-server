@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="daikai">
+
+	<resultMap class="com.sy.sanguo.game.pdkuai.db.bean.DaikaiTable" id="daikaitable">
+		<result property="tableId" column="tableId"/>
+		<result property="daikaiId" column="daikaiId"/>
+		<result property="serverId" column="serverId"/>
+		<result property="playType" column="playType"/>
+		<result property="needCard" column="needCard"/>
+		<result property="state" column="state"/>
+		<result property="createFlag" column="createFlag"/>
+		<result property="createPara" column="createPara"/>
+		<result property="createStrPara" column="createStrPara"/>
+		<result property="createTime" column="createTime"/>
+		<result property="daikaiTime" column="daikaiTime"/>
+		<result property="returnFlag" column="returnFlag"/>
+		<result property="playerInfo" column="playerInfo"/>
+		<result property="extend" column="extend"/>
+	</resultMap>
+	
+	<select id="getDaikaiList" resultMap="daikaitable" parameterClass="java.lang.Long">
+		select * from daikai_table where daikaiId = #daikaiId# and (state = 0 or state = 1) order by createTime
+	</select>
+	
+	<select id="getDaikaiTable" resultMap="daikaitable" parameterClass="java.lang.Long">
+		select * from daikai_table where tableId = #tableId# ORDER BY daikaiTime DESC LIMIT 1
+	</select>
+	
+	<resultMap class="com.sy.sanguo.game.pdkuai.db.bean.DaikaiTable" id="recordTableId">
+		<result property="tableId" column="tableId"/>
+		<result property="createPara" column="createPara"/>
+		<result property="createStrPara" column="createStrPara"/>
+		<result property="playType" column="playType"/>
+	</resultMap>
+	
+	<select id="getRecordTableId" resultMap="recordTableId" parameterClass="java.lang.Long">
+		select tableId, createPara, createStrPara, playType from daikai_table where daikaiId = #daikaiId# and state = 2 order by daikaiTime desc limit 30
+	</select>
+	
+	<resultMap class="com.sy.sanguo.game.pdkuai.db.bean.UserPlaylog" id="userlogInf">
+		<result property="id" column="id" />
+		<result property="userId" column="userId" />
+		<result property="logId" column="logId" />
+		<result property="tableId" column="tableId" />
+		<result property="count" column="count" />
+		<result property="startseat" column="startseat" />
+		<result property="time" column="time" />
+		<result property="res" column="res" />
+		<result property="outCards" column="outCards" />
+		<result property="extend" column="extend" />
+		<result property="maxPlayerCount" column="maxPlayerCount" />
+	</resultMap>
+	
+	<select id="selectUserLogByLogId" parameterClass="String" resultMap="userlogInf">
+		select * from user_playlog where id in ($id$)
+	</select>
+	
+	<resultMap class="com.sy.sanguo.game.pdkuai.db.bean.UserPlaylog" id="userlogRecordId">
+		<result property="id" column="id" />
+		<result property="tableId" column="tableId" />
+	</resultMap>
+	
+	<select id="queryRecordIdByTableId" parameterClass="java.util.HashMap" resultMap="userlogRecordId">
+		SELECT * FROM user_playlog WHERE tableId IN ($id$)
+		<isPropertyAvailable property="userId" prepend="and">
+			userId = #userId#
+		</isPropertyAvailable>
+		ORDER BY id asc
+	</select>
+	
+	<select id="getNeedClearDaikaiTable"  resultMap="daikaitable" parameterClass="java.util.Date">
+		select * from daikai_table where (state = 0 and <![CDATA[ daikaiTime < #overdueTime# ]]>) or state = 3
+	</select>
+	
+	<update id="clearDaikaiTable" parameterClass="java.util.HashMap">
+		update daikai_table set state = 4 where tableId = #tableId# and daikaiId = #daikaiId#
+	</update>
+	
+</sqlMap>

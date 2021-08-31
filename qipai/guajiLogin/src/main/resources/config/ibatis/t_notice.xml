@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"  
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="notice">
+
+	<cacheModel id="code-CacheModel" type="LRU" readOnly="true"
+		serialize="false">
+		<flushInterval minutes="10" />
+		<property name="cache-size" value="1000" />
+	</cacheModel>
+	
+	<resultMap class="com.sy.sanguo.game.bean.DBNotice"
+		id="systemnotice">
+		<result property="id" column="id" />
+		<result property="serverIds" column="serverIds" />
+		<result property="pfs" column="pfs" />
+		<result property="name" column="name" />
+		<result property="content" column="content" />
+		<result property="isuse" column="isuse" />
+		<result property="updatetime" column="updatetime" />
+	</resultMap>
+
+	<select id="selectSystemNotice"
+		resultMap="systemnotice" cacheModel="code-CacheModel">
+		SELECT id,serverIds,pfs,name,content,isuse,updatetime FROM
+		system_notice ORDER BY pfs desc
+	</select>
+	
+		<update id="updateSystemNotice"
+		parameterClass="java.util.HashMap">
+		update system_notice
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="name">
+				name=#name#
+			</isPropertyAvailable>	
+			<isPropertyAvailable prepend="," property="serverIds">
+				serverIds=#serverIds#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="pfs">
+				pfs=#pfs#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="isuse">
+				isuse=#isuse#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="content">
+				content=#content#,updatetime=now()
+			</isPropertyAvailable>
+		</dynamic>
+		where id= #id#;
+	</update>
+
+	<insert id="addSystemNotice" parameterClass="java.util.HashMap">
+		insert into system_notice(serverIds,pfs,name,content,isuse)
+		values(#serverIds#,#pfs#,#name#,#content#,#isuse#);
+	</insert>
+
+
+	<delete id="deleteSystemNotice"
+		parameterClass="java.util.HashMap">
+		delete from system_notice where id= #id#
+	</delete>
+	
+	<resultMap class="com.sy.sanguo.game.bean.SystemMessage" id="systemMessage">
+		<result property="id" column="id" />
+		<result property="content" column="content" />
+		<result property="endTime" column="endTime" />
+	</resultMap>
+	
+	<select id="getAllSystemMessage" resultMap="systemMessage">
+		select * from system_message where <![CDATA[ endTime > NOW() ]]>
+	</select>
+	
+	<insert id="addSystemMessage" parameterClass="java.util.HashMap">
+		insert into system_message (id, content, endTime)
+		values(#id#, #content#, #endTime#);
+	</insert>
+
+</sqlMap>
+

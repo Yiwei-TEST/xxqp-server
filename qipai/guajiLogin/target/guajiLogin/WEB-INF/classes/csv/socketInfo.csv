@@ -1,0 +1,11 @@
+﻿serverid,name,serverip,serverport,weight,url
+1,1服,http://115.159.55.11:8001/guaji/guaji.do,7116,0,http://115.159.55.11:8001/guaji/guaji.do
+2,2服,http://115.159.55.11:8001/guaji/guaji.do,7116,0,http://115.159.55.11:8001/guaji/guaji.do
+14,14服,http://192.168.1.111:8002/guaji/guaji.do,7116,1,http://192.168.1.111:8002/guaji/guaji.do
+6,6服,http://192.168.1.170:8001/guaji/guaji.do,7116,0,http://192.168.1.170:8001/guaji/guaji.do
+7,测试服7服(测试),http://115.159.55.11:8006/guaji/guaji.do,7116,0,http://115.159.55.11:8006/guaji/guaji.do
+11,11服,http://115.159.55.11:8107/guaji/guaji.do,7116,0,http://115.159.55.11:8107/guaji/guaji.do
+12,12服,http://115.159.55.11:8007/guaji/guaji.do,7116,0,http://115.159.55.11:8007/guaji/guaji.do
+10,10服,http://115.159.55.11:8001/guaji/guaji.do,7116,0,http://115.159.55.11:8001/guaji/guaji.do
+5,5服,http://192.168.1.111:8001/guaji/guaji.do,7116,0,http://192.168.1.111:8001/guaji/guaji.do
+15,15服,http://115.159.55.11:8105/guaji/guaji.do,7116,1,http://115.159.55.11:8105/guaji/guaji.do

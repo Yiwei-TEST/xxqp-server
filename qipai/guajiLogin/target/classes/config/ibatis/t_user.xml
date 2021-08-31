@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="user">
+
+    <cacheModel id="code-CacheModel" type="LRU" readOnly="true"
+                serialize="false">
+        <flushInterval minutes="10" />
+        <property name="cache-size" value="10000" />
+    </cacheModel>
+
+    <resultMap class="com.sy.sanguo.game.bean.RegInfo" id="UserInfo">
+        <result property="userId" column="userId"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="enterServer" column="enterServer"/>
+        <result property="headimgurl" column="headimgurl"/>
+        <result property="headimgraw" column="headimgraw"/>
+        <result property="pf" column="pf"/>
+        <result property="pw" column="pw"/>
+        <result property="playedSid" column="playedSid"/>
+        <result property="sessCode" column="sessCode"/>
+        <result property="regTime" column="regTime"/>
+        <result property="logTime" column="logTime"/>
+        <result property="ip" column="ip"/>
+        <result property="mac" column="mac"/>
+        <result property="deviceCode" column="deviceCode"/>
+        <result property="syvc" column="syvc"/>
+        <result property="flatId" column="flatId"/>
+        <result property="identity" column="identity"/>
+        <result property="cards" column="cards"/>
+        <result property="freeCards" column="freeCards"/>
+        <result property="regBindId" column="regBindId"/>
+        <result property="syncTime" column="syncTime"/>
+        <result property="logoutTime" column="logoutTime"/>
+        <result property="lastPlayTime" column="lastPlayTime"/>
+        <result property="pay" column="pay"/>
+        <result property="payBindId" column="payBindId"/>
+        <result property="playingTableId" column="playingTableId"/>
+        <result property="config" column="config"/>
+        <result property="extend" column="extend"/>
+        <result property="loginExtend" column="loginExtend"/>
+        <result property="loginDays" column="loginDays"/>
+        <result property="activity" column="activity"/>
+        <result property="record" column="record"/>
+        <result property="drawLottery" column="drawLottery"/>
+        <result property="usedCards" column="usedCards"/>
+        <result property="isOnLine" column="isOnLine"/>
+        <result property="os" column="os"/>
+        <result property="gameSiteTableId" column="gameSiteTableId"/>
+        <result property="totalCount" column="totalCount"/>
+        <result property="userState" column="userState"/>
+        <result property="payBindTime" column="payBindTime"/>
+        <result property="channel" column="channel"/>
+        <result property="totalBureau" column="totalBureau"/>
+        <result property="phoneNum" column="phoneNum" />
+        <result property="phonePw" column="phonePw"/>
+        <result property="isReceiveBDAward" column="isReceiveBDAward"/>
+        <result property="goldRoomGroupId" column="goldRoomGroupId"/>
+        <result property="isCreateGroup" column="isCreateGroup"/>
+        <result property="accName" column="accName" />
+        <result property="accPwd" column="accPwd"/>
+    </resultMap>
+    <select id="getUser" resultMap="UserInfo" parameterClass="java.util.HashMap">
+		select * from user_inf where flatId=#username# and pf LIKE #pf# ORDER BY userId DESC limit 1;
+	</select>
+
+    <select id="getUser0" resultMap="UserInfo" parameterClass="java.util.HashMap">
+        select * from user_inf where flatId=#username# and pf=#pf# ORDER BY userId DESC limit 1;
+    </select>
+    <select id="getUserUnion" resultMap="UserInfo" parameterClass="java.util.HashMap">
+        select * from user_inf where (flatId=#flatId# and pf=#pf#) OR (`identity`=#unionId# and pf LIKE #unionPf#) ORDER BY userId DESC limit 1;
+    </select>
+
+    <select id="selectUserBaseMsg" resultClass="java.util.HashMap" parameterClass="java.util.HashMap" cacheModel="code-CacheModel">
+        SELECT userId,headimgurl,`name` as userName,isOnLine,sex FROM user_inf where userId = #userId#;
+    </select>
+
+    <resultMap class="com.sy.sanguo.game.bean.UserExtendInfo" id="userExtendInfo">
+        <result property="userId" column="userId"/>
+        <result property="cdk" column="cdk"/>
+        <result property="extend" column="extend"/>
+        <result property="myConsume" column="myConsume"/>
+        <result property="shengMoney" column="shengMoney"/>
+        <result property="prizeFlag" column="prizeFlag"/>
+        <result property="name" column="name"/>
+        <result property="totalMoney" column="totalMoney"/>
+        <result property="bindSongCard" column="bindSongCard"/>
+    </resultMap>
+
+    <update id="updateUserExtendinf" parameterClass="java.util.HashMap">
+        UPDATE user_extendinf
+        <dynamic prepend="SET">
+            <isPropertyAvailable prepend="," property="cdk">
+                cdk=#cdk#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="extend">
+                extend=#extend#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="myConsume">
+                myConsume=#myConsume#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="shengMoney">
+                shengMoney=#shengMoney#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="prizeFlag">
+                prizeFlag=#prizeFlag#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="name">
+                name=#name#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="totalMoney">
+                totalMoney=#totalMoney#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="bindSongCard">
+                bindSongCard=#bindSongCard#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="lastUpNameTime">
+                lastUpNameTime=#lastUpNameTime#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="lastUpHeadimgTime">
+                lastUpHeadimgTime=#lastUpHeadimgTime#
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE userId=#userId#
+    </update>
+
+    <select id="getUserByUnionid" resultMap="UserInfo"
+            parameterClass="java.util.HashMap">
+		select * from user_inf where identity=#identity#;
+	</select>
+
+    <select id="getUserById" resultMap="UserInfo" parameterClass="java.lang.Long">
+		select * from user_inf where userId=#userId# limit 1;
+	</select>
+
+    <select id="getUserByIdForList" resultMap="UserInfo" parameterClass="java.util.Map">
+		select * from user_inf where enterServer > 0
+		<isEqual prepend=" and " compareValue="0" property="notFilterOffline"> isOnLine!=0 </isEqual>
+		and userId in ($userIds$);
+	</select>
+
+    <select id="getUserForListByTable" resultMap="UserInfo" parameterClass="java.util.Map">
+		select * from user_inf where 1=1
+		<isEqual prepend=" and " compareValue="1" property="notInTable"> playingTableId=0 </isEqual>
+		and userId in ($userIds$);
+	</select>
+
+	<select id="countOnlineByUserIds" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(1) c from user_inf where enterServer > 0 and isOnLine!=0 and userId in ($userIds$);
+	</select>
+
+	<select id="getOfflineByUserIds" resultClass="java.lang.Long" parameterClass="java.util.Map">
+		select userId from user_inf where enterServer > 0 and isOnLine=0 and userId in ($userIds$);
+	</select>
+
+    <select id="loadUsersByUserId" resultClass="java.util.HashMap" parameterClass="java.lang.String">
+        select userId,`name` as userName , headimgurl from user_inf where userId IN ($userIds$);
+    </select>
+
+    <insert id="addUser" parameterClass="com.sy.sanguo.game.bean.RegInfo">
+		insert into user_inf
+		(`userId`,`flatId`,`name`,`loginDays`,`sex`,`headimgurl`,`pf`,`pw`,`playedSid`,`sessCode`,`regTime`,`logTime`,`config`,`freeCards`,`regBindId`,`os`,`identity`,`headimgraw`,`gameSiteTableId`,`payBindId`,`payBindTime`,`channel`,`loginExtend`,`deviceCode`,`isRobot`)
+		VALUES
+		(#userId#,#flatId#,#name#,#loginDays#,#sex#,#headimgurl#,#pf#,#pw#,#playedSid#,#sessCode#, now(), now(),      #config#,#freeCards#,#regBindId#,#os#,#identity#,#headimgraw#,#gameSiteTableId#,#payBindId#,#payBindTime#,#channel#,#loginExtend#,#deviceCode#,#isRobot#)
+        <selectKey resultClass="java.lang.Long" keyProperty="userId">
+            select userId from user_inf where flatId=#flatId# and pf=#pf#
+        </selectKey>
+	</insert>
+
+    <update id="updateUserBindPayId" parameterClass="java.util.HashMap">
+			UPDATE user_inf SET payBindId=#payBindId#,payBindTime=#payBindTime# WHERE userId=#userId#
+	</update>
+
+    <update id="addUserCards" parameterClass="java.util.HashMap">
+        UPDATE user_inf
+        <dynamic prepend="SET">
+            <isPropertyAvailable prepend="," property="cards">
+                cards=cards+#cards#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="freeCards">
+                freeCards=freeCards+#freeCards#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="payBindId">
+                payBindId=#payBindId#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="loginExtend">
+                loginExtend=#loginExtend#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="payBindTime">
+                payBindTime=#payBindTime#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="coin">
+                coin = coin + #coin#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="freeCoin">
+                freeCoin = freeCoin + #freeCoin#
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE userId =#userId#
+    </update>
+
+    <update id="updateUser" parameterClass="java.util.HashMap">
+        UPDATE user_inf
+        <dynamic prepend="SET">
+            <isPropertyAvailable prepend="," property="gameSiteTableId">
+                gameSiteTableId=#gameSiteTableId#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="headimgraw">
+                headimgraw=#headimgraw#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="loginExtend">
+                loginExtend=#loginExtend#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="name">
+                name=#name#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="sex">
+                sex=#sex#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="enterServer">
+                enterServer=#enterServer#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="headimgurl">
+                headimgurl=#headimgurl#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="pf">
+                pf=#pf#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="pw">
+                pw=#pw#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="playedSid">
+                playedSid=#playedSid#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="sessCode">
+                sessCode=#sessCode#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="regTime">
+                regTime = #regTime#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="logTime">
+                logTime = #logTime#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="ip">
+                ip = #ip#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="mac">
+                mac = #mac#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="deviceCode">
+                deviceCode = #deviceCode#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="syvc">
+                syvc = #syvc#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="flatId">
+                flatId=#flatId#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="identity">
+                identity=#identity#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="cards">
+                cards=#cards#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="regBindId">
+                regBindId=#regBindId#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="syncTime">
+                syncTime=#syncTime#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="logoutTime">
+                logoutTime=#logoutTime#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="pay">
+                pay=#pay#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="payBindId">
+                payBindId=#payBindId#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="payBindTime">
+                payBindTime=#payBindTime#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="config">
+                config=#config#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="playingTableId">
+                playingTableId=#playingTableId#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="config">
+                config=#config#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="extend">
+                extend=#extend#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="loginDays">
+                loginDays=loginDays+#loginDays#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="activity">
+                activity=#activity#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="record">
+                record=#record#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="drawLottery">
+                drawLottery=#drawLottery#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="usedCards">
+                usedCards=#usedCards#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="os">
+                os=#os#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="totalCount">
+                totalCount=#totalCount#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="preLoginTime">
+                preLoginTime=#preLoginTime#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="channel">
+                channel=#channel#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="totalBureau">
+                totalBureau=#totalBureau#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="phoneNum">
+                phoneNum=#phoneNum#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="phonePw">
+                phonePw=#phonePw#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="isReceiveBDAward">
+                isReceiveBDAward=#isReceiveBDAward#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="goldRoomGroupId">
+                goldRoomGroupId=#goldRoomGroupId#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="accName">
+                accName=#accName#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="accPwd">
+                accPwd=#accPwd#
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE userId = #userId#
+    </update>
+    <select id="getMaxId" resultClass="java.lang.Long">
+		select max(userId) from
+		user_inf
+	</select>
+
+    <select id="getPhone" parameterClass="java.lang.String"
+            resultClass="java.lang.String">
+		select phone from user_promotion where phone=#phone#
+	</select>
+
+    <select id="getUserPromotionByUid" parameterClass="java.lang.Long"
+            resultClass="java.lang.Long">
+		select userId from user_promotion where userId=#userId#
+	</select>
+
+    <insert id="addUserPromotion" parameterClass="java.util.HashMap">
+		insert into
+		user_promotion (userId,phone) VALUES (#userId#,#phone#);
+	</insert>
+
+    <insert id="addUserExtendinf" parameterClass="java.util.HashMap">
+		insert into user_extendinf
+		(userId, cdk, extend, myConsume, shengMoney, prizeFlag, name, totalMoney, bindSongCard)
+		VALUES
+		(#userId#, #cdk#, #extend#, #myConsume#, #shengMoney#, #prizeFlag#, #name#, #totalMoney#, #bindSongCard#)
+		on duplicate key update
+            cdk = #cdk#,
+            extend = #extend#,
+            myConsume = #myConsume#,
+            shengMoney = #shengMoney#,
+            prizeFlag = #prizeFlag#,
+            name = #name#,
+            totalMoney = #totalMoney#,
+            bindSongCard = #bindSongCard#
+	</insert>
+
+    <select id="getUserExtendinfByUid" parameterClass="java.lang.Long"
+            resultClass="java.lang.String">
+		select cdk from user_extendinf where userId=#userId#
+	</select>
+
+    <select id="getUserExtendinfByUserId" parameterClass="java.lang.Long" resultClass="com.sy.sanguo.game.bean.UserExtendInfo">
+		/*FORCE_MASTER*/ select * from user_extendinf where userId=#userId#
+	</select>
+
+    <resultMap class="com.sy.sanguo.game.bean.PayBack" id="payback">
+        <result property="flatid" column="flatid"/>
+        <result property="payamout" column="payamout"/>
+        <result property="serverid" column="serverid"/>
+        <result property="issent" column="is_sent"/>
+        <result property="selltime" column="sell_time"/>
+    </resultMap>
+    <select id="getPayback" resultMap="payback" parameterClass="java.lang.String">
+		select * from pay_back where flatid=#flatid#;
+	</select>
+    <update id="updatePayback" parameterClass="java.util.HashMap">
+		update pay_back
+		set
+		serverid=#serverid#,is_sent=1,sell_time=SYSDATE()
+		where flatid =
+		#flatid#;
+	</update>
+
+
+    <resultMap class="com.sy.sanguo.game.bean.SystemCdk" id="systemCdk">
+        <result property="cdkid" column="cdkid"/>
+        <result property="flatid" column="flatid"/>
+        <result property="serverid" column="serverid"/>
+        <result property="cdkType" column="cdk_type"/>
+        <result property="getTime" column="get_time"/>
+    </resultMap>
+    <select id="getSystemCdk" resultMap="systemCdk" parameterClass="java.lang.String">
+		select * from system_cdk where cdkid=#cdkid#;
+	</select>
+    <update id="updateSystemCdk" parameterClass="java.util.HashMap">
+		update system_cdk
+		set flatid=#flatid#,
+		serverid=#serverid#,cdk_type=#cdkType#,get_time=sysdate()
+		where
+		cdkid=#cdkid#
+	</update>
+
+    <resultMap class="com.sy.sanguo.game.bean.IpGroup" id="ipGroup">
+        <result property="ip" column="ip"/>
+        <result property="count" column="count"/>
+    </resultMap>
+    <select id="getIpGroup" resultMap="ipGroup">
+		select ip ,count(1) as count
+		from mobile_reg
+		group by ip
+	</select>
+
+    <resultMap class="com.sy.sanguo.game.bean.MacGroup" id="macGroup">
+        <result property="mac" column="mac"/>
+        <result property="count" column="count"/>
+    </resultMap>
+    <select id="getMacGroup" resultMap="macGroup">
+		select mac ,count(1) as count
+		from mobile_reg
+		group by mac
+	</select>
+
+    <select id="getUsedCards" resultClass="java.lang.Integer" parameterClass="java.lang.Long">
+        select  -usedCards from user_inf where userId=#userId#;
+    </select>
+
+    <update id="addRoomCard" parameterClass="java.util.HashMap">
+        update user_inf
+        set cards=cards+#cards#
+        where
+        userId=#userId#
+    </update>
+
+    <select id="loadMyInviteeData" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT COUNT(userId) as mynum FROM user_inf WHERE regTime <![CDATA[>=]]>#date1# AND regTime <![CDATA[<=]]>#date2#
+        AND identity IN (SELECT t.unionId FROM weixin_authorization t WHERE t.inviterId=#inviterId#)
+        union all
+        SELECT COUNT(userId) as mynum FROM user_inf WHERE regTime <![CDATA[>=]]>#date1# AND regTime <![CDATA[<=]]>#date2# AND totalCount>=8
+        AND identity IN (SELECT t.unionId FROM weixin_authorization t WHERE t.inviterId=#inviterId#)
+        union all
+        SELECT COUNT(userId) as mynum FROM user_inf WHERE regTime <![CDATA[>=]]>#date3# AND regTime <![CDATA[<=]]>#date4#
+        AND identity IN (SELECT t.unionId FROM weixin_authorization t WHERE t.inviterId=#inviterId#)
+        union all
+        SELECT COUNT(userId) as mynum FROM user_inf WHERE regTime <![CDATA[>=]]>#date3# AND regTime <![CDATA[<=]]>#date4# AND totalCount>=8
+        AND identity IN (SELECT t.unionId FROM weixin_authorization t WHERE t.inviterId=#inviterId#)
+        union all
+        SELECT COALESCE(SUM(money),0) as mynum FROM hb_exchange_record WHERE userId=#inviterId# and state=2
+        union all
+        SELECT COUNT(1) as mynum FROM hb_exchange_record WHERE userId=#inviterId# AND state=2 AND createTime <![CDATA[>=]]>#date5# AND createTime <![CDATA[<=]]>#date6#
+    </select>
+
+    <select id="loadMyTotayUsers" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT userId,`name` as userName,headimgurl,regTime FROM user_inf WHERE regTime <![CDATA[>=]]>#date1# AND regTime <![CDATA[<=]]>#date2#
+        AND identity IN (SELECT t.unionId FROM weixin_authorization t WHERE t.inviterId=#inviterId#) ORDER BY userId DESC LIMIT 10
+    </select>
+
+    <select id="loadMyTotayPayCount" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT COUNT(1) as mycount FROM hb_exchange_record WHERE userId=#userId# AND state=2 AND createTime <![CDATA[>=]]>#date1# AND createTime <![CDATA[<=]]>#date2#
+    </select>
+
+    <select id="loadMyTotalData" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT COUNT(userId) as mynum FROM user_inf WHERE regTime <![CDATA[>=]]>#date1# AND regTime <![CDATA[<=]]>#date2#
+        AND identity IN (SELECT t.unionId FROM weixin_authorization t WHERE t.inviterId=#inviterId#)
+        union all
+        SELECT COUNT(userId) as mynum FROM user_inf WHERE regTime <![CDATA[>=]]>#date1# AND regTime <![CDATA[<=]]>#date2# AND totalCount>=8
+        AND identity IN (SELECT t.unionId FROM weixin_authorization t WHERE t.inviterId=#inviterId#)
+        union all
+        SELECT COALESCE(SUM(money),0) as mynum FROM hb_exchange_record WHERE userId=#inviterId# and state=2
+        union all
+        SELECT COUNT(1) as mynum FROM hb_exchange_record WHERE userId=#inviterId# AND state=2 AND createTime <![CDATA[>=]]>#date3# AND createTime <![CDATA[<=]]>#date4#
+    </select>
+
+    <insert id="addHbExchangeRecord" parameterClass="java.util.HashMap">
+        insert into
+        hb_exchange_record (userId, money, wxname, phone, createTime, state)
+        VALUES (#userId#, #money#, #wxname#, #phone#, #createTime#, #state#);
+    </insert>
+
+    <select id="loadHbExchangeRecord" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT * FROM hb_exchange_record WHERE userId=#userId# AND state=#state#
+    </select>
+
+    <select id="selectRemoveBindCount" parameterClass="java.lang.Long" resultClass="java.lang.Integer">
+        SELECT COUNT(*) FROM t_user_bind WHERE userId = #userId# AND bindType = 1
+    </select>
+
+    <insert id="insertRemoveBind" parameterClass="java.util.Map">
+        INSERT INTO t_user_bind (userId, agencyId, createTime, createUserId, bindType) VALUES (#userId#,#agencyId#,#createTime#,#createUserId#,#bindType#)
+    </insert>
+
+    <update id="save_or_update_user_extend" parameterClass="com.sy.sanguo.game.bean.UserExtend">
+        insert into t_user_extend (msgType,userId,msgKey,msgValue,msgDesc,msgState,createdTime,modifiedTime)
+        VALUES (#msgType#,#userId#,#msgKey#,#msgValue#,#msgDesc#,#msgState#,#createdTime#,#modifiedTime#)
+        on
+        duplicate key update
+        modifiedTime=#modifiedTime#
+        <dynamic prepend="">
+            <isPropertyAvailable prepend="," property="msgKey">
+                msgKey=#msgKey#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="msgValue">
+                msgValue=#msgValue#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="msgDesc">
+                msgDesc=#msgDesc#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="msgState">
+                msgState=#msgState#
+            </isPropertyAvailable>
+        </dynamic>
+    </update>
+
+    <update id="update_user_extend" parameterClass="java.util.HashMap">
+        update t_user_extend set msgState=#msgState# where userId=#userId# AND msgType=#msgType#
+    </update>
+
+    <select id="select_user_extend_single" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT * FROM t_user_extend WHERE userId=#userId# AND msgType=#msgType#
+    </select>
+
+    <select id="select_user_extend_all" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT * FROM t_user_extend WHERE userId=#userId#
+    </select>
+
+    <update id="saveOrUpdateUserGoldInfo" parameterClass="java.util.HashMap">
+        INSERT INTO t_gold_user (userId, userName, userNickname, sex, headimgurl, headimgraw, playCount, playCountWin, playCountLose
+        , playCountEven, freeGold, Gold, usedGold, exp, vipexp, signature, extend,regTime,lastLoginTime) VALUES (#userId#,#userName#,#userNickname#,#sex#,#headimgurl#,
+        #headimgraw#,#playCount#, #playCountWin#,#playCountLose#,#playCountEven#,#freeGold#,#Gold#,#usedGold#,#exp#,#vipexp#,#signature#,#extend#,#regTime#,#lastLoginTime#)
+         on
+        duplicate key update Gold=Gold+#Gold#,freeGold=freeGold+#freeGold#
+    </update>
+
+    <select id="selectIdentityUserId" parameterClass="java.lang.String" resultClass="java.lang.Long">
+        select userId from user_inf where identity=#identity# limit 1
+    </select>
+
+    <select id="selectUserBaseMsgNoCache" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT userId,headimgurl,`name` as userName,isOnLine,sex,payBindId FROM user_inf where userId = #userId#;
+    </select>
+
+
+
+
+
+
+    <resultMap id="UserMsgVerify" class="com.sy.sanguo.game.bean.UserMsgVerify">
+        <result property="id" column="id" />
+        <result property="userId" column="userId" />
+        <result property="verifyCode" column="verifyCode" />
+        <result property="sendTime" column="sendTime" />
+        <result property="phoneNum" column="phoneNum" />
+        <result property="isUse" column="isUse" />
+        <result property="ip" column="ip" />
+    </resultMap>
+    <select id="getMsgVerifyByUid" resultMap="UserMsgVerify" parameterClass="java.lang.Long">
+		select * from user_msg_verify where userId=#userId#;
+	</select>
+    <select id="getMsgVerifyById" resultMap="UserMsgVerify" parameterClass="java.lang.Long">
+		select * from user_msg_verify where id=#id#;
+	</select>
+    <select id="getMsgVerifyByIp" resultMap="UserMsgVerify" parameterClass="java.lang.String">
+		select * from user_msg_verify where ip=#ip# ;
+	</select>
+    <update id="updateUserMsgVerify" parameterClass="java.util.HashMap">
+        insert into user_msg_verify (userId,verifyCode,sendTime,phoneNum,isUse,ip)
+        values(#userId#,#verifyCode#,#sendTime#,#phoneNum#,0,#ip#)
+        on DUPLICATE key update verifyCode=#verifyCode#,sendTime=#sendTime#,phoneNum=#phoneNum#,isUse=0,ip=#ip#
+    </update>
+
+    <update id="updateSmsFlag" parameterClass="java.util.HashMap">
+        update user_msg_verify set isUse=#isUse# where userId=#userId#;
+    </update>
+    <select id="getUserByPhoneNum" resultMap="UserInfo" parameterClass="java.lang.String">
+        select * from user_inf where phoneNum=#phoneNum# limit 1;
+    </select>
+    <delete id="deleteSms" parameterClass="java.lang.Long">
+        DELETE FROM user_msg_verify WHERE userId = #userId#
+    </delete>
+
+    <select id="loadAllUserPhoneNum" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            userId,
+            phoneNum
+        from
+            user_inf
+        WHERE
+            phoneNum is not null
+        ORDER BY userId asc
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="getUserByIdForceMaster" resultMap="UserInfo" parameterClass="java.lang.Long">
+		/*FORCE_MASTER*/ select * from user_inf where userId=#userId# limit 1;
+	</select>
+
+    <select id="load_user_by_phoneNum" resultMap="UserInfo" parameterClass="java.lang.String">
+        /*FORCE_MASTER*/ select * from user_inf where phoneNum in ( $phoneNumList$ ) order by regTime ASC limit 1;
+    </select>
+
+    <select id="load_all_userId_by_phoneNum" resultClass="java.lang.Long" parameterClass="java.lang.String">
+        /*FORCE_MASTER*/ select userId from user_inf where phoneNum in ( $phoneNumList$ )
+    </select>
+
+    <select id="load_all_user_phoneNum" resultClass="java.util.HashMap" parameterClass="java.lang.String">
+        select userId,phoneNum from user_inf where userId in ( $userIdList$ )
+    </select>
+
+    <select id="load_user_card" resultClass="java.util.HashMap" parameterClass="java.lang.Long">
+        /*FORCE_MASTER*/ SELECT cards,freeCards FROM user_inf where userId = #userId#
+    </select>
+
+    <update id="change_user_card" parameterClass="java.util.HashMap">
+		UPDATE user_inf
+		set
+            cards = cards + #cards#,
+            freeCards = freeCards + #freeCards#
+		WHERE
+		    userId = #userId#
+		    AND cards = #oldCards#
+		    AND freeCards = #oldFreeCards#
+		    AND cards + #cards# <![CDATA[ >= ]]> 0
+		    AND freeCards + #freeCards# <![CDATA[ >= ]]> 0;
+	</update>
+
+    <select id="load_user_goldenBeans" resultClass="java.lang.Long" parameterClass="java.lang.Long">
+        /*FORCE_MASTER*/ SELECT goldenBeans FROM user_inf where userId = #userId#
+    </select>
+
+    <update id="change_user_goldenBeans" parameterClass="java.util.HashMap">
+		UPDATE user_inf
+		set
+            goldenBeans = goldenBeans + #goldenBeans#
+		WHERE
+		    userId = #userId#
+		    AND goldenBeans = #oldGoldenBeans#
+		    AND goldenBeans + #goldenBeans# <![CDATA[ >= ]]> 0
+	</update>
+
+    <insert id="insert_robot" parameterClass="java.util.HashMap">
+        insert into t_robot
+        (`userId`,`type`,`used`,`usedCount`,`generalExt`,`createTime`,`lastUseTime`)
+        values
+        (#userId#,#type#,#used#,#usedCount#,#generalExt#,#createTime#,#lastUseTime#)
+    </insert>
+
+    <select id="load_robot_sys_prop" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        /*FORCE_MASTER*/ SELECT keyId , prop FROM t_robot_sys_prop
+        where
+            type = #type#
+            AND used = 0
+            order by keyId asc
+        limit #limitCount#
+    </select>
+
+    <update id="use_robot_sys_prop" parameterClass="java.lang.String">
+		UPDATE t_robot_sys_prop
+		set
+            used = 1
+		WHERE
+		    keyId in ( $keyIdList$ )
+	</update>
+    <select id="getBindAllUserMsg" resultClass="java.util.HashMap" parameterClass="java.lang.Long">
+        SELECT userId,name,headimgurl,payBindTime,isCreateGroup FROM user_inf where payBindId=#userId#;
+    </select>
+    <select id="selectBindOneMsg" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT userId,name,headimgurl,payBindTime,isCreateGroup FROM user_inf where payBindId=#payBindId# and userId=#userId#;
+    </select>
+    <resultMap id="GroupDayConsumption" class="com.sy.sanguo.game.bean.GroupDayConsumption">
+        <result property="name" column="name" />
+        <result property="groupName" column="groupName" />
+        <result property="groupId" column="groupId" />
+        <result property="createdUser" column="createdUser" />
+        <result property="dataDate" column="dataDate" />
+        <result property="totalPay" column="totalPay" />
+    </resultMap>
+    <select id="getBindAllGroupMsg" resultMap="GroupDayConsumption" parameterClass="java.util.HashMap">
+        select u.name,g.groupId,g.createdUser,g.groupName,ifnull(log.totalPay,0) as totalPay,ifnull(log.dataDate,#dataDate#) as dataDate
+        from t_group g
+        left join user_inf u
+            on g.createdUser=u.userId
+        left join log_group_commission log
+            on g.createdUser=log.userId and log.groupid=g.groupid and log.dataDate=#dataDate#
+        where u.payBindId =#payBindId# and g.parentGroup=0
+        order by g.createdTime desc
+    </select>
+    <update id="updateUserCreateGroup" parameterClass="java.util.HashMap">
+		UPDATE user_inf
+		set
+            isCreateGroup = 1
+		WHERE
+		    userId=#userId# and payBindId=#payBindId#
+	</update>
+    <update id="updateInviteId" parameterClass="java.util.HashMap">
+        UPDATE user_inf u1,authority a2 set u1.payBindId = #payBindId#,u1.payBindTime=now()
+        where (select count(*) FROM authority where userId=#payBindId# and quanxianId=2) !=0 and u1.userId=#userId#
+	</update>
+    <update id="updateGroupId" parameterClass="java.util.HashMap">
+		UPDATE t_group set groupId=#afterId# where groupId=#beforeId#;
+	</update>
+    <update id="updateGroupAllUserId" parameterClass="java.util.HashMap">
+        UPDATE t_group_user set groupId=#afterId# where groupId=#beforeId#;
+	</update>
+    <select id="selectGroupBindId" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+        select u.payBindId FROM user_inf u
+        left join t_group t
+        on t.createdUser=u.userId
+        where t.groupId=#groupId#
+    </select>
+    <select id="getUserByAccName" resultMap="UserInfo" parameterClass="java.util.HashMap">
+        select * from user_inf where accName=#accName# ORDER BY userId DESC limit 1;
+    </select>
+</sqlMap>
+
+
+
+
+
+
+

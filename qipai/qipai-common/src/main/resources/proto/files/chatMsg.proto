@@ -1,0 +1,9 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+//聊天
+message Chat {
+    required string c = 1;
+    required int32 code = 2;
+    optional int64 talkId = 3;
+    optional int64 talkName = 4;
+}

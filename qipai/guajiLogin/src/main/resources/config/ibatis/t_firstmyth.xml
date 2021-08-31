@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="firstmyth">
+
+    <resultMap class="com.sy.sanguo.game.bean.FirstMyth" id="FirstMyth">
+        <result property="recordDate" column="recordDate"/>
+        <result property="userId" column="userId"/>
+        <result property="userName" column="userName"/>
+        <result property="record1" column="record1"/>
+        <result property="record2" column="record2"/>
+        <result property="record3" column="record3"/>
+        <result property="record4" column="record4"/>
+        <result property="record5" column="record5"/>
+        <result property="record6" column="record6"/>
+        <result property="record7" column="record7"/>
+        <result property="record8" column="record8"/>
+        <result property="record9" column="record9"/>
+        <result property="record10" column="record10"/>
+        <result property="record11" column="record11"/>
+        <result property="record12" column="record12"/>
+        <result property="record13" column="record13"/>
+        <result property="record14" column="record14"/>
+        <result property="rewardRecord" column="rewardRecord"/>
+    </resultMap>
+
+    <select id="rankingList" resultMap="FirstMyth" parameterClass="java.util.HashMap">
+        select recordDate, userId, userName, record1, record2, record3, record4, record5, record6, record7, record8,
+        record9, record10, record11, record12, record13, record14, rewardRecord from user_firstmyth WHERE recordDate =
+        #yestedayDate#
+        <dynamic prepend="ORDER BY">
+            <isNotEmpty property="record">
+                $record$
+            </isNotEmpty>
+        </dynamic>
+        <dynamic prepend="">
+            <isNotEmpty property="sort">
+                $sort$
+            </isNotEmpty>
+        </dynamic>
+        limit #limit#;
+    </select>
+
+    <select id="rankingWeekList" resultMap="FirstMyth" parameterClass="java.util.HashMap">
+        select recordDate, userId, userName,SUM(record1) record1,SUM(record2) record2, SUM(record3) record3,SUM(record4)
+        record4,
+        SUM(record5) record5,SUM(record6) record6, SUM(record7) record7,SUM(record8) record8,SUM(record9)
+        record9,SUM(record10) record10,
+        SUM(record11) record11,SUM(record12) record12,SUM(record13) record13,SUM(record14) record14, rewardRecord from
+        user_firstmyth
+        where recordDate BETWEEN #startDay# AND #endDay#
+        GROUP BY userId
+        <dynamic prepend="ORDER BY">
+            <isNotEmpty property="record">
+                $record$
+            </isNotEmpty>
+        </dynamic>
+        <dynamic prepend="">
+            <isNotEmpty property="sort">
+                $sort$
+            </isNotEmpty>
+        </dynamic>
+        limit #limit#;
+    </select>
+
+    <select id="getWeekSelfRanking" resultClass="java.util.HashMap" parameterClass="java.lang.String">
+        $sql$
+    </select>
+
+    <select id="getSelfRanking" resultMap="FirstMyth" parameterClass="java.util.HashMap">
+		select recordDate, userId, userName, record1, record2, record3, record4, record5, record6, record7, record8, record9, record10,
+		record11, record12, record13, record14, rewardRecord from user_firstmyth where recordDate = #day# and userId=#userId#
+	</select>
+
+    <select id="getSelfWeekRanking" resultMap="FirstMyth" parameterClass="java.util.HashMap">
+		select recordDate, userId, userName, SUM(record1) record1, SUM(record2) record2, SUM(record3) record3, SUM(record4) record4, SUM(record5) record5, SUM(record6) record6, SUM(record7) record7, SUM(record8) record8, SUM(record9) record9, SUM(record10) record10,
+		SUM(record11) record11, SUM(record12) record12, SUM(record13) record13, SUM(record14) record14, rewardRecord from user_firstmyth where recordDate BETWEEN #startDay# AND #endDay# GROUP BY userId HAVING userId=#userId#
+	</select>
+
+    <update id="updateAward" parameterClass="java.util.HashMap">
+		update user_firstmyth set rewardRecord=#rewardRecord# where recordDate = #day# and userId=#userId#
+	</update>
+
+    <update id="insertAward" parameterClass="java.util.HashMap">
+        INSERT INTO user_firstmyth (userId,userName, recordDate) VALUES (#userId#,#userName#,#day#)
+    </update>
+
+    <select id="getLastWeekAwardRecord" parameterClass="java.util.HashMap" resultClass="java.util.HashMap">
+        SELECT userId, recordDate, rewardRecord from user_firstmyth WHERE recordDate BETWEEN #startDay# AND #endDay# AND userId = #userId# AND rewardRecord IS NOT NULL limit 1
+    </select>
+</sqlMap>
+

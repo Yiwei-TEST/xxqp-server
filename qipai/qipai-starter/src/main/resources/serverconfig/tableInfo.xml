@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+		PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="table">
+
+	<resultMap class="com.sy599.game.db.bean.TableInf" id="tableInf">
+		<result property="tableId" column="tableId" />
+		<result property="tableType" column="tableType" />
+		<result property="serverId" column="serverId" />
+		<result property="roomId" column="roomId" />
+		<result property="playType" column="playType" />
+		<result property="masterId" column="masterId" />
+		<result property="players" column="players" />
+		<result property="totalBureau" column="totalBureau" />
+		<result property="playBureau" column="playBureau" />
+		<result property="outPai1" column="outPai1" />
+		<result property="outPai2" column="outPai2" />
+		<result property="outPai3" column="outPai3" />
+		<result property="outPai4" column="outPai4" />
+		<result property="outPai5" column="outPai5" />
+		<result property="outPai6" column="outPai6" />
+		<result property="outPai7" column="outPai7" />
+		<result property="outPai8" column="outPai8" />
+		<result property="outPai9" column="outPai9" />
+		<result property="outPai10" column="outPai10" />
+		<result property="handPai1" column="handPai1" />
+		<result property="handPai2" column="handPai2" />
+		<result property="handPai3" column="handPai3" />
+		<result property="handPai4" column="handPai4" />
+		<result property="handPai5" column="handPai5" />
+		<result property="handPai6" column="handPai6" />
+		<result property="handPai7" column="handPai7" />
+		<result property="handPai8" column="handPai8" />
+		<result property="handPai9" column="handPai9" />
+		<result property="handPai10" column="handPai10" />
+		<result property="createTime" column="createTime" />
+		<result property="state" column="state" />
+		<result property="answerDiss" column="answerDiss" />
+		<result property="nowDisCardIds" column="nowDisCardIds" />
+		<result property="nowDisCardSeat" column="nowDisCardSeat" />
+		<result property="disCardRound" column="disCardRound" />
+		<result property="disCardSeat" column="disCardSeat" />
+		<result property="lastWinSeat" column="lastWinSeat" />
+		<result property="nowAction" column="nowAction" />
+		<result property="leftPais" column="leftPais" />
+		<result property="extend" column="extend" />
+		<result property="playLog" column="playLog" />
+		<result property="isCompetition" column="isCompetition" />
+		<result property="lastActionTime" column="lastActionTime" />
+		<result property="config" column="config" />
+		<result property="gotyeRoomId" column="gotyeRoomId" />
+		<result property="daikaiTableId" column="daikaiTableId" />
+
+	</resultMap>
+
+
+	<update id="updatetableInfo" parameterClass="java.util.HashMap">
+		UPDATE table_inf
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="lastActionTime">
+				lastActionTime=#lastActionTime#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="isCompetition">
+				isCompetition=#isCompetition#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="masterId">
+				masterId=#masterId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="players">
+				players=#players#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="totalBureau">
+				totalBureau=#totalBureau#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="playBureau">
+				playBureau=#playBureau#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="outPai1">
+				outPai1=#outPai1#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="outPai2">
+				outPai2=#outPai2#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="outPai3">
+				outPai3=#outPai3#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="outPai4">
+				outPai4=#outPai4#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="outPai5">
+				outPai5=#outPai5#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="outPai6">
+				outPai6=#outPai6#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="outPai7">
+				outPai7=#outPai7#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="outPai8">
+				outPai8=#outPai8#
+			</isPropertyAvailable>
+
+			<isPropertyAvailable prepend="," property="outPai9">
+				outPai9=#outPai9#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="outPai10">
+				outPai10=#outPai10#
+			</isPropertyAvailable>
+
+			<isPropertyAvailable prepend="," property="handPai1">
+				handPai1=#handPai1#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="handPai2">
+				handPai2 = #handPai2#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="handPai3">
+				handPai3 = #handPai3#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="handPai4">
+				handPai4 = #handPai4#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="handPai5">
+				handPai5 = #handPai5#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="handPai6">
+				handPai6 = #handPai6#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="handPai7">
+				handPai7 = #handPai7#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="handPai8">
+				handPai8 = #handPai8#
+			</isPropertyAvailable>
+
+			<isPropertyAvailable prepend="," property="handPai9">
+				handPai9 = #handPai9#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="handPai10">
+				handPai10 = #handPai10#
+			</isPropertyAvailable>
+
+			<isPropertyAvailable prepend="," property="createTime">
+				createTime = #createTime#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="state">
+				state =
+				#state#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="answerDiss">
+				answerDiss = #answerDiss#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="nowDisCardSeat">
+				nowDisCardSeat = #nowDisCardSeat#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="nowDisCardIds">
+				nowDisCardIds = #nowDisCardIds#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="disCardRound">
+				disCardRound = #disCardRound#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="disCardSeat">
+				disCardSeat = #disCardSeat#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="lastWinSeat">
+				lastWinSeat = #lastWinSeat#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="extend">
+				extend
+				= #extend#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="nowAction">
+				nowAction
+				= #nowAction#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="leftPais">
+				leftPais
+				= #leftPais#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="playLog">
+				playLog
+				= #playLog#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="gotyeRoomId">
+				gotyeRoomId= #gotyeRoomId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="daikaiTableId">
+				daikaiTableId= #daikaiTableId#
+			</isPropertyAvailable>
+		</dynamic>
+		WHERE tableId = #tableId#
+	</update>
+
+	<insert id="savetableInfo" parameterClass="com.sy599.game.db.bean.TableInf">
+		INSERT INTO table_inf
+		(tableId,tableType,serverId,masterId,roomId,playType,players,totalBureau,playBureau,outPai1,outPai2,outPai3,handPai1,handPai2,handPai3,createTime,config)
+		values
+		(#tableId#,#tableType#,#serverId#,#masterId#,#roomId#,#playType#,#players#,#totalBureau#,#playBureau#,#outPai1#,#outPai2#,#outPai3#,#handPai1#,#handPai2#,#handPai3#,#createTime#,#config#);
+	</insert>
+	<select id="selectById" parameterClass="java.util.HashMap"
+			resultMap="tableInf">
+		select * from table_inf where userId =#tableId# and
+		roomId=#roomId#
+	</select>
+	<select id="selectMaxId" resultClass="java.lang.Long">
+		select max(tableId) from
+		table_inf
+	</select>
+	<select id="selectCount" resultClass="java.lang.Integer">
+		select count(*) from
+		table_inf;
+	</select>
+	<select id="selectActiveTable" parameterClass="java.util.HashMap" resultMap="tableInf">
+		/*FORCE_MASTER*/ select * from table_inf limit #start#,#end#;
+	</select>
+	<delete id="deleteTable" parameterClass="java.lang.Long">
+		delete from table_inf
+		WHERE tableId = #tableId#;
+	</delete>
+
+	<resultMap id="playTypeMap" class="java.util.HashMap">
+		<result property="tableId" column="tableId" javaType="java.lang.Long" />
+		<result property="playType" column="playType" javaType="java.lang.Integer" />
+	</resultMap>
+
+	<select id="selectPlayType" resultMap="playTypeMap">
+		select tableId
+		tableId,playType playType from table_inf;
+	</select>
+
+	<parameterMap class="java.util.Map" id="proCreateRoomParams">
+		<parameter property="in_createId" javaType="java.lang.Long"
+				   jdbcType="BIGINT" mode="IN" />
+		<parameter property="in_type" javaType="java.lang.Integer"
+				   jdbcType="INT" mode="IN" />
+		<parameter property="in_serverId" javaType="java.lang.Integer"
+				   jdbcType="INT" mode="IN" />
+		<parameter property="out_roomId" javaType="java.lang.Long"
+				   jdbcType="BIGINT" mode="OUT" />
+	</parameterMap>
+	<procedure id="callProCreateRoom" parameterMap="proCreateRoomParams">
+		{call
+		pro_create_room(?,?,?,?)}
+	</procedure>
+
+	<parameterMap class="java.util.Map" id="getFreeGotyeRoomIdParams">
+		<parameter property="in_tableId" javaType="java.lang.Long"
+				   jdbcType="BIGINT" mode="IN" />
+		<parameter property="in_serverId" javaType="java.lang.Integer"
+				   jdbcType="INT" mode="IN" />
+		<parameter property="in_type" javaType="java.lang.Integer"
+				   jdbcType="INT" mode="IN" />
+		<parameter property="out_roomId" javaType="java.lang.Long"
+				   jdbcType="BIGINT" mode="OUT" />
+	</parameterMap>
+	<procedure id="callGetFreeGotyeRoomId" parameterMap="getFreeGotyeRoomIdParams">
+		{call
+		get_free_gotyeroomid(?,?,?,?)}
+	</procedure>
+
+	<update id="setGotyeRoomUseOver" parameterClass="java.lang.Long">
+		update `gotye_room` set isuse=2 where roomId=#roomId#;
+	</update>
+
+	<update id="updateRandomRoom" parameterClass="java.util.HashMap">
+		update room SET used=1,userId=#userId#,type=#type#,serverId=#serverId#,createTime=NOW(),usedCount=usedCount+1 WHERE (createTime is NULL OR createTime <![CDATA[< ]]> DATE_SUB(NOW(),INTERVAL 2 HOUR)) AND roomId = #roomId# AND used=0;
+	</update>
+
+	<update id="updateRoom" parameterClass="java.util.HashMap">
+		update room
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="userId">
+				userId= #userId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="serverId">
+				serverId= #serverId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="players">
+				players= #players#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="createTime">
+				createTime= #createTime#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="type">
+				type=
+				#type#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="extend">
+				extend= #extend#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="used">
+				used=
+				#used#
+			</isPropertyAvailable>
+		</dynamic>
+		WHERE roomId = #roomId#
+	</update>
+
+	<select id="selectRoomTableCount" resultClass="java.lang.Integer">
+		select count(*) from room;
+	</select>
+
+	<resultMap class="com.sy599.game.db.bean.RoomBean" id="room">
+		<result property="id" column="id" />
+		<result property="roomId" column="roomId" />
+		<result property="userId" column="userId" />
+		<result property="serverId" column="serverId" />
+		<result property="players" column="players" />
+		<result property="createTime" column="createTime" />
+		<result property="type" column="type" />
+		<result property="used" column="used" />
+		<result property="extend" column="extend" />
+	</resultMap>
+
+	<select id="queryRoom" resultMap="room" parameterClass="java.lang.Long">
+		/*FORCE_MASTER*/ select * from room where roomId=#roomId#
+	</select>
+
+	<select id="queryUsingRoom" resultMap="room" parameterClass="java.lang.Long">
+		/*FORCE_MASTER*/ select * from room where roomId=#roomId# and used=1
+	</select>
+
+	<resultMap class="com.sy599.game.db.bean.DaikaiTable" id="daikaitable">
+		<result property="tableId" column="tableId" />
+		<result property="daikaiId" column="daikaiId" />
+		<result property="serverId" column="serverId" />
+		<result property="playType" column="playType" />
+		<result property="needCard" column="needCard" />
+		<result property="state" column="state" />
+		<result property="createFlag" column="createFlag" />
+		<result property="createPara" column="createPara" />
+		<result property="createStrPara" column="createStrPara" />
+		<result property="createTime" column="createTime" />
+		<result property="daikaiTime" column="daikaiTime" />
+		<result property="returnFlag" column="returnFlag" />
+		<result property="playerInfo" column="playerInfo" />
+		<result property="extend" column="extend" />
+		<result property="assisCreateNo" column="assisCreateNo"/>
+		<result property="assisGroupNo" column="assisGroupNo"/>
+	</resultMap>
+
+	<insert id="daikaiTable" parameterClass="java.util.HashMap">
+		INSERT INTO daikai_table
+		(tableId, daikaiId, serverId, playType, needCard, state, createFlag,
+		createPara, createStrPara, createTime, daikaiTime, returnFlag,
+		playerInfo, extend, assisCreateNo, assisGroupNo)
+		values
+		(#tableId#, #daikaiId#, #serverId#,
+		#playType#, #needCard#, #state#,
+		#createFlag#, #createPara#,
+		#createStrPara#,#createTime#,
+		#daikaiTime#, #returnFlag#, #playerInfo#,
+		#extend#, #assisCreateNo#, #assisGroupNo#)
+	</insert>
+
+	<select id="getDaikaiTableById" resultMap="daikaitable"
+			parameterClass="java.lang.Long">
+		select * from daikai_table where tableId = #tableId# and (state = 0 or state = 1)
+	</select>
+
+	<update id="updateDaikaiTable" parameterClass="java.util.HashMap">
+		update daikai_table
+		<dynamic prepend="SET">
+			<isPropertyAvailable prepend="," property="daikaiId">
+				daikaiId= #daikaiId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="serverId">
+				serverId= #serverId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="playType">
+				playType= #playType#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="needCard">
+				needCard= #needCard#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="state">
+				state=
+				#state#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="createFlag">
+				createFlag= #createFlag#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="createPara">
+				createPara= #createPara#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="createStrPara">
+				createStrPara= #createStrPara#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="createTime">
+				createTime= #createTime#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="daikaiTime">
+				daikaiTime= #daikaiTime#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="returnFlag">
+				returnFlag= #returnFlag#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="playerInfo">
+				playerInfo= #playerInfo#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="extend">
+				extend= #extend#
+			</isPropertyAvailable>
+		</dynamic>
+		WHERE tableId = #tableId# AND (state = 0 or state = 1)
+	</update>
+
+	<select id="getDaikaiTableCount" resultClass="java.lang.Integer"
+			parameterClass="java.lang.Long">
+		select count(*) from daikai_table where daikaiId =
+		#userId# and (state = 0 or state = 1)
+	</select>
+
+	<select id="getWanfaDaikaiTables" resultMap="daikaitable"
+			parameterClass="java.lang.Long">
+		select * from daikai_table where daikaiId =
+		#userId# and (state = 0 or state = 1)
+	</select>
+
+	<select id="checkTableIdExist" resultClass="java.lang.Integer"  parameterClass="java.lang.Long">
+		select count(*) from daikai_table where tableId = #tableId# and (state = 0 or state = 1)
+	</select>
+
+	<update id="dissDaikaiTable" parameterClass="java.util.HashMap">
+		update daikai_table set state= #state#, returnFlag= #returnFlag# where tableId = #tableId# and (state = 0 or state = 1)
+	</update>
+
+	<select id="queryAllRoomId" resultClass="java.lang.Long" parameterClass="java.lang.Integer">
+		select roomId from room where used=#status#
+	</select>
+
+	<insert id="addDissInfo" parameterClass="java.util.Map">
+		INSERT INTO un_room_info (roomId, agencyId, serverId, players, createTime) VALUES (#roomId#, #agencyId#, #serverId#, #players#, #createTime#)
+	</insert>
+</sqlMap>

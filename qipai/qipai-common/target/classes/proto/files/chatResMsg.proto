@@ -1,0 +1,29 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+//聊天
+message ChatRes {
+    required int32 code = 1;
+    optional int64 userId = 2;
+    required string c = 3;
+    optional string ip=4;
+    optional string userName=5;
+    optional int32 vip=6;
+    optional string s=7;//性别
+    optional int64 talkId = 8;
+    optional string talkName = 9;
+    optional int32 hongbao =10;
+    optional int32 hongbaoId =11;
+    optional TeamRes team=12;
+    optional int32 systemtype = 13;
+}
+//组队
+message TeamRes{
+	 required int32 chapterId = 1;
+	 required int64 teamId = 2;
+	 required string teamName =3;
+	 required string chapterName = 4;
+	 required int32 chapterLevel = 5;
+	 required int32 needFightVal = 6;
+	 required int64 inviteTime = 7;
+
+}

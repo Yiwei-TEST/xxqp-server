@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="gotyeroom">
+	<resultMap class="com.sy.sanguo.game.pdkuai.db.bean.GotyeRoomInfo" id="gotyeroominfo">
+		<result property="roomId" column="roomId" />
+		<result property="roomName" column="roomName" />
+		<result property="createTime" column="createTime" />
+		<result property="isUse" column="isUse" />
+		<result property="tableId" column="tableId" />
+		<result property="serverId" column="serverId" />
+		<result property="playType" column="playType" />
+	</resultMap>
+	
+	<resultMap class="com.sy.sanguo.game.pdkuai.db.bean.GotyeRoomInfo" id="gotyeroominfo_roomId">
+		<result property="roomId" column="roomId" />
+	</resultMap>
+
+	<insert id="addgotyeroom" parameterClass="com.sy.sanguo.game.pdkuai.db.bean.GotyeRoomInfo">
+		insert into
+		gotye_room
+		(roomId, roomName, createTime,isUse)
+		values (#roomId#, #roomName#,
+		#createTime#,#isUse#);
+	</insert>
+
+	<select id="getAll" resultMap="gotyeroominfo" parameterClass="java.util.HashMap">
+		select * from gotye_room limit #start#,#end#;
+	</select>
+
+	<select id="canDelGotyeRoom" resultMap="gotyeroominfo_roomId" parameterClass="java.util.HashMap">
+		select roomId from gotye_room where isuse = 2 limit #end#;
+	</select>
+
+	<update id="updateUse"  parameterClass="java.util.HashMap">
+		update `gotye_room` set isuse=1,tableId=#tableId# where roomId=#roomId#;
+	</update>
+
+	<update id="updateDel"  parameterClass="java.lang.Long">
+		update `gotye_room` set isuse=2 where roomId=#roomId#;
+	</update>
+
+	<delete id="del" parameterClass="java.lang.Long">
+		delete from gotye_room where roomId=#roomId#;
+	</delete>
+
+	<select id="selectCount" resultClass="java.lang.Integer">
+		select count(*) from
+		gotye_room;
+	</select>
+	
+	<select id="getNotUseCnt" resultClass="java.lang.Integer">
+		select count(*) from gotye_room where isuse = 0
+	</select>
+	
+	<select id="getFreeGotyeChat" resultMap="gotyeroominfo" >
+		select * from gotye_room where isuse = 0 limit 1
+	</select>
+	
+</sqlMap>
+

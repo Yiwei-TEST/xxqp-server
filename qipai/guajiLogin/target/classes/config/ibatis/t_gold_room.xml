@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="goldRoom">
+
+    <select id="select_gold_room_user" resultClass="com.sy.sanguo.game.bean.gold.GoldRoomUser" parameterClass="java.util.HashMap">
+        SELECT * FROM t_gold_room_user WHERE roomId=#roomId# AND userId=#userId#
+    </select>
+
+    <select id="select_gold_room" resultClass="com.sy.sanguo.game.bean.gold.GoldRoom" parameterClass="java.util.HashMap">
+        SELECT * FROM t_gold_room WHERE keyId=#keyId#
+    </select>
+
+    <select id="select_gold_room_users" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT userId FROM t_gold_room_user WHERE roomId=#roomId#
+    </select>
+
+    <select id="one_gold_room_random" resultClass="com.sy.sanguo.game.bean.gold.GoldRoom" parameterClass="java.util.HashMap">
+        SELECT * FROM t_gold_room WHERE modeId=#modeId# AND currentState="0" AND currentCount<![CDATA[< ]]>maxCount AND createdTime<![CDATA[>= ]]>#myDate# LIMIT 1
+    </select>
+
+    <select id="one_gold_room_random_server" resultClass="com.sy.sanguo.game.bean.gold.GoldRoom" parameterClass="java.util.HashMap">
+        SELECT * FROM t_gold_room WHERE serverId=#serverId# AND modeId=#modeId# AND currentState="0" AND currentCount<![CDATA[< ]]>maxCount AND createdTime<![CDATA[>= ]]>#myDate# LIMIT 1
+    </select>
+
+    <insert id="insert_gold_room" parameterClass="com.sy.sanguo.game.bean.gold.GoldRoom">
+        insert into t_gold_room (currentCount,maxCount,serverId,currentState,tableMsg,modeId,gameCount,createdTime,modifiedTime) VALUES (#currentCount#,#maxCount#,#serverId#,#currentState#,#tableMsg#,#modeId#,#gameCount#,#createdTime#,#modifiedTime#);
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+
+    <insert id="insert_gold_room_user" parameterClass="com.sy.sanguo.game.bean.gold.GoldRoomUser">
+        insert into t_gold_room_user (userId,createdTime,gameResult,logIds,roomId) VALUES (#userId#,#createdTime#,#gameResult#,#logIds#,#roomId#);
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+
+    <delete id="delete_gold_room_user" parameterClass="java.util.HashMap">
+        DELETE FROM t_gold_room_user WHERE roomId = #roomId# AND userId = #userId#
+    </delete>
+
+    <update id="update_gold_room_user" parameterClass="java.util.HashMap">
+        UPDATE t_gold_room_user
+        <dynamic prepend="SET">
+            <isPropertyAvailable prepend="," property="gameResult">
+                gameResult = #gameResult#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="logIds">
+                logIds = concat(logIds,',', #logIds#))
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE roomId = #roomId# AND userId = #userId#
+    </update>
+
+    <update id="update_gold_room_jia" parameterClass="java.util.HashMap">
+        UPDATE t_gold_room
+        <dynamic prepend="SET">
+            <isPropertyAvailable prepend="," property="currentCount">
+                currentCount = currentCount+1
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="currentState">
+                currentState = #currentState#
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE keyId = #keyId# AND currentCount<![CDATA[< ]]>maxCount
+    </update>
+
+    <update id="update_gold_room_jian" parameterClass="java.util.HashMap">
+        UPDATE t_gold_room
+        <dynamic prepend="SET">
+            <isPropertyAvailable prepend="," property="currentCount">
+                currentCount = currentCount-1
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="currentState">
+                currentState = #currentState#
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE keyId = #keyId# AND currentCount<![CDATA[> ]]>0
+    </update>
+
+    <update id="update_gold_room_state" parameterClass="java.util.HashMap">
+        UPDATE t_gold_room  SET currentState = #currentState# WHERE keyId = #keyId#
+    </update>
+
+</sqlMap>
+
+
+
+
+

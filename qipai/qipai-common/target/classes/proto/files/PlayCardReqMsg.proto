@@ -1,0 +1,14 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+//聊天
+message PlayCardReq {
+    repeated int32 cardIds = 1;//牌组id
+    optional int32 cardType = 2;//牌型
+    repeated int32 extCardIds = 3;//牌组id
+}
+
+message BJPlayCardReq {
+    repeated int32 cardIds = 1;//牌组id(如果是摆叫操作 第一个是打出的牌 后面的是摆叫的牌)
+    optional int32 cardType = 2;//牌型
+    repeated int32 huCardIds = 3;//摆叫胡的牌组值(禁牌牌组)
+}

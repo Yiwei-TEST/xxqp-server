@@ -1,0 +1,2831 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+		PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+		"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="groupNew">
+	<cacheModel id="code-CacheModel" type="LRU" readOnly="true" serialize="false">
+		<flushInterval minutes="10" />
+		<property name="cache-size" value="10000" />
+	</cacheModel>
+
+	<resultMap class="com.sy.sanguo.game.bean.group.GroupConfig" id="GroupConfig">
+		<result property="keyId" column="keyId" />
+		<result property="groupLevel" column="groupLevel" />
+		<result property="maxCount" column="maxCount" />
+		<result property="groupCoin" column="groupCoin" />
+		<result property="createdTime" column="createdTime" />
+	</resultMap>
+	<resultMap class="com.sy.sanguo.game.bean.group.GroupInfo" id="GroupInfo">
+		<result property="keyId" column="keyId" />
+		<result property="parentGroup" column="parentGroup" />
+		<result property="groupId" column="groupId" />
+		<result property="groupName" column="groupName" />
+		<result property="maxCount" column="maxCount" />
+		<result property="currentCount" column="currentCount" />
+		<result property="groupLevel" column="groupLevel" />
+		<result property="groupMode" column="groupMode" />
+		<result property="extMsg" column="extMsg" />
+		<result property="createdTime" column="createdTime" />
+		<result property="createdUser" column="createdUser" />
+		<result property="descMsg" column="descMsg" />
+		<result property="groupState" column="groupState" />
+		<result property="modifiedTime" column="modifiedTime" />
+		<result property="isCredit" column="isCredit" />
+		<result property="gameIds" column="gameIds" />
+	</resultMap>
+	<resultMap class="com.sy.sanguo.game.bean.group.GroupUser" id="GroupUser">
+		<result property="keyId" column="keyId" />
+		<result property="groupId" column="groupId" />
+		<result property="groupName" column="groupName" />
+		<result property="userId" column="userId" />
+		<result property="userName" column="userName" />
+		<result property="userNickname" column="userNickname" />
+		<result property="userLevel" column="userLevel" />
+		<result property="playCount1" column="playCount1" />
+		<result property="playCount2" column="playCount2" />
+		<result property="inviterId" column="inviterId" />
+        <result property="userGroup" column="userGroup" />
+        <result property="userRole" column="userRole" />
+        <result property="credit" column="credit" />
+        <result property="creditPurse" column="creditPurse" />
+        <result property="tempCredit" column="tempCredit" />
+        <result property="promoterLevel" column="promoterLevel" />
+        <result property="promoterId" column="promoterId" />
+        <result property="promoterId1" column="promoterId1" />
+        <result property="promoterId2" column="promoterId2" />
+        <result property="promoterId3" column="promoterId3" />
+        <result property="promoterId4" column="promoterId4" />
+        <result property="promoterId5" column="promoterId5" />
+        <result property="promoterId6" column="promoterId6" />
+        <result property="promoterId7" column="promoterId7" />
+        <result property="promoterId8" column="promoterId8" />
+        <result property="promoterId9" column="promoterId9" />
+        <result property="promoterId10" column="promoterId10" />
+        <result property="creditCommissionRate" column="creditCommissionRate"/>
+        <result property="creditLock" column="creditLock" />
+        <result property="ext" column="ext" />
+        <result property="createdTime" column="createdTime" />
+    </resultMap>
+	<resultMap class="com.sy.sanguo.game.bean.group.GroupTableConfig" id="GroupTableConfig">
+		<result property="keyId" column="keyId" />
+		<result property="parentGroup" column="parentGroup" />
+		<result property="groupId" column="groupId" />
+		<result property="tableName" column="tableName" />
+		<result property="tableMode" column="tableMode" />
+		<result property="modeMsg" column="modeMsg" />
+		<result property="gameType" column="gameType" />
+		<result property="payType" column="payType" />
+		<result property="gameCount" column="gameCount" />
+		<result property="playerCount" column="playerCount" />
+		<result property="descMsg" column="descMsg" />
+		<result property="configState" column="configState" />
+		<result property="tableOrder" column="tableOrder" />
+		<result property="playCount" column="playCount" />
+		<result property="createdTime" column="createdTime" />
+	</resultMap>
+
+    <resultMap class="com.sy.sanguo.game.bean.group.GroupCreditConfig" id="GroupCreditConfig">
+        <result property="keyId" column="keyId" />
+        <result property="groupId" column="groupId" />
+        <result property="userId" column="userId" />
+        <result property="configId" column="configId" />
+        <result property="credit" column="credit" />
+        <result property="maxCreditLog" column="maxCreditLog" />
+        <result property="createdTime" column="createdTime" />
+        <result property="lastUpTime" column="lastUpTime" />
+    </resultMap>
+
+    <resultMap class="com.sy.sanguo.game.bean.group.GroupTable" id="GroupTable">
+        <result property="keyId" column="keyId" />
+        <result property="groupId" column="groupId" />
+        <result property="configId" column="configId" />
+        <result property="tableId" column="tableId" />
+        <result property="tableMsg" column="tableMsg" />
+        <result property="serverId" column="serverId" />
+        <result property="createdTime" column="createdTime" />
+        <result property="currentState" column="currentState" />
+        <result property="currentCount" column="currentCount" />
+        <result property="maxCount" column="maxCount" />
+        <result property="playedBureau" column="playedBureau" />
+        <result property="players" column="players" />
+        <result property="overTime" column="overTime" />
+        <result property="userId" column="userId" />
+        <result property="dealCount" column="dealCount" />
+        <result property="tableName" column="tableName" />
+    </resultMap>
+
+    <insert id="createGroup" parameterClass="com.sy.sanguo.game.bean.group.GroupInfo">
+        insert into t_group
+        (parentGroup,groupId,groupName,maxCount,currentCount,groupLevel,groupMode,extMsg,createdTime,createdUser,descMsg,groupState,modifiedTime,creditAllotMode,creditRate,isCredit,gameIds)
+        VALUES
+        (#parentGroup#,#groupId#,#groupName#,#maxCount#,#currentCount#,#groupLevel#,#groupMode#,#extMsg#,#createdTime#,#createdUser#,#descMsg#,#groupState#,#modifiedTime#,#creditAllotMode#,#creditRate#,#isCredit#,#gameIds#)
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+
+    <select id="loadGroupInfo" resultClass="com.sy.sanguo.game.bean.group.GroupInfo" parameterClass="java.util.HashMap">
+		select * from t_group
+		where
+		    groupId = #groupId#
+		    AND parentGroup = #parentGroup#
+		    AND groupState = "1"
+		limit 1
+	</select>
+    <select id="loadGroupForceMaster" resultClass="com.sy.sanguo.game.bean.group.GroupInfo" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ select * from t_group
+		where
+		    groupId = #groupId#
+		    AND parentGroup = #parentGroup#
+		    AND groupState = "1"
+		limit 1
+	</select>
+
+    <select id="loadGroupByKeyId" resultClass="com.sy.sanguo.game.bean.group.GroupInfo" parameterClass="java.util.HashMap">
+		select * from t_group
+		where
+		    keyId = #keyId#
+	</select>
+
+    <update id="updateGroupByKeyId" parameterClass="java.util.HashMap">
+        UPDATE t_group
+        <dynamic prepend="SET">
+            <isPropertyAvailable prepend="," property="groupId">
+                groupId=#groupId#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="parentGroup">
+                parentGroup=#parentGroup#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="groupName">
+                groupName=#groupName#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="maxCount">
+                maxCount=#maxCount#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="currentCount">
+                currentCount=#currentCount#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="groupLevel">
+                groupLevel=#groupLevel#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="groupMode">
+                groupMode=#groupMode#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="extMsg">
+                extMsg=#extMsg#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="descMsg">
+                descMsg=#descMsg#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="groupState">
+                groupState=#groupState#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="modifiedTime">
+                modifiedTime=#modifiedTime#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="content">
+                content=#content#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="switchCoin">
+                switchCoin=#switchCoin#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="exp">
+                exp=#exp#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="totalExp">
+                totalExp=#totalExp#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="isCredit">
+                isCredit=#isCredit#
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE keyId = #keyId#
+    </update>
+
+    <update id="updateGroupUserCount" parameterClass="java.util.HashMap">
+		UPDATE t_group
+		SET
+		    currentCount = (select count(1) from t_group_user where groupId = #groupId#)
+		WHERE
+		    parentGroup = #parentGroup#
+		    AND groupId = #groupId#
+	</update>
+
+    <select id="existsGroupInfo" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		select count(*) from t_group
+		where
+		    groupId = #groupId#
+		    AND parentGroup = #parentGroup#
+	</select>
+
+    <select id="countGroupByCreator" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		select COALESCE(count(keyId),0) from t_group
+		where
+		    createdUser = #userId#
+		    AND parentGroup = 0
+	</select>
+
+    <delete id="deleteGroupInfoByGroupId" parameterClass="java.util.HashMap">
+		delete FROM t_group
+		WHERE
+		    groupId = #groupId#
+		    AND parentGroup = #parentGroup#
+	</delete>
+
+
+    <select id="loadGroupUsersByUser" resultClass="com.sy.sanguo.game.bean.group.GroupUser" parameterClass="java.util.HashMap">
+        /*FORCE_MASTER*/ select * from t_group_user
+        where
+            userId=#userId#
+        limit #startNo#,#pageSize#
+    </select>
+
+    <insert id="createGroupUser" parameterClass="com.sy.sanguo.game.bean.group.GroupUser">
+        insert into t_group_user (
+            groupId,
+            groupName,
+            userId,
+            userName,
+            userNickname,
+            userLevel,
+            playCount1,
+            playCount2,
+            createdTime,
+            inviterId,
+            userRole,
+            credit,
+            promoterLevel,
+            promoterId,
+            promoterId1,
+            promoterId2,
+            promoterId3,
+            promoterId4,
+            promoterId5,
+            promoterId6,
+            promoterId7,
+            promoterId8,
+            promoterId9,
+            promoterId10,
+            refuseInvite,
+            creditLock
+        )
+        VALUES(
+            #groupId#,
+            #groupName#,
+            #userId#,
+            #userName#,
+            #userNickname#,
+            #userLevel#,
+            #playCount1#,
+            #playCount2#,
+            #createdTime#,
+            #inviterId#,
+            #userRole#,
+            #credit#,
+            #promoterLevel#,
+            #promoterId#,
+            #promoterId1#,
+            #promoterId2#,
+            #promoterId3#,
+            #promoterId4#,
+            #promoterId5#,
+            #promoterId6#,
+            #promoterId7#,
+            #promoterId8#,
+            #promoterId9#,
+            #promoterId10#,
+            #refuseInvite#,
+            #creditLock#
+        )
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+
+    <update id="updateGroupUserByKeyId" parameterClass="java.util.HashMap">
+        UPDATE t_group_user
+        <dynamic prepend="SET">
+            <isPropertyAvailable prepend="," property="groupName">
+                groupName=#groupName#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="userNickname">
+                userNickname=#userNickname#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="userLevel">
+                userLevel=#userLevel#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="playCount1">
+                playCount1=#playCount1#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="playCount2">
+                playCount2=#playCount2#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="userRole">
+                userRole=#userRole#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="promoterId">
+                promoterId=#promoterId#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="promoterLevel">
+                promoterLevel=#promoterLevel#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="promoterId1">
+                promoterId1=#promoterId1#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="promoterId2">
+                promoterId2=#promoterId2#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="promoterId3">
+                promoterId3=#promoterId3#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="promoterId4">
+                promoterId4=#promoterId4#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="promoterId5">
+                promoterId5=#promoterId5#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="promoterId6">
+                promoterId6=#promoterId6#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="promoterId7">
+                promoterId7=#promoterId7#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="promoterId8">
+                promoterId8=#promoterId8#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="promoterId9">
+                promoterId9=#promoterId9#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="promoterId10">
+                promoterId10=#promoterId10#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="refuseInvite">
+                refuseInvite=#refuseInvite#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="ext">
+                ext=#ext#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="creditLock">
+                creditLock=#creditLock#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="frameId">
+                frameId=#frameId#
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE keyId =#keyId#
+    </update>
+
+    <update id="updateGroupUserCredit" parameterClass="java.util.HashMap">
+		UPDATE t_group_user
+		SET
+			credit = credit + #credit#
+		WHERE
+			keyId =#keyId#
+			AND credit + #credit# <![CDATA[ >= ]]> 0
+	</update>
+
+    <select id="loadGroupMaster" resultClass="com.sy.sanguo.game.bean.group.GroupUser" parameterClass="java.util.HashMap">
+		select * from t_group_user
+		where
+		    userRole = 1
+		    AND groupId = #groupId#
+		limit 1
+	</select>
+
+    <select id="userListAdmin" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            userId,
+            userRole,
+            userName,
+            promoterLevel
+        from t_group_user
+        where
+            groupId = #groupId#
+            $andSql$
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="keyWord">
+                    userId = #keyWord#
+                </isPropertyAvailable>
+            </dynamic>
+            AND userRole != 90000
+            AND userRole != 2
+        ORDER BY promoterLevel asc , userRole asc
+        <dynamic prepend="">
+            <isPropertyAvailable prepend=" " property="limitSql">
+                $limitSql$
+            </isPropertyAvailable>
+        </dynamic>
+    </select>
+
+    <select id="userListAll" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            d1.* ,
+            ( CASE WHEN u2.userId is null THEN "" ELSE u2.name END ) AS preName
+        from (
+            select
+                gu.keyId,
+                gu.userId,
+                gu.userLevel,
+                gu.userRole,
+                gu.promoterLevel,
+                gu.promoterId,
+                gu.promoterId1,
+                gu.promoterId2,
+                gu.promoterId3,
+                gu.promoterId4,
+                gu.promoterId5,
+                gu.promoterId6,
+                gu.promoterId7,
+                gu.promoterId8,
+                gu.promoterId9,
+                gu.promoterId10,
+                u1.headimgurl,
+                u1.name as userName,
+                u1.isOnLine,
+                u1.sex,
+                u1.playingTableId as tableId,
+                u1.logTime
+            from t_group_user gu , user_inf u1
+            where
+                gu.groupId = #groupId#
+                AND u1.userId = gu.userId
+                <dynamic prepend="">
+                    <isPropertyAvailable prepend=" and " property="keyWord">
+                        (gu.userId = #keyWord# OR gu.userName LIKE concat('%', #keyWord#, '%'))
+                    </isPropertyAvailable>
+                </dynamic>
+        )d1 left join user_inf u2 on u2.userId = d1.promoterId
+        $orderBySql$
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="countOnlineUserListAll" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select
+            COALESCE(COUNT(u.userId),0)
+        from
+            t_group_user gu,
+            user_inf u
+        where
+            gu.groupId = #groupId#
+            AND gu.userId = u.userId
+            AND u.isOnLine = 1
+    </select>
+
+    <select id="countUserListNextLevel" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select
+        COALESCE(COUNT(*),0)
+        from t_group_user
+        where
+        groupId = #groupId#
+        $andSql$
+        <dynamic prepend="">
+            <isPropertyAvailable prepend=" and " property="keyWord">
+                ( userId = #keyWord# OR userName LIKE concat('%', #keyWord#, '%'))
+            </isPropertyAvailable>
+        </dynamic>
+    </select>
+
+    <select id="countOnlineUserListNextLevel" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select
+            COALESCE(COUNT(u.userId),0)
+        from
+            t_group_user gu,
+            user_inf u
+        where
+            gu.groupId = #groupId#
+            $andSql$
+            AND gu.userId = u.userId
+            AND u.isOnLine = 1
+    </select>
+
+    <select id="userListNextLevel" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            d1.* ,
+            ( CASE WHEN u2.userId is null THEN "" ELSE u2.name END ) AS preName
+        from (
+            select
+                gu.keyId,
+                gu.userId,
+                gu.credit,
+                gu.userLevel,
+                gu.userRole,
+                gu.promoterLevel,
+                gu.promoterId,
+                gu.promoterId1,
+                gu.promoterId2,
+                gu.promoterId3,
+                gu.promoterId4,
+                gu.promoterId5,
+                gu.promoterId6,
+                gu.promoterId7,
+                gu.promoterId8,
+                gu.promoterId9,
+                gu.promoterId10,
+                u1.headimgurl,
+                u1.name as userName,
+                u1.isOnLine,
+                u1.sex,
+                u1.playingTableId as tableId,
+                u1.logTime
+            from t_group_user gu , user_inf u1
+            where
+                gu.groupId = #groupId#
+                $andSql$
+                AND u1.userId=gu.userId
+                <dynamic prepend="">
+                    <isPropertyAvailable prepend=" and " property="keyWord">
+                        (gu.userId = #keyWord# OR gu.userName LIKE concat('%', #keyWord#, '%'))
+                    </isPropertyAvailable>
+                </dynamic>
+        )d1 left join user_inf u2 on u2.userId = d1.promoterId
+        $orderBySql$
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="countUserListForSearch" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select
+            COALESCE(COUNT(*),0)
+        from t_group_user
+        where
+            groupId = #groupId#
+            $andSql$
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="keyWord">
+                    ( userId = #keyWord# OR userName LIKE concat('%', #keyWord#, '%'))
+                </isPropertyAvailable>
+            </dynamic>
+    </select>
+
+    <select id="userListForSearch" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            d1.* ,
+            ( CASE WHEN u2.userId is null THEN "" ELSE u2.name END ) AS preName
+        from (
+            select
+                gu.keyId,
+                gu.userId,
+                gu.credit,
+                gu.userLevel,
+                gu.userRole,
+                gu.promoterLevel,
+                gu.promoterId,
+                gu.promoterId1,
+                gu.promoterId2,
+                gu.promoterId3,
+                gu.promoterId4,
+                gu.promoterId5,
+                gu.promoterId6,
+                gu.promoterId7,
+                gu.promoterId8,
+                gu.promoterId9,
+                gu.promoterId10,
+                u1.headimgurl,
+                u1.name as userName,
+                u1.isOnLine,
+                u1.sex,
+                u1.playingTableId as tableId,
+                u1.logTime
+            from t_group_user gu , user_inf u1
+            where
+                gu.groupId = #groupId#
+                $andSql$
+                AND u1.userId=gu.userId
+                <dynamic prepend="">
+                    <isPropertyAvailable prepend=" and " property="keyWord">
+                        (gu.userId = #keyWord# OR gu.userName LIKE concat('%', #keyWord#, '%'))
+                    </isPropertyAvailable>
+                </dynamic>
+        )d1 left join user_inf u2 on u2.userId = d1.promoterId
+        ORDER BY d1.userRole asc
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="loadGroupUser" resultClass="com.sy.sanguo.game.bean.group.GroupUser" parameterClass="java.util.HashMap">
+        select * from t_group_user
+        where
+            groupId = #groupId#
+            AND userId = #userId#
+        limit 1
+    </select>
+
+    <select id="loadGroupUserForceMaster" resultClass="com.sy.sanguo.game.bean.group.GroupUser" parameterClass="java.util.HashMap">
+        /*FORCE_MASTER*/ select * from t_group_user
+        where
+            groupId = #groupId#
+            AND userId = #userId#
+        limit 1
+    </select>
+
+    <select id="loadGroupUserByUserIds" resultClass="com.sy.sanguo.game.bean.group.GroupUser" parameterClass="java.util.HashMap">
+        select * from t_group_user
+        where
+            groupId = #groupId#
+            AND userId in ( $userIds$ )
+    </select>
+
+    <select id="loadAllGroupUser" resultMap="GroupUser" parameterClass="java.util.HashMap">
+        select * from t_group_user
+        where
+            groupId=#groupId#
+        ORDER BY userRole ASC
+    </select>
+
+    <select id="loadGroupManagers" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT
+		    u.userId,
+		    u.enterServer
+		FROM
+		    t_group_user gm , user_inf u
+		WHERE
+		    gm.groupId=#groupId#
+		    AND ( gm.userRole = 1 or gm.userRole=2 )
+		    AND u.userId = gm.userId
+		    AND u.isOnline = 1
+	</select>
+
+    <select id="loadTeamInvite" resultClass="com.sy.sanguo.game.bean.group.GroupReview" parameterClass="java.util.HashMap">
+		select * from t_group_review
+		where
+		    groupId = #groupId#
+		    AND userId = #userId#
+		    AND currentOperator = #inviterId#
+		    AND currentState = 0
+		    AND reviewMode = 3
+		limit 1
+	</select>
+
+    <update id="rejectTeamInvite" parameterClass="java.util.HashMap">
+		update t_group_review
+		set
+		    currentState = 2,
+		    operateTime = now(),
+		    currentOperator = userId
+        where
+            groupId = #groupId#
+            AND userId = #userId#
+            AND currentState = 0
+            AND reviewMode = 3
+	</update>
+
+    <select id="countTeamList" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT COALESCE(COUNT(*),0) FROM
+            t_group_user gu,
+            user_inf u
+        WHERE
+            gu.groupId = #groupId#
+            $andSql$
+            AND u.userId = gu.userId
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="keyWord">
+                    (u.userId=#keyWord# OR u.name LIKE concat('%', #keyWord#, '%'))
+                </isPropertyAvailable>
+            </dynamic>
+    </select>
+
+    <select id="teamList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            d2.*,
+            ( CASE WHEN d2.promoterId = 0 THEN '本组' ELSE u.name END ) AS teamName,
+            u.headimgurl,
+            u.name,
+            gu.userRole,
+            gu.promoterLevel,
+            gu.ext
+        FROM
+            (
+                SELECT
+                    d1.*,
+                    ( CASE WHEN d1.promoterId = 0 THEN #promoterId# ELSE d1.promoterId END ) AS userId
+                FROM
+                    (
+                        SELECT
+                            $groupByKey$ AS promoterId,
+                            count( userId ) AS memberCount,
+                            sum( credit + tempCredit + creditPurse) AS sumCredit
+                        FROM
+                            t_group_user
+                        WHERE
+                            groupId = #groupId#
+                            $andSql$
+                        GROUP BY
+                            $groupByKey$
+                    ) d1
+            ) d2,
+            user_inf u,
+            t_group_user gu
+        WHERE
+            u.userId = d2.userId
+            AND gu.groupId = #groupId#
+            AND gu.userId = d2.userId
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="keyWord">
+                    (u.userId=#keyWord# OR u.name LIKE concat('%', #keyWord#, '%'))
+                </isPropertyAvailable>
+            </dynamic>
+        order by (case when d2.promoterId = 0 then 0 else 1 end) asc ,d2.sumCredit desc
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="sumCredit" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+        select COALESCE(SUM(credit) + SUM(tempCredit) + SUM(creditPurse),0)
+        from
+            t_group_user
+        where
+            groupId = #groupId#
+            <isPropertyAvailable prepend=" " property="andSql">
+                $andSql$
+            </isPropertyAvailable>
+    </select>
+
+    <select id="sumCommissionCredit" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+        select
+            COALESCE(credit,0)
+        from
+            log_group_commission
+        where
+            groupId = #groupId#
+            AND userId = #userId#
+            AND dataDate = #dataDate#
+    </select>
+
+    <select id="getUserGroupTableIdCount" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+            COALESCE(COUNT( DISTINCT tu.tableNo ),0)
+        FROM
+            t_table_user$gpSeq$ tu FORCE INDEX(idx_group),
+            t_group_table gt
+        WHERE
+            tu.groupId = #groupId#
+            AND tu.userId IN (
+                SELECT userId FROM t_group_user
+                WHERE
+                    groupId = #groupId#
+                    <isPropertyAvailable prepend=" " property="andSql">
+                        $andSql$
+                    </isPropertyAvailable>
+                    <isPropertyAvailable prepend=" AND " property="queryUserId">
+                        userId = #queryUserId#
+                    </isPropertyAvailable>
+            )
+            AND tu.createdTime <![CDATA[ >= ]]> #startDate#
+            AND tu.createdTime <![CDATA[ <= ]]> #endDate#
+            AND gt.keyId = tu.tableNo
+            AND gt.currentState in ( $currentState$ )
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="queryTableId">
+                    gt.tableId = #queryTableId#
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" AND " property="type">
+                    gt.type = #type#
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" AND " property="playType">
+                    gt.playType = #playType#
+                </isPropertyAvailable>
+            </dynamic>
+    </select>
+
+    <select id="getUserPlayLogGroupTable" resultMap="GroupTable" parameterClass="java.util.HashMap">
+		SELECT * FROM t_group_table
+		WHERE
+		    keyId in (
+                SELECT
+                    DISTINCT tu.tableNo
+                FROM
+                    t_table_user$gpSeq$ tu FORCE INDEX(idx_group),
+                    t_group_table gt
+                WHERE
+                    tu.groupId = #groupId#
+                    AND tu.userId IN(
+                        SELECT userId FROM t_group_user
+                        WHERE
+                            groupId = #groupId#
+                            <isPropertyAvailable prepend=" " property="andSql">
+                                $andSql$
+                            </isPropertyAvailable>
+                            <isPropertyAvailable prepend=" AND " property="queryUserId">
+                                userId = #queryUserId#
+                            </isPropertyAvailable>
+                    )
+                    AND tu.createdTime <![CDATA[ >= ]]> #startDate#
+                    AND tu.createdTime <![CDATA[ <= ]]> #endDate#
+                    AND gt.keyId = tu.tableNo
+                    AND gt.currentState in ( $currentState$ )
+                    <dynamic prepend="">
+                        <isPropertyAvailable prepend=" AND " property="queryTableId">
+                            gt.tableId = #queryTableId#
+                        </isPropertyAvailable>
+                        <isPropertyAvailable prepend=" AND " property="type">
+                            gt.type = #type#
+                        </isPropertyAvailable>
+                        <isPropertyAvailable prepend=" AND " property="playType">
+                            gt.playType = #playType#
+                        </isPropertyAvailable>
+                    </dynamic>
+		    )
+        order by overTime desc
+        LIMIT #startNo#,#pageSize#
+	</select>
+
+    <select id="isGroupTableOver" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT COALESCE(COUNT(*),0) FROM t_group_table
+        WHERE
+            groupId = #groupId#
+            AND tableId = #tableId#
+            AND currentState in( '0' , '1' )
+    </select>
+
+    <select id="loadGroupCreditLog_0" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select * from (
+                select
+                    log1.keyId,
+                    log1.userId,
+                    log1.optUserId,
+                    log1.createdTime,
+                    log1.credit,
+                    u11.name as optUserName,
+                    u12.name as userName
+                from
+                    t_group_credit_log$gpSeq$ log1 force index(index_all),
+                    user_inf u11,
+                    user_inf u12
+                where
+                    log1.groupId = #groupId#
+                    AND log1.createdTime <![CDATA[ >= ]]> #startDate#
+                    AND log1.createdTime <![CDATA[ <= ]]> #endDate#
+                    AND log1.userId = #keyWord#
+                    AND log1.type = #type#
+                    AND log1.mode = 1
+                    <dynamic prepend="">
+                        <isPropertyAvailable prepend=" and " property="isPositive">
+                            log1.credit <![CDATA[ > ]]> 0
+                        </isPropertyAvailable>
+                        <isPropertyAvailable prepend=" and " property="isNegative">
+                            log1.credit <![CDATA[ < ]]> 0
+                        </isPropertyAvailable>
+                    </dynamic>
+                    AND u11.userId = log1.optUserId
+                    AND u12.userId = log1.userId
+            union
+                select
+                    log2.keyId,
+                    log2.userId,
+                    log2.optUserId,
+                    log2.createdTime,
+                    log2.credit,
+                    u21.name as optUserName,
+                    u22.name as userName
+                from
+                    t_group_credit_log$gpSeq$ log2 force index(idx_gId_time_uId_type),
+                    user_inf u21,
+                    user_inf u22
+                where
+                    log2.groupId = #groupId#
+                    AND log2.createdTime <![CDATA[ >= ]]> #startDate#
+                    AND log2.createdTime <![CDATA[ <= ]]> #endDate#
+                    AND log2.optUserId = #keyWord#
+                    AND log2.type = #type#
+                    AND log2.mode = 1
+                    <dynamic prepend="">
+                        <isPropertyAvailable prepend=" and " property="isPositive">
+                            log2.credit <![CDATA[ > ]]> 0
+                        </isPropertyAvailable>
+                        <isPropertyAvailable prepend=" and " property="isNegative">
+                            log2.credit <![CDATA[ < ]]> 0
+                        </isPropertyAvailable>
+                    </dynamic>
+                    AND u21.userId = log2.optUserId
+                    AND u22.userId = log2.userId
+        ) as logData
+        ORDER BY
+            logData.keyId desc
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="countGroupCreditLog_0" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select COALESCE(COUNT(logData.keyId),0) from(
+                select
+                    log1.keyId
+                from
+                    t_group_credit_log$gpSeq$ as log1 force index(idx_gid_uid_time_type)
+                where
+                    log1.groupId = #groupId#
+                    AND log1.createdTime <![CDATA[ >= ]]> #startDate#
+                    AND log1.createdTime <![CDATA[ <= ]]> #endDate#
+                    AND log1.userId = #keyWord#
+                    AND log1.type = #type#
+                    AND log1.mode = 1
+                    <dynamic prepend="">
+                        <isPropertyAvailable prepend=" and " property="isPositive">
+                            log1.credit <![CDATA[ > ]]> 0
+                        </isPropertyAvailable>
+                        <isPropertyAvailable prepend=" and " property="isNegative">
+                            log1.credit <![CDATA[ < ]]> 0
+                        </isPropertyAvailable>
+                    </dynamic>
+            union
+                select
+                    log2.keyId
+                from
+                    t_group_credit_log$gpSeq$ as log2 force index(idx_gId_time_uId_type)
+                where
+                    log2.groupId = #groupId#
+                    AND log2.createdTime <![CDATA[ >= ]]> #startDate#
+                    AND log2.createdTime <![CDATA[ <= ]]> #endDate#
+                    AND log2.optUserId = #keyWord#
+                    AND log2.type = #type#
+                    AND log2.mode = 1
+                    <dynamic prepend="">
+                        <isPropertyAvailable prepend=" and " property="isPositive">
+                            log2.credit <![CDATA[ > ]]> 0
+                        </isPropertyAvailable>
+                        <isPropertyAvailable prepend=" and " property="isNegative">
+                            log2.credit <![CDATA[ < ]]> 0
+                        </isPropertyAvailable>
+                    </dynamic>
+        ) as logData
+    </select>
+
+    <select id="loadGroupCreditLog_1" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            log.userId,
+            log.optUserId,
+            log.createdTime,
+            log.credit,
+            u.name as optUserName,
+            u2.name as userName
+        from
+            t_group_credit_log$gpSeq$ log force index(idx_gId_time_uId_type),
+            user_inf u,
+            user_inf u2
+        where
+            log.groupId = #groupId#
+            AND log.createdTime <![CDATA[ >= ]]> #startDate#
+            AND log.createdTime <![CDATA[ <= ]]> #endDate#
+            AND log.optUserId = #keyWord#
+            AND log.type = #type#
+            AND log.mode = 1
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="isPositive">
+                    log.credit <![CDATA[ > ]]> 0
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" and " property="isNegative">
+                    log.credit <![CDATA[ < ]]> 0
+                </isPropertyAvailable>
+            </dynamic>
+            AND u.userId = log.optUserId
+            AND u2.userId = log.userId
+        ORDER BY
+        log.keyId desc
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="countGroupCreditLog_1" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select
+            COALESCE(COUNT(*),0)
+        from
+            t_group_credit_log$gpSeq$ as log force index(idx_gId_time_uId_type)
+        where
+            log.groupId = #groupId#
+            AND log.createdTime <![CDATA[ >= ]]> #startDate#
+            AND log.createdTime <![CDATA[ <= ]]> #endDate#
+            AND log.optUserId = #keyWord#
+            AND log.type = #type#
+            AND log.mode = 1
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="isPositive">
+                    log.credit <![CDATA[ > ]]> 0
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" and " property="isNegative">
+                    log.credit <![CDATA[ < ]]> 0
+                </isPropertyAvailable>
+            </dynamic>
+    </select>
+
+    <select id="loadGroupCreditLog_2" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            log.userId,
+            log.optUserId,
+            log.createdTime,
+            log.credit,
+            u.name as optUserName,
+            u2.name as userName
+        from
+            t_group_credit_log$gpSeq$ log force index(index_all),
+            user_inf u,
+            user_inf u2
+        where
+            log.groupId = #groupId#
+            AND log.createdTime <![CDATA[ >= ]]> #startDate#
+            AND log.createdTime <![CDATA[ <= ]]> #endDate#
+            AND log.userId = #keyWord#
+            AND log.type = #type#
+            AND log.mode = 1
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="isPositive">
+                    log.credit <![CDATA[ > ]]> 0
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" and " property="isNegative">
+                    log.credit <![CDATA[ < ]]> 0
+                </isPropertyAvailable>
+            </dynamic>
+            AND u.userId = log.optUserId
+            AND u2.userId = log.userId
+        ORDER BY
+        log.keyId desc
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="countGroupCreditLog_2" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select
+            COALESCE(COUNT(*),0)
+        from
+            t_group_credit_log$gpSeq$ as log force index(index_all)
+        where
+            log.groupId = #groupId#
+            AND log.createdTime <![CDATA[ >= ]]> #startDate#
+            AND log.createdTime <![CDATA[ <= ]]> #endDate#
+            AND log.userId = #keyWord#
+            AND log.type = #type#
+            AND log.mode = 1
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="isPositive">
+                    log.credit <![CDATA[ > ]]> 0
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" and " property="isNegative">
+                    log.credit <![CDATA[ < ]]> 0
+                </isPropertyAvailable>
+            </dynamic>
+    </select>
+
+    <select id="loadCommissionConfig" resultClass="com.sy.sanguo.game.bean.group.GroupCommissionConfig" parameterClass="java.util.HashMap">
+        SELECT
+            *
+        FROM
+            t_group_commission_config
+        WHERE
+            groupId = #groupId#
+            AND userId = #userId#
+        order by seq
+    </select>
+
+    <insert id="insertCommissionConfig" parameterClass="com.sy.sanguo.game.bean.group.GroupCommissionConfig">
+        insert into t_group_commission_config
+        (groupId,userId,seq,minCredit,maxCredit,credit,leftCredit,maxCreditLog,createdTime,lastUpTime)
+        VALUES
+        (#groupId#,#userId#,#seq#,#minCredit#,#maxCredit#,#credit#,#leftCredit#,#maxCreditLog#,#createdTime#,#lastUpTime#)
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+
+    <update id="updateCommissionConfig" parameterClass="java.util.HashMap">
+        update t_group_commission_config
+        set
+            credit = #credit# ,
+            leftCredit = #leftCredit# ,
+            maxCreditLog = #maxCreditLog#,
+            lastUpTime = #lastUpTime#
+        where
+            groupId = #groupId#
+            AND userId = #userId#
+            AND seq = #seq#
+    </update>
+
+    <select id="userListUnder" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            d1.* ,
+            ( CASE WHEN u2.userId is null THEN "" ELSE u2.name END ) AS preName
+        from (
+            select
+                gu.keyId,
+                gu.userId,
+                gu.credit,
+                gu.userLevel,
+                gu.userRole,
+                gu.promoterLevel,
+                gu.promoterId,
+                gu.promoterId1,
+                gu.promoterId2,
+                gu.promoterId3,
+                gu.promoterId4,
+                gu.promoterId5,
+                gu.promoterId6,
+                gu.promoterId7,
+                gu.promoterId8,
+                gu.promoterId9,
+                gu.promoterId10,
+                gu.ext,
+                u1.headimgurl,
+                u1.name as userName,
+                u1.isOnLine,
+                u1.sex,
+                u1.playingTableId as tableId,
+                u1.logTime
+            from t_group_user gu , user_inf u1
+            where
+                gu.groupId = #groupId#
+                <dynamic prepend="">
+                    <isPropertyAvailable prepend=" " property="andSql">
+                        $andSql$
+                    </isPropertyAvailable>
+                </dynamic>
+                AND u1.userId = gu.userId
+                <dynamic prepend="">
+                    <isPropertyAvailable prepend=" and " property="keyWord">
+                        (gu.userId = #keyWord# OR gu.userName LIKE concat('%', #keyWord#, '%'))
+                    </isPropertyAvailable>
+                </dynamic>
+                <isPropertyAvailable property = "creditOrder">
+                    <isEqual prepend=" " property="creditOrder" compareValue="0">
+                        ORDER BY gu.credit DESC
+                    </isEqual>
+                    <isEqual prepend=" " property="creditOrder" compareValue="1">
+                        AND gu.credit <![CDATA[ < ]]> 0
+                        ORDER BY gu.credit ASC
+                    </isEqual>
+                </isPropertyAvailable>
+        )d1 left join user_inf u2 on u2.userId = d1.promoterId
+        ORDER BY d1.userRole asc , d1.credit desc
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="countUserListUnder" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select
+            COALESCE(COUNT(*),0)
+        from t_group_user
+        where
+            groupId = #groupId#
+            $andSql$
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="keyWord">
+                    ( userId = #keyWord# OR userName LIKE concat('%', #keyWord#, '%'))
+                </isPropertyAvailable>
+            </dynamic>
+            <isPropertyAvailable property = "creditOrder">
+                <isEqual prepend=" " property="creditOrder" compareValue="0">
+                    ORDER BY credit DESC
+                </isEqual>
+                <isEqual prepend=" " property="creditOrder" compareValue="1">
+                    AND credit <![CDATA[ < ]]> 0
+                    ORDER BY credit ASC
+                </isEqual>
+            </isPropertyAvailable>
+    </select>
+
+    <select id="countCreditLogList" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select
+        count(log.keyId)
+        from
+        t_group_credit_log$gpSeq$ log force index(idx_gid_uid_time_type)
+        where
+        log.groupId = #groupId#
+        AND log.userId = #userId#
+        AND log.createdTime <![CDATA[ >= ]]> #startDate#
+        AND log.createdTime <![CDATA[ <= ]]> #endDate#
+        <dynamic prepend="">
+            <isPropertyAvailable property="type">
+                <isPropertyAvailable property="multiType">
+                  <isEqual compareValue="2" property="type">
+                      AND log.type  in (2,5)
+                  </isEqual>
+                  <isEqual compareValue="6" property="type">
+                      AND (log.type  in (2,4,5) and log.credit > 0 or log.type = 6)
+                  </isEqual>
+                </isPropertyAvailable>
+                <isNotPropertyAvailable  property="multiType">
+                    AND log.type = #type#
+                </isNotPropertyAvailable>
+            </isPropertyAvailable>
+            <isPropertyAvailable property="upOrDown">
+                <isEqual prepend=" and " property="upOrDown" compareValue="0">
+                    log.credit <![CDATA[ < ]]> 0
+                </isEqual>
+                <isEqual prepend=" and " property="upOrDown" compareValue="1">
+                    log.credit <![CDATA[ > ]]> 0
+                </isEqual>
+            </isPropertyAvailable>
+            <isPropertyAvailable property="isLookXipai">
+                AND log.type != 4
+                AND log.type != 5
+            </isPropertyAvailable>
+        </dynamic>
+    </select>
+
+    <select id="sumCreditLogList" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+        select
+        COALESCE(SUM(log.credit),0)
+        from
+        t_group_credit_log$gpSeq$ log force index(idx_gid_uid_time_type)
+        where
+        log.groupId = #groupId#
+        AND log.userId = #userId#
+        AND log.createdTime <![CDATA[ >= ]]> #startDate#
+        AND log.createdTime <![CDATA[ <= ]]> #endDate#
+        <dynamic prepend="">
+            <isPropertyAvailable property="type">
+                <isPropertyAvailable property="multiType">
+                    <isEqual compareValue="2" property="type">
+                        AND log.type  in (2,5)
+                    </isEqual>
+                    <isEqual compareValue="6" property="type">
+                        AND log.type  in (2,4,5) and log.credit > 0
+                    </isEqual>
+                </isPropertyAvailable>
+                <isNotPropertyAvailable  property="multiType">
+                    AND log.type = #type#
+                </isNotPropertyAvailable>
+            </isPropertyAvailable>
+            <isPropertyAvailable property="upOrDown">
+                <isEqual prepend=" and " property="upOrDown" compareValue="0">
+                    log.credit <![CDATA[ < ]]> 0
+                </isEqual>
+                <isEqual prepend=" and " property="upOrDown" compareValue="1">
+                    log.credit <![CDATA[ > ]]> 0
+                </isEqual>
+            </isPropertyAvailable>
+            <isPropertyAvailable property="isLookXipai">
+                AND log.type != 4
+                AND log.type != 5
+            </isPropertyAvailable>
+        </dynamic>
+    </select>
+
+    <select id="creditLogList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+        log.optUserId,
+        log.credit,
+        log.curCredit,
+        log.curCreditPurse,
+        log.type,
+        log.mode,
+        log.createdTime,
+        log.roomName,
+        u.name AS userName
+        FROM
+        t_group_credit_log$gpSeq$ log force index(idx_gid_uid_time_type) , user_inf u
+        WHERE
+        log.groupId = #groupId#
+        AND log.userId = #userId#
+        AND log.createdTime <![CDATA[ >= ]]> #startDate#
+        AND log.createdTime <![CDATA[ <= ]]> #endDate#
+        <dynamic prepend="">
+            <isPropertyAvailable property="type">
+                <isPropertyAvailable property="multiType">
+                    <isEqual compareValue="2" property="type">
+                        AND log.type  in (2,5)
+                    </isEqual>
+                    <isEqual compareValue="6" property="type">
+                        AND (log.type  in (2,4,5) and log.credit > 0 or log.type = 6)
+                    </isEqual>
+                </isPropertyAvailable>
+                <isNotPropertyAvailable  property="multiType">
+                    AND log.type = #type#
+                </isNotPropertyAvailable>
+            </isPropertyAvailable>
+            <isPropertyAvailable property="upOrDown">
+                <isEqual prepend=" and " property="upOrDown" compareValue="0">
+                    log.credit <![CDATA[ < ]]> 0
+                </isEqual>
+                <isEqual prepend=" and " property="upOrDown" compareValue="1">
+                    log.credit <![CDATA[ > ]]> 0
+                </isEqual>
+            </isPropertyAvailable>
+            <isPropertyAvailable property="isLookXipai">
+                AND log.type != 4
+                AND log.type != 5
+            </isPropertyAvailable>
+        </dynamic>
+        AND u.userId = (case when log.optUserId > 0 then log.optUserId else log.userId end)
+        ORDER BY
+        log.keyId DESC
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="commissionLog" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            d1.* ,
+            u.headimgurl
+        FROM(
+            SELECT
+                gu.userId,
+                gu.userName,
+                gu.userRole,
+                gu.promoterLevel,
+                gu.promoterId,
+                gu.userId as promoterIdKey,
+                CASE WHEN log.credit IS NULL THEN 0 ELSE log.credit END AS credit,
+                CASE WHEN log.commissionCredit IS NULL THEN 0 ELSE log.commissionCredit END AS commissionCredit,
+                CASE WHEN log.commissionCount IS NULL  THEN 0 ELSE log.commissionCount END AS commissionCount,
+                CASE WHEN log.zjsCount IS NULL THEN 0 ELSE log.zjsCount END AS zjsCount,
+                CASE WHEN log.dyjCount IS NULL THEN 0 ELSE log.dyjCount END AS dyjCount,
+                CASE WHEN log.totalPay IS NULL THEN 0 ELSE  log.totalPay END AS totalPay
+            FROM
+                t_group_user gu
+                LEFT JOIN (
+                    SELECT * FROM log_group_commission
+                    WHERE
+                        dataDate = #dataDate#
+                        AND groupId = #groupId#
+                ) AS log
+            ON
+                log.userId = gu.userId
+            WHERE
+                gu.groupId = #groupId#
+                $andSql$
+                AND gu.userRole NOT IN ( 2, 90000 )
+            )  d1,
+        user_inf u
+        WHERE
+           u.userId = d1.userId
+    </select>
+
+    <select id="creditStatistics" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            sum(credit + creditPurse) as sumCredit,
+            sum(case when credit <![CDATA[ < ]]> 0 then credit else 0 end ) as sumNegativeCredit,
+            $selSql$
+        FROM
+            t_group_user
+        WHERE
+            groupId = #groupId#
+            $andSql$
+            $groupBySql$
+    </select>
+
+    <select id="sumCreditByType" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+            sum(credit) as sumCredit
+        FROM
+            t_group_credit_log
+        WHERE
+            groupId = #groupId#
+            AND userId = #userId#
+            AND type = #type#
+            AND createdTime <![CDATA[>=]]> #startDate#
+            AND createdTime <![CDATA[<=]]> #endDate#
+    </select>
+
+    <select id="creditStatisticsMaxLevel" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+            max(promoterLevel)
+        FROM
+            t_group_user
+        WHERE
+            groupId = #groupId#
+            $andSql$
+    </select>
+
+    <select id="countCommissionLogNextLevel" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+            COALESCE(COUNT(*),0)
+        FROM
+            t_group_user
+        WHERE
+            groupId = #groupId#
+            $andSql$
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="keyWord">
+                    (userId = #keyWord# OR name LIKE concat('%', #keyWord#, '%'))
+                </isPropertyAvailable>
+            </dynamic>
+    </select>
+
+    <select id="commissionLogNextLevel" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            d1.* ,
+            u.headimgurl
+        FROM(
+            SELECT
+                gu.userId,
+                gu.userName,
+                gu.userRole,
+                gu.promoterLevel,
+                gu.promoterId,
+                (gu.credit + gu.creditPurse) as credit,
+                CASE WHEN log.selfWinCredit IS NULL THEN 0 ELSE log.selfWinCredit END AS selfWinCredit,
+                CASE WHEN log.selfCommissionCredit IS NULL THEN 0 ELSE log.selfCommissionCredit END AS selfCommissionCredit,
+                CASE WHEN log.selfCommissionCount IS NULL  THEN 0 ELSE log.selfCommissionCount END AS selfCommissionCount,
+                CASE WHEN log.selfZjsCount IS NULL THEN 0 ELSE  log.selfZjsCount END AS selfZjsCount,
+                CASE WHEN log.selfDyjCount IS NULL THEN 0 ELSE log.selfDyjCount END AS selfDyjCount,
+                CASE WHEN log.selfTotalPay IS NULL THEN 0 ELSE log.selfTotalPay END AS selfTotalPay
+            FROM
+                t_group_user gu
+                LEFT JOIN (
+                    SELECT * FROM log_group_commission
+                    WHERE
+                        dataDate = #dataDate#
+                        AND groupId = #groupId#
+                ) AS log
+            ON
+                log.userId = gu.userId
+            WHERE
+                gu.groupId = #groupId#
+                $andSql$
+            )  d1,
+        user_inf u
+        WHERE
+            u.userId = d1.userId
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="keyWord">
+                    (u.userId = #keyWord# OR u.userName LIKE concat('%', #keyWord#, '%'))
+                </isPropertyAvailable>
+            </dynamic>
+        ORDER BY d1.userRole
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="countRankList" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+            COUNT(DISTINCT gu.userId)
+        FROM
+            t_group_user gu,
+            (
+                SELECT * FROM log_group_commission
+                WHERE
+                    dataDate <![CDATA[ >= ]]> #startDate#
+                    AND dataDate <![CDATA[ <= ]]> #endDate#
+                    AND groupId = #groupId#
+                    AND selfZjsCount > 0
+            ) AS log
+        WHERE
+            gu.groupId = #groupId#
+            $andSql$
+            AND log.userId = gu.userId
+    </select>
+
+    <select id="rankList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            d1.* ,
+            u.headimgurl
+        FROM(
+            SELECT
+                gu.userId,
+                gu.userName,
+                gu.userRole,
+                gu.promoterId,
+                sum(log.selfWinCredit + log.selfCommissionCredit) AS selfWinCredit,
+                sum(log.selfCommissionCredit) AS selfCommissionCredit,
+                sum(log.selfCommissionCount) AS selfCommissionCount,
+                sum(log.selfZjsCount) AS selfZjsCount,
+                sum(log.selfDyjCount) AS selfDyjCount,
+                sum(log.selfTotalPay) AS selfTotalPay
+            FROM
+                t_group_user gu,
+                (
+                    SELECT * FROM log_group_commission
+                    WHERE
+                        dataDate <![CDATA[ >= ]]> #startDate#
+                        AND dataDate <![CDATA[ <= ]]> #endDate#
+                        AND groupId = #groupId#
+                        AND selfZjsCount > 0
+                ) AS log
+            WHERE
+                gu.groupId = #groupId#
+                $andSql$
+                AND log.userId = gu.userId
+                GROUP BY log.userId
+            )  d1,
+        user_inf u
+        WHERE
+            u.userId = d1.userId
+            and d1.selfZjsCount > 0
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="keyWord">
+                    (u.userId = #keyWord# OR u.name LIKE concat('%', #keyWord#, '%'))
+                </isPropertyAvailable>
+            </dynamic>
+        $orderBySql$
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="rankSum" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            sum(d1.selfWinCredit) AS selfWinCredit,
+            sum(d1.selfCommissionCredit) AS selfCommissionCredit,
+            sum(d1.selfCommissionCount) AS selfCommissionCount,
+            sum(d1.selfZjsCount) AS selfZjsCount,
+            sum(d1.selfDyjCount) AS selfDyjCount,
+            sum(d1.selfTotalPay) AS selfTotalPay
+        FROM(
+            SELECT
+                sum(log.selfWinCredit + log.selfCommissionCredit) AS selfWinCredit,
+                sum(log.selfCommissionCredit) AS selfCommissionCredit,
+                sum(log.selfCommissionCount) AS selfCommissionCount,
+                sum(log.selfZjsCount) AS selfZjsCount,
+                sum(log.selfDyjCount) AS selfDyjCount,
+                sum(log.selfTotalPay) AS selfTotalPay
+            FROM
+                t_group_user gu,
+                (
+                    SELECT * FROM log_group_commission
+                    WHERE
+                        dataDate <![CDATA[ >= ]]> #startDate#
+                        AND dataDate <![CDATA[ <= ]]> #endDate#
+                        AND groupId = #groupId#
+                        AND selfZjsCount > 0
+                ) AS log
+            WHERE
+                gu.groupId = #groupId#
+                $andSql$
+                AND log.userId = gu.userId
+            GROUP BY log.userId
+        )  d1
+        WHERE
+            d1.selfZjsCount > 0
+    </select>
+
+    <insert id="insertGroupUserAlert" parameterClass="com.sy.sanguo.game.bean.group.LogGroupUserAlert">
+        insert into log_group_user_alert
+        (groupId,userId,optUserId,type)
+        VALUES
+        (#groupId#,#userId#,#optUserId#,#type#)
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+
+    <delete id="deleteUserAndLower" parameterClass="java.util.HashMap">
+        DELETE FROM t_group_user
+        WHERE
+            groupId = #groupId#
+            $andSql$
+    </delete>
+
+    <insert id="insertGroupUserLog" parameterClass="com.sy.sanguo.game.bean.group.GroupUserLog">
+        INSERT INTO t_group_user_log
+        (groupId,userId,credit)
+        VALUES
+        (#groupId#,#userId#,#credit#)
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+
+    <select id="loadGroupUserLog" resultClass="com.sy.sanguo.game.bean.group.GroupUserLog" parameterClass="java.util.HashMap">
+        SELECT * FROM t_group_user_log
+        where
+            groupId = #groupId#
+            AND userId = #userId#
+        ORDER BY createdTime DESC
+        LIMIT 1
+    </select>
+
+    <delete id="deleteGroupUserLog" parameterClass="java.util.HashMap">
+        DELETE FROM t_group_user_log
+        WHERE
+            keyId = #keyId#
+    </delete>
+
+    <select id="loadGroupUsers" resultClass="com.sy.sanguo.game.bean.group.GroupUser" parameterClass="java.util.HashMap">
+        SELECT * FROM t_group_user
+        WHERE
+            groupId = #groupId#
+            $andSql$
+    </select>
+
+    <select id="countSearchGroupUser" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+            COALESCE(COUNT(*),0)
+        FROM
+            t_group_user gu,
+            user_inf u
+        WHERE
+            gu.groupId=#groupId#
+            $andSql$
+            AND u.userId = gu.userId
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="keyWord">
+                    ( u.userId LIKE concat('%', #keyWord#, '%') OR u.name LIKE concat('%', #keyWord#, '%') )
+                </isPropertyAvailable>
+            </dynamic>
+    </select>
+
+    <select id="searchGroupUser" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            d1.* ,
+            ( CASE WHEN u2.userId is null THEN "" ELSE u2.name END ) AS preName
+        from (
+            select
+                gu.keyId,
+                gu.groupId,
+                gu.userId,
+                gu.credit + gu.tempCredit + gu.creditPurse as credit,
+                gu.userLevel,
+                gu.userRole,
+                gu.userGroup,
+                gu.promoterId,
+                gu.promoterLevel,
+                gu.promoterId1,
+                gu.promoterId2,
+                gu.promoterId3,
+                gu.promoterId4,
+                gu.promoterId5,
+                gu.promoterId6,
+                gu.promoterId7,
+                gu.promoterId8,
+                gu.promoterId9,
+                gu.promoterId10,
+                u.headimgurl,
+                u.`name` as userName,
+                u.isOnLine,
+                u.sex,
+                u.playingTableId as tableId
+            from
+                t_group_user gu , user_inf u
+            where
+                gu.groupId=#groupId#
+                $andSql$
+                AND u.userId = gu.userId
+                <dynamic prepend="">
+                    <isPropertyAvailable prepend=" and " property="keyWord">
+                        ( u.userId LIKE concat('%', #keyWord#, '%') OR u.name LIKE concat('%', #keyWord#, '%') )
+                    </isPropertyAvailable>
+                </dynamic>
+        )d1 left join user_inf u2 on u2.userId = d1.promoterId
+        ORDER BY d1.credit desc
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <update id="updateGroupUser" parameterClass="java.util.HashMap">
+        UPDATE t_group_user
+            $setSql$
+        WHERE
+            groupId = #groupId#
+            $whereSql$
+    </update>
+
+    <select id="getMaxPromoterLevel" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+            max(promoterLevel)
+        FROM
+            t_group_user
+        WHERE
+            groupId = #groupId#
+            $andSql$
+    </select>
+
+    <select id="countGroupUserAlert" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select
+            COALESCE(COUNT(keyId),0)
+        from
+            log_group_user_alert
+        where
+            groupId = #groupId#
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="userId">
+                    userId = #userId#
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" and " property="optUserId">
+                    optUserId = #optUserId#
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" and " property="type">
+                    type = #type#
+                </isPropertyAvailable>
+            </dynamic>
+    </select>
+
+    <select id="loadGroupUserAlert" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            log.userId,
+            log.optUserId,
+            log.type,
+            log.createdTime,
+            u1.headimgurl,
+            u1.`name` as userName,
+            u2.headimgurl as optHeadimgurl,
+            u2.`name` as otpUserName
+        from
+            log_group_user_alert log , user_inf u1 , user_inf u2
+        where
+            log.groupId = #groupId#
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="userId">
+                    log.userId = #userId#
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" and " property="optUserId">
+                    log.optUserId = #optUserId#
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" and " property="type">
+                    type = #type#
+                </isPropertyAvailable>
+            </dynamic>
+            AND u1.userId = log.userId
+            AND u2.userId = log.optUserId
+        ORDER BY log.createdTime desc
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="loadGroupUserAlertKickOutLog" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+	        l.groupid,l.userId,l.optUserId,l.type,l.createdTime, g.userRole
+        FROM
+            t_group_user g
+        LEFT JOIN log_group_user_alert l ON g.groupid = l.groupid
+        WHERE
+            l.type = 3
+        AND l.optUserId =g.userid
+        AND g.groupid = #groupid#
+        AND l.userid = #userid#
+        ORDER BY
+            l.createdTime DESC
+        LIMIT 0,
+         1
+    </select>
+
+    <select id="group_table_count" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT
+		    DATE_FORMAT(overTime,'%Y-%m-%d') ctime,
+		    COUNT(*) c
+        FROM
+            t_group_table
+        WHERE
+            groupId = #groupId#
+            AND currentState in ('2','4','5')
+        GROUP BY ctime
+	</select>
+
+    <select id="loadTableCount" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT
+		    DATE_FORMAT(dataDate,'%Y-%m-%d') as ctime,
+		    dataValue as c
+		FROM t_data_statistics
+		WHERE
+		    dataType = 'jlbDjs'
+		    AND dataCode = #dataCode#
+	</select>
+
+    <select id="loadAllGroup" resultClass="com.sy.sanguo.game.bean.group.GroupInfo">
+		select * from t_group
+	</select>
+
+    <select id="countCreditCommissionLog" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select count(1) from (
+            select
+                $selPromoterId$
+            from
+                t_group_credit_log$gpSeq$ log force index(index_all),
+                t_group_user gu
+            where
+                log.groupId = #groupId#
+                AND log.userId = #userId#
+                AND log.type = 2
+                AND log.createdTime <![CDATA[ >= ]]> #startDate#
+                AND log.createdTime <![CDATA[ <= ]]> #endDate#
+                AND gu.groupId= #groupId#
+                AND gu.userId = log.optUserId
+                $andSql$
+            GROUP BY
+                $groupBySql$
+        ) as l
+    </select>
+
+    <select id="creditCommissionLog" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT d1.* FROM
+            (SELECT
+                $selPromoterId$ as promoterId,
+                count(log.keyId) as commissionCount,
+                COALESCE(sum(log.credit),0) as commissionCredit,
+                count(DISTINCT log.optUserId) as memberCount
+            FROM
+                t_group_credit_log$gpSeq$ log force index(index_all),
+                t_group_user gu
+            WHERE
+                log.groupId = #groupId#
+                AND log.userId = #userId#
+                AND log.type = 2
+                AND log.createdTime <![CDATA[ >= ]]> #startDate#
+                AND log.createdTime <![CDATA[ <= ]]> #endDate#
+                AND gu.groupId = #groupId#
+                AND gu.userId = log.optUserId
+                $andSql$
+            GROUP BY
+                $groupBySql$
+            )as d1
+            LEFT JOIN t_group_user gu
+            ON gu.groupId = #groupId# AND gu.userId = d1.promoterId
+        ORDER BY
+            $orderBySql$
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="creditZjs" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT
+            $selPromoterId$ as promoterId,
+            COALESCE(COUNT(tableNo),0) as zjs
+		FROM
+            t_table_user$gpSeq$ tu,
+            t_group_user gu
+		WHERE
+		    tu.groupId =#groupId#
+            AND tu.tableNo IN(
+                SELECT keyId FROM t_group_table
+                WHERE
+                    groupId=#groupId#
+                    AND currentCount > 0
+                    AND type = 2
+                    AND currentState in ('2','4')
+                    AND overTime<![CDATA[>= ]]>#startDate#
+                    AND overTime<![CDATA[<= ]]>#endDate#
+            )
+            AND gu.groupId =#groupId#
+            AND gu.userId = tu.userId
+            $andSql$
+        GROUP BY
+            $groupBySql$
+	</select>
+
+    <select id="sumCommissionCreditLog" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+        select
+            COALESCE(sum(credit),0) as sumCredit
+        from
+            t_group_credit_log$gpSeq$ force index(index_all)
+        where
+            groupId=#groupId#
+            AND userId=#userId#
+            AND type=#type#
+            AND createdTime <![CDATA[>=]]> #startDate#
+            AND createdTime <![CDATA[<=]]> #endDate#
+    </select>
+
+    <select id="countCreditCommissionLogByUser" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select
+            count(distinct(optUserId))
+        from
+            t_group_credit_log$gpSeq$ log force index(index_all),
+            t_group_user gu
+        where
+            log.groupId=#groupId#
+            AND log.userId=#userId#
+            AND log.createdTime <![CDATA[>=]]> #startDate#
+            AND log.createdTime <![CDATA[<=]]> #endDate#
+            AND log.type = #type#
+            AND gu.groupId = #groupId#
+            AND gu.userId = log.optUserId
+            $andSql$
+    </select>
+
+    <select id="creditCommissionLogByUser" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            log.optUserId as userId,
+            count(log.keyId) as commissionCount,
+            sum(log.credit ) as commissionCredit,
+            u.headimgurl,
+            u.`name` as userName,
+            u.isOnLine,
+            u.sex,
+            gu.promoterId,
+            gu.promoterLevel
+        from
+            t_group_credit_log$gpSeq$ log force index(index_all),
+            t_group_user gu,
+            user_inf u
+        where
+            log.groupId = #groupId#
+            AND log.userId = #userId#
+            AND log.createdTime <![CDATA[>=]]> #startDate#
+            AND log.createdTime <![CDATA[<=]]> #endDate#
+            AND log.type = #type#
+            AND gu.groupId = #groupId#
+            AND gu.userId = log.optUserId
+            $andSql$
+            AND u.userId = gu.userId
+        GROUP BY
+            log.optUserId
+        ORDER BY
+            commissionCredit desc
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="creditZjsByUser" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		SELECT
+            gu.userId as userId,
+            COALESCE(COUNT(tu.tableNo),0) as zjs
+		FROM
+            t_table_user$gpSeq$ tu,
+            t_group_user gu
+		WHERE
+		    tu.groupId =#groupId#
+            AND tu.tableNo IN(
+                SELECT keyId FROM t_group_table
+                WHERE
+                    groupId=#groupId#
+                    AND currentCount>0
+                    AND type = 2
+                    AND currentState in ('2','4')
+                    AND overTime<![CDATA[>= ]]>#startDate#
+                    AND overTime<![CDATA[<= ]]>#endDate#
+            )
+            AND tu.userId = gu.userId
+            AND gu.groupId = #groupId#
+            $andSql$
+        group by gu.userId
+	</select>
+
+    <select id="winLoseCreditByUserIds" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            userId,
+            sum(selfWinCredit + selfCommissionCredit) as  winLoseCredit
+        from
+            log_group_commission
+        where
+            dataDate <![CDATA[ >= ]]> #startDate#
+            AND dataDate <![CDATA[ <= ]]> #endDate#
+            AND groupId = #groupId#
+            AND userId in ( $userIds$ )
+        GROUP BY
+            userId
+    </select>
+
+    <select id="searchCommissionLog" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            COALESCE(sum(credit),0) as commissionCredit,
+            count(1) as commissionCount
+        from
+            t_group_credit_log$gpSeq$
+        where
+            groupId=#groupId#
+            AND userId=#userId#
+            AND optUserId=#optUserId#
+            AND type = 2
+            AND createdTime <![CDATA[>=]]> #startDate#
+            AND createdTime <![CDATA[<=]]> #endDate#
+    </select>
+
+    <select id="logGroupCommissionBuUser" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            userId,
+            selfWinCredit,
+            selfCommissionCredit,
+            (selfWinCredit + selfCommissionCredit) as  winLoseCredit,
+            selfZjsCount as zjs
+        from
+            log_group_commission
+        where
+            dataDate <![CDATA[ >= ]]> #startDate#
+            AND dataDate <![CDATA[ <= ]]> #endDate#
+            AND groupId = #groupId#
+            AND userId = #userId#
+    </select>
+
+    <update id="updateCreditRate" parameterClass="java.util.HashMap">
+        update t_group set creditRate = #creditRate# where groupId = #groupId#
+    </update>
+
+    <update id="resetCommissionConfig" parameterClass="java.util.HashMap">
+        update t_group_commission_config
+        set
+            minCredit = #minCredit# ,
+            maxCredit = #maxCredit#
+        where
+            groupId = #groupId#
+            AND seq = #seq#
+    </update>
+
+    <update id="updateCreditAllotMode" parameterClass="java.util.HashMap">
+        update t_group set creditAllotMode = #mode# where groupId = #groupId#
+    </update>
+
+    <insert id="insertGroupCreditLog" parameterClass="java.util.HashMap">
+		insert into t_group_credit_log$gpSeq$
+			(groupId,optUserId,userId,credit,curCredit,curCreditPurse,type,flag,createdTime,userGroup,mode)
+		VALUES
+			(#groupId#,#optUserId#,#userId#,#credit#,(select coalesce(credit,0) from t_group_user where groupId=#groupId# AND userId=#userId#),(select coalesce(creditPurse,0) from t_group_user where groupId=#groupId# AND userId=#userId#),#type#,#flag#,now(),#userGroup#,#mode#)
+	</insert>
+
+    <insert id="insertGroupCreditLogMaster" parameterClass="java.util.HashMap">
+		insert into t_group_credit_log_master
+			(groupId,optUserId,userId,credit,curCredit,type,flag,createdTime,userGroup,mode)
+		VALUES
+			(#groupId#,#optUserId#,#userId#,#credit#,(select coalesce(credit,0) from t_group_user where groupId=#groupId# AND userId=#userId#),#type#,#flag#,now(),#userGroup#,#mode#)
+	</insert>
+
+    <update id="transferGroupUserCredit" parameterClass="java.util.HashMap">
+        UPDATE
+            t_group_user du,
+            t_group_user fu
+        SET
+            du.credit = du.credit + #credit#,
+            fu.credit = fu.credit - #credit#
+        WHERE
+            fu.groupId = #groupId#
+            AND fu.userId = #fromUserId#
+            AND fu.credit >= #credit#
+            AND du.groupId = #groupId#
+            AND du.userId = #destUserId#
+    </update>
+
+    <update id="reduceGroupUserCreditForMaster" parameterClass="java.util.HashMap">
+        UPDATE
+            t_group_user du
+        SET
+            du.credit = du.credit - #credit#
+        WHERE
+            du.groupId = #groupId#
+            AND du.userId = #destUserId#
+    </update>
+
+    <update id="addGroupUserExp" parameterClass="java.util.HashMap">
+        update t_group_user
+        set
+            exp = exp + #exp#,
+            totalExp = totalExp + #exp#
+            <dynamic prepend=",">
+                <isPropertyAvailable property="creditExpToday">
+                    creditExpToday = creditExpToday + #creditExpToday#
+                </isPropertyAvailable>
+            </dynamic>
+        where
+            keyId = #keyId#
+    </update>
+
+    <update id="addGroupExp" parameterClass="java.util.HashMap">
+        update t_group
+        set
+            exp = exp + #exp#,
+            totalExp = totalExp + #exp#
+            <dynamic prepend=",">
+                <isPropertyAvailable property="creditExpToday">
+                    creditExpToday = creditExpToday + #creditExpToday#
+                </isPropertyAvailable>
+            </dynamic>
+        where
+            keyId = #keyId#
+    </update>
+
+    <update id="calcGroupUserLevel" parameterClass="java.util.HashMap">
+        update
+            t_group_user g ,
+            sys_group_user_level_config c
+        set
+            g.level = c.level + 1,
+            g.exp = g.exp - c.exp
+        where
+            g.keyId = #keyId#
+            AND c.level = g.level
+            AND g.exp >= c.exp
+            AND c.exp > 0
+    </update>
+
+    <update id="calcGroupLevel" parameterClass="java.util.HashMap">
+        update
+            t_group g,
+            sys_group_level_config c
+        set
+            g.level = c.level + 1,
+            g.exp = g.exp - c.exp
+        where
+            g.keyId = #keyId#
+            AND c.level = g.level
+            AND g.exp >= c.exp
+            AND c.exp > 0
+    </update>
+
+    <insert id="insertLogGroupExp" parameterClass="java.util.HashMap">
+		insert into log_group_exp
+			(groupId,userId,optUserId,tableId,credit,exp,curLevel,curExp,createdTime)
+		VALUES
+			(#groupId#,#userId#,#optUserId#,#tableId#,#credit#,#exp#,(select coalesce(level,0) from t_group where groupId=#groupId# AND parentGroup=0),(select coalesce(exp,0) from t_group where groupId=#groupId# AND parentGroup=0),#createdTime#)
+	</insert>
+
+    <insert id="insertLogGroupUserExp" parameterClass="java.util.HashMap">
+		insert into log_group_user_exp
+			(groupId,userId,optUserId,tableId,credit,exp,curLevel,curExp,createdTime)
+		VALUES
+			(#groupId#,#userId#,#optUserId#,#tableId#,#credit#,#exp#,(select coalesce(level,0) from t_group_user where groupId=#groupId# AND userId=#userId#),(select coalesce(exp,0) from t_group_user where groupId=#groupId# AND userId=#userId#),#createdTime#)
+	</insert>
+
+    <select id="countLogGroupExp" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+            COALESCE(COUNT(*),0)
+        FROM
+            log_group_exp log
+        WHERE
+            log.groupId = #groupId#
+            AND log.createdTime <![CDATA[ >= ]]> #startDate#
+            AND log.createdTime <![CDATA[ <= ]]> #endDate#
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="userId">
+                    log.userId = #userId#
+                </isPropertyAvailable>
+            </dynamic>
+            AND log.tableId = 0
+    </select>
+
+    <select id="loadLogGroupExp" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            log.userId,
+            log.tableId,
+            log.credit,
+            log.exp,
+            log.createdTime,
+            u.name as userName,
+            u.headimgurl
+        FROM
+            log_group_exp log,
+            user_inf u
+        WHERE
+            log.groupId = #groupId#
+            AND log.createdTime <![CDATA[ >= ]]> #startDate#
+            AND log.createdTime <![CDATA[ <= ]]> #endDate#
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="userId">
+                    log.userId = #userId#
+                </isPropertyAvailable>
+            </dynamic>
+            AND log.tableId = 0
+            AND u.userId = log.userId
+        ORDER BY createdTime DESC
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="sumLogGroupExpCredit" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+        SELECT COALESCE(SUM(credit),0)
+        FROM
+            log_group_exp
+        WHERE
+            groupId = #groupId#
+            AND createdTime <![CDATA[ >= ]]> #startDate#
+            AND createdTime <![CDATA[ <= ]]> #endDate#
+            AND tableId = 0
+    </select>
+
+    <select id="loadLogGroupUserLevelKeyId" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+        SELECT COALESCE(keyId,0)
+        FROM
+            log_group_user_level
+        WHERE
+            groupId = #groupId#
+            AND userId = #userId#
+            AND level = #level#
+            AND stat = #stat#
+        LIMIT 1
+    </select>
+
+    <update id="updateLogGroupUserLevel" parameterClass="java.util.HashMap">
+        UPDATE log_group_user_level SET stat = #stat# , lastUpTime = now() WHERE keyId = #keyId#
+    </update>
+
+    <select id="loadLogGroupUserLevel" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            log.level
+        FROM
+            log_group_user_level log
+        WHERE
+            log.groupId = #groupId#
+            AND log.userId = #userId#
+            AND log.stat = #stat#
+        ORDER By
+            log.level ASC
+    </select>
+
+    <insert id="insertLogGroupUserLevel" parameterClass="java.util.HashMap">
+		INSERT INTO log_group_user_level
+			(groupId,userId,level,stat,createdTime,lastUpTime)
+		VALUES
+			(#groupId#,#userId#,#level#,#stat#,#createdTime#,#lastUpTime#)
+	</insert>
+
+    <update id="calcGroupExp" parameterClass="java.util.HashMap">
+        update
+            t_group g,
+            sys_group_level_config c
+        set
+            g.exp = 0,
+            g.totalExp = c.totalExp
+        where
+            g.keyId = #keyId#
+            AND c.level = g.level
+            AND c.exp = 0
+    </update>
+
+    <update id="calcGroupUserExp" parameterClass="java.util.HashMap">
+        update
+            t_group_user gu,
+            sys_group_user_level_config c
+        set
+            gu.exp = 0,
+            gu.totalExp = c.totalExp
+        where
+            gu.keyId = #keyId#
+            AND c.level = gu.level
+            AND c.exp = 0
+    </update>
+
+    <select id="teamUserList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        /*FORCE_MASTER*/ SELECT
+            d1.* ,
+            ( CASE WHEN u2.userId is null THEN "" ELSE u2.name END ) AS preName
+        FROM (
+            SELECT
+                gu.keyId,
+                gu.userId,
+                gu.credit + gu.tempCredit + gu.creditPurse as credit,
+                gu.userLevel,
+                gu.userRole,
+                gu.promoterLevel,
+                gu.promoterId,
+                gu.promoterId1,
+                gu.promoterId2,
+                gu.promoterId3,
+                gu.promoterId4,
+                gu.promoterId5,
+                gu.promoterId6,
+                gu.promoterId7,
+                gu.promoterId8,
+                gu.promoterId9,
+                gu.promoterId10,
+                u1.headimgurl,
+                u1.name as userName,
+                u1.isOnLine,
+                u1.sex,
+                u1.playingTableId as tableId,
+                u1.logTime
+            FROM t_group_user gu , user_inf u1
+            WHERE
+                gu.groupId = #groupId#
+                $andSql$
+                AND u1.userId=gu.userId
+                <dynamic prepend="">
+                    <isPropertyAvailable prepend=" and " property="keyWord">
+                        (gu.userId = #keyWord# OR gu.userName LIKE concat('%', #keyWord#, '%'))
+                    </isPropertyAvailable>
+                </dynamic>
+        )d1 LEFT JOIN user_inf u2 ON u2.userId = d1.promoterId
+        $orderBySql$
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="loadGroupUsersByDataStatistics" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+        SELECT
+            DISTINCT gu.userId
+        FROM
+            t_group_user gu,
+            t_data_statistics ds
+        WHERE
+            gu.groupId = #groupId#
+            $andSql$
+            AND ds.userId = gu.userId
+            AND ds.dataType = #dataType#
+            AND ds.dataDate <![CDATA[ >= ]]> #dataDate#
+            AND ds.dataCode = #dataCode#
+    </select>
+
+    <update id="forbidGroupUser" parameterClass="java.util.HashMap">
+        UPDATE t_group_user
+        SET
+            userLevel = #userLevel#
+        WHERE
+            groupId = #groupId#
+            $andSql$
+    </update>
+
+    <select id="loadGroupTableById" resultMap="GroupTable" parameterClass="java.util.HashMap">
+        SELECT
+            *
+        FROM
+            t_group_table
+        WHERE
+            keyId = #keyId#
+    </select>
+
+    <select id="loadCommissionDetailForTable" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            u1.userId AS userId1,
+            u1.headimgurl AS headimgurl1,
+            u1.name AS userName1,
+            u2.userId AS userId2,
+            u2.headimgurl AS headimgurl2,
+            u2.name AS userName2,
+            log.credit
+        FROM
+            t_group_credit_log$gpSeq$ log,
+            user_inf u1,
+            user_inf u2
+        WHERE
+            log.groupTableId = #groupTableId#
+            AND log.type =2
+            AND u1.userId = log.optUserId
+            AND u2.userId = log.userId
+    </select>
+
+    <select id="loadGroupUserRejectList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT * FROM (
+            SELECT
+                u1.userId AS userId1,
+                u1.headimgurl AS headimgurl1,
+                u1.name AS userName1,
+                u2.userId AS userId2,
+                u2.headimgurl AS headimgurl2,
+                u2.name AS userName2,
+                rej.createdTime,
+                rej.keyId
+            FROM
+                t_group_user_reject rej,
+                user_inf u1,
+                user_inf u2
+            WHERE
+                rej.groupId = #groupId#
+                AND rej.userId1 = #targetUserId#
+                AND u1.userId = rej.userId1
+                AND u2.userId = rej.userId2
+            UNION
+            SELECT
+                u1.userId AS userId1,
+                u1.headimgurl AS headimgurl1,
+                u1.name AS userName1,
+                u2.userId AS userId2,
+                u2.headimgurl AS headimgurl2,
+                u2.name AS userName2,
+                rej.createdTime,
+                rej.keyId
+            FROM
+                t_group_user_reject rej,
+                user_inf u1,
+                user_inf u2
+            WHERE
+                rej.groupId = #groupId#
+                AND rej.userId2 = #targetUserId#
+                AND u2.userId = rej.userId1
+                AND u1.userId = rej.userId2
+        ) AS data
+        ORDER BY data.keyId DESC
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="loadGroupUserRejectAll" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            u1.userId AS userId1,
+            u1.headimgurl AS headimgurl1,
+            u1.name AS userName1,
+            u2.userId AS userId2,
+            u2.headimgurl AS headimgurl2,
+            u2.name AS userName2,
+            rej.createdTime,
+            rej.keyId
+        FROM
+            t_group_user_reject rej,
+            user_inf u1,
+            user_inf u2
+        WHERE
+            rej.groupId = #groupId#
+            AND u1.userId = rej.userId1
+            AND u2.userId = rej.userId2
+        ORDER BY rej.keyId DESC
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="loadGroupUserReject" resultClass="com.sy.sanguo.game.bean.group.GroupUserReject" parameterClass="java.util.HashMap">
+		select * from t_group_user_reject
+		where
+		    groupId = #groupId#
+		    AND userIdKeyStr = #userIdKeyStr#
+		limit 1
+	</select>
+
+    <insert id="createGroupUserReject" parameterClass="com.sy.sanguo.game.bean.group.GroupUserReject">
+        insert into t_group_user_reject (
+            groupId,
+            userId1,
+            userId2,
+            createdTime,
+            userIdKeyStr
+        )
+        VALUES(
+            #groupId#,
+            #userId1#,
+            #userId2#,
+            #createdTime#,
+            #userIdKeyStr#
+        )
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+
+    <delete id="deleteGroupUserReject" parameterClass="java.util.HashMap">
+        DELETE FROM t_group_user_reject
+        WHERE
+            keyId = #keyId#
+            AND groupId = #groupId#
+    </delete>
+
+    <select id="loadGroupTableConfigByKeyId" resultClass="com.sy.sanguo.game.bean.group.GroupTableConfig" parameterClass="java.lang.String">
+		SELECT * FROM t_group_table_config WHERE keyId = #keyId#
+	</select>
+
+    <update id="updateGroupTableConfigByKeyId" parameterClass="java.util.HashMap">
+        UPDATE t_group_table_config
+        <dynamic prepend="SET">
+            <isPropertyAvailable prepend="," property="tableName">
+                tableName=#tableName#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="tableMode">
+                tableMode=#tableMode#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="modeMsg">
+                modeMsg=#modeMsg#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="gameType">
+                gameType=#gameType#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="payType">
+                payType=#payType#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="gameCount">
+                gameCount=#gameCount#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="playerCount">
+                playerCount=#playerCount#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="descMsg">
+                descMsg=#descMsg#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="tableOrder">
+                tableOrder=#tableOrder#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="playCount">
+                playCount=#playCount#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="configState">
+                configState=#configState#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="createdTime">
+                createdTime=#createdTime#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="creditMsg">
+                creditMsg=#creditMsg#
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE
+            keyId = #keyId#
+            AND parentGroup = #groupId#
+    </update>
+
+    <select id="loadGroupUserList" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            gu.keyId,
+            gu.groupId,
+            gu.userId,
+            gu.userLevel,
+            gu.userRole,
+            gu.credit,
+            u.headimgurl,
+            u.name as userName,
+            u.isOnLine,
+            u.sex,
+            u.playingTableId as tableId
+        FROM
+            t_group_user gu,
+            user_inf u
+        WHERE
+            gu.groupId = #groupId#
+            <dynamic prepend="">
+                <isEqual prepend=" and " property="optType" compareValue="1">
+                    (u.userId = #keyWord# OR u.userNickname LIKE concat('%', #keyWord#, '%'))
+                </isEqual>
+                <isEqual prepend=" and " property="optType" compareValue="2">
+                    u.userId = #keyWord#
+                </isEqual>
+            </dynamic>
+            AND u.userId = gu.userId
+        ORDER BY
+            gu.userRole asc,
+            u.isOnLine desc,
+            gu.keyId asc
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="countGroupUserList" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+            COALESCE(COUNT(*),0)
+        FROM
+            t_group_user
+        WHERE
+            groupId=#groupId#
+            <dynamic prepend="">
+                <isEqual prepend=" and " property="optType" compareValue="1">
+                    (userId = #keyWord# OR userNickname LIKE concat('%', #keyWord#, '%'))
+                </isEqual>
+                <isEqual prepend=" and " property="optType" compareValue="2">
+                    userId = #keyWord#
+                </isEqual>
+            </dynamic>
+    </select>
+
+    <select id="creditZjsNew" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+			gu.userId as promoterId,
+			log.zjsCount as zjs
+        FROM
+			t_group_user gu,
+			log_group_commission log
+        WHERE
+			 gu.groupId = #groupId#
+			$andSql1$
+			AND log.groupId =#groupId#
+			AND log.userId = gu.userId
+			AND log.dataDate = #dataDate#
+			AND log.zjsCount > 0
+        union
+        SELECT
+			0 as promoterId,
+			sum(log.selfZjsCount) as zjs
+        FROM
+			t_group_user gu,
+			log_group_commission log
+        WHERE
+			 gu.groupId = #groupId#
+			$andSql2$
+			AND log.groupId = #groupId#
+			AND log.userId = gu.userId
+			AND log.dataDate = #dataDate#
+			AND log.selfZjsCount > 0;
+	</select>
+
+    <select id="creditZjsByUserNew" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            gu.userId,
+            log.selfZjsCount as zjs
+        from
+            t_group_user gu,
+            log_group_commission log
+        where
+            gu.groupId = #groupId#
+            $andSql$
+            AND log.dataDate = #dataDate#
+            ANd log.groupId = #groupId#
+            ANd log.userId = gu.userId
+            AND log.selfZjsCount > 0
+	</select>
+
+    <insert id="insertGroupCreditLogTransfer" parameterClass="java.util.HashMap">
+		insert into t_group_credit_log_transfer
+			(groupId,optUserId,userId,credit,curCredit,type,flag,createdTime,userGroup,mode)
+		VALUES
+			(#groupId#,#optUserId#,#userId#,#credit#,(select coalesce(credit,0) from t_group_user where groupId=#groupId# AND userId=#userId#),#type#,#flag#,now(),#userGroup#,#mode#)
+	</insert>
+
+    <select id="countInactiveUser" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select
+            COALESCE(count(gu.keyId),0)
+        from
+            t_group_user gu,
+            user_inf u
+        where
+            gu.groupId = #groupId#
+            AND gu.userRole = 90000
+            AND gu.credit <![CDATA[ = ]]> 0
+            AND u.userId = gu.userId
+            AND u.logTime <![CDATA[ <= ]]> #endDate#
+            AND u.playingTableId <![CDATA[ <= ]]> 0
+    </select>
+
+    <select id="loadInactiveUser" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+            gu.userId,
+            gu.credit,
+            u.name as userName,
+            u.headimgurl
+        from
+            t_group_user gu,
+            user_inf u
+        where
+            gu.groupId = #groupId#
+            AND gu.userRole = 90000
+            <dynamic prepend="">
+                <isEqual prepend=" " property="creditLimit" compareValue="1">
+                    AND gu.credit <![CDATA[ != ]]> 0
+                </isEqual>
+                <isEqual prepend=" " property="creditLimit" compareValue="0">
+                    AND gu.credit <![CDATA[ = ]]> 0
+                </isEqual>
+            </dynamic>
+            AND gu.createdTime <![CDATA[ < ]]> DATE_SUB(CURDATE(),INTERVAL 15 DAY)
+            AND gu.userId NOT IN ( SELECT DISTINCT userId FROM log_group_table WHERE dataDate <![CDATA[ >= ]]>  #endDate# AND groupId = #groupId# )
+            AND u.userId = gu.userId
+            AND u.playingTableId <![CDATA[ <= ]]> 0
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <delete id="fireInactiveUser" parameterClass="java.util.HashMap">
+        DELETE gu.*
+        FROM
+            t_group_user gu,
+            user_inf u
+        WHERE
+            gu.groupId = #groupId#
+            AND gu.userRole = 90000
+            AND gu.credit <![CDATA[ = ]]> 0
+            AND gu.userId in ($userIds$)
+            AND u.userId = gu.userId
+            AND u.playingTableId <![CDATA[ <= ]]> 0
+    </delete>
+
+    <update id="updateGroupGameIds" parameterClass="java.util.HashMap">
+        UPDATE t_group
+            set gameIds = #gameIds#
+        WHERE
+            parentGroup = 0
+            AND groupId in ( $groupIds$ )
+    </update>
+
+    <select id="group_gold_win_log" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            gu.userRole,
+            gu.promoterLevel,
+            u.name,
+            u.headimgurl,
+            log.*
+        FROM
+            log_group_gold_win log,
+            t_group_user gu,
+            user_inf u
+        WHERE
+            log.dataDate = #dataDate#
+            and log.groupId = #groupId#
+            and gu.groupId = #groupId#
+            $andSql$
+            and log.userId = gu.userId
+            and u.userId = gu.userId
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="queryUserId">
+                    log.userId = #queryUserId#
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" AND " property="tag">
+                    log.tag = #tag#
+                </isPropertyAvailable>
+            </dynamic>
+        ORDER BY
+            gu.userRole ASC , gu.promoterLevel ASC , log.jsCount DESC
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="group_gold_win_log_next_level" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            gu.userRole,
+            gu.promoterLevel,
+            u.name,
+            u.headimgurl,
+            log.*
+        FROM
+            log_group_gold_win log,
+            t_group_user gu,
+            user_inf u
+        WHERE
+            log.dataDate = #dataDate#
+            and log.groupId = #groupId#
+            and gu.groupId = #groupId#
+            $andSql$
+            and log.userId = gu.userId
+            and u.userId = gu.userId
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="queryUserId">
+                    log.userId = #queryUserId#
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" AND " property="tag">
+                    log.tag = #tag#
+                </isPropertyAvailable>
+            </dynamic>
+        ORDER BY
+            gu.userRole ASC , gu.promoterLevel ASC , log.selfJsCount DESC
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="count_valid_group_gold_win" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+            COALESCE(count(gu.keyId),0)
+        FROM
+            log_group_gold_win log,
+            t_group_user gu
+        WHERE
+            log.keyId in ( $keyIds$ )
+            AND log.groupId = #groupId#
+            AND gu.groupId = #groupId#
+            AND gu.userId = log.userId
+            $andSql$
+    </select>
+
+    <update id="update_group_gold_win_tag" parameterClass="java.util.HashMap">
+        UPDATE log_group_gold_win
+        SET
+            tag = #tag#
+        WHERE
+            keyId in ( $keyIds$ )
+            AND groupId = #groupId#
+    </update>
+
+    <select id="group_gold_win_log_next_all" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            gu.userId,
+            gu.userName,
+            gu.userRole,
+            gu.promoterId,
+            u.headimgurl,
+            log.selfJsCount AS selfJsCount,
+            log.selfWin AS selfWin
+        FROM
+            t_group_user gu,
+            log_group_gold_win log,
+            user_inf u
+        WHERE
+            gu.groupId = #groupId#
+            $andSql$
+            AND log.dataDate = #dataDate#
+            AND log.groupId = #groupId#
+            AND log.userId = gu.userId
+            AND u.userId = gu.userId
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="keyWord">
+                    (u.userId = #keyWord# OR u.name LIKE concat('%', #keyWord#, '%'))
+                </isPropertyAvailable>
+            </dynamic>
+        $orderBySql$
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="group_gold_win_log_next_all_sum" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            sum(log.selfJsCount) AS selfJsCount,
+            sum(log.selfWin) AS selfWin,
+            sum(CASE WHEN log.selfJsCount > 0 THEN 1 ELSE 0 END) AS sumCount
+        FROM
+            t_group_user gu,
+            log_group_gold_win log
+        WHERE
+            gu.groupId = #groupId#
+            $andSql$
+            AND log.dataDate = #dataDate#
+            AND log.groupId = #groupId#
+            AND log.userId = gu.userId
+    </select>
+
+    <select id="js_from_group_gold_win_log" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            COALESCE(sum(log.selfJsCount),0) AS selfJsCount,
+            COALESCE(sum(log.selfWin),0) AS selfWin
+        FROM
+            log_group_gold_win log
+        WHERE
+            log.dataDate <![CDATA[ >= ]]> #startDate#
+            AND log.dataDate <![CDATA[ <= ]]> #endDate#
+            AND log.groupId = #groupId#
+            AND log.userId = #userId#
+    </select>
+
+    <select id="load_group_commission_creditPurse" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+        select
+        COALESCE(sum(credit),0)
+        from
+        t_group_credit_log
+        where groupId=#groupId# AND type in (2,4,5) AND credit > 0 AND userId=#userId# AND createdTime <![CDATA[>=]]> #startDate# AND createdTime <![CDATA[<=]]> #endDate#
+        <isPropertyAvailable prepend=" and " property="optUserId">
+            optUserId = #optUserId#
+        </isPropertyAvailable>
+    </select>
+
+    <update id="update_group_user_creditPurse" parameterClass="java.util.HashMap">
+		UPDATE t_group_user
+		SET
+			credit = credit + #credit#,
+			creditPurse = creditPurse + #creditPurse#
+		WHERE
+			keyId =#keyId#
+			AND creditPurse + #creditPurse# <![CDATA[ >= ]]> 0
+			AND credit + #credit# <![CDATA[ >= ]]> 0
+	</update>
+
+    <select id="loadFakeTableCount" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+        COALESCE(COUNT(*),0)
+        FROM
+        t_group_fake_table
+        WHERE
+        configId=#configId#
+        <isPropertyAvailable prepend=" and " property="hiding">
+            hiding = #hiding#
+        </isPropertyAvailable>
+    </select>
+
+    <select id="loadFakeTableKeyIds" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+        SELECT
+        keyId
+        FROM
+        t_group_fake_table
+        WHERE
+        configId=#configId#
+    </select>
+
+</sqlMap>
+
+
+
+
+
+
+

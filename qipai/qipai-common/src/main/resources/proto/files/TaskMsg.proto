@@ -1,0 +1,53 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+
+//任务配置信息
+message TaskInfo {
+    required int32 taskId = 1;// 任务ID
+    required int32 taskType = 2;// 任务类型
+    required string param = 3;// 任务达成条件
+    required string rewardParam = 4;// 达成任务奖励
+    required string taskDesc = 5;// 任务描述
+    required string rewardDesc = 6;// 任务奖励描述
+    required int32 state = 7;// 任务状态 0未达成 1可领取 2已领取
+    required int32 process = 8;// 任务达成进度值
+}
+
+message TypeTaskInfo {
+    required int32 taskType = 1;// 1局数任务 2财富任务
+    repeated TaskInfo taskInfos = 2;// 该类型下的任务信息
+}
+
+
+//任务面板信息
+message TaskLists {
+     repeated TypeTaskInfo taskTypeInfos = 1;//分组的任务信息
+     required int32 isOpen = 2;// 0打开返回协议 1领取返回协议
+}
+
+//任务面板
+message MissionBoardRes {
+    repeated ATagMissionRes aTag=1;
+}
+
+//单个tag下的任务信息
+ message ATagMissionRes {
+     required int32 tag=1;
+     repeated MissionRes missionRes=2;
+ }
+
+//任务配置信息
+message MissionRes {
+    required int32 id=1;
+    required int32 tag = 2;//1任务标签
+    required string missionExplain = 3;// 任务描述
+    required string awardExplain = 4;// 奖励描述
+    required int32 type = 5;// 任务类型
+    required int32 finishNum = 6;// 完成需求数
+    required int32 awardId = 7;// 奖励id
+    required int32 awardIcon = 8;// 奖励图标
+    required int32 awardNum = 9;// 奖励数量
+    required int32 progressBar = 10;// 进度
+    required int32 isComplete = 11;// 是否完成
+    required int32 isObtain = 12;// 是否领取
+}

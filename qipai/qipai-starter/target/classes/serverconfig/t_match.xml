@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="match">
+
+	<resultMap class="com.sy599.game.jjs.bean.MatchBean" id="MatchBean">
+		<result property="keyId" column="keyId" />
+		<result property="startTime" column="startTime" />
+		<result property="serverId" column="serverId" />
+		<result property="tableCount" column="tableCount" />
+		<result property="matchType" column="matchType" />
+		<result property="matchProperty" column="matchProperty" />
+		<result property="matchRule" column="matchRule" />
+		<result property="currentState" column="currentState" />
+		<result property="currentCount" column="currentCount" />
+		<result property="minCount" column="minCount" />
+		<result property="maxCount" column="maxCount" />
+		<result property="createdTime" column="createdTime" />
+		<result property="finishedTime" column="finishedTime" />
+		<result property="matchPay" column="matchPay" />
+		<result property="matchName" column="matchName" />
+		<result property="matchDesc" column="matchDesc" />
+		<result property="restTable" column="restTable" />
+		<result property="matchExt" column="matchExt" />
+		<result property="tableMsg" column="tableMsg" />
+	</resultMap>
+
+	<resultMap class="com.sy599.game.jjs.bean.MatchUser" id="MatchUser">
+		<result property="keyId" column="keyId" />
+		<result property="matchId" column="matchId" />
+		<result property="matchType" column="matchType" />
+		<result property="userId" column="userId" />
+		<result property="currentState" column="currentState" />
+		<result property="currentNo" column="currentNo" />
+		<result property="createdTime" column="createdTime" />
+		<result property="modifiedTime" column="modifiedTime" />
+		<result property="currentScore" column="currentScore" />
+		<result property="userRank" column="userRank" />
+		<result property="userAward" column="userAward" />
+		<result property="awardState" column="awardState" />
+		<result property="reliveCount" column="reliveCount" />
+	</resultMap>
+
+	<insert id="insertMatchBean" parameterClass="com.sy599.game.jjs.bean.MatchBean">
+		insert into t_match (startTime,restTable,matchExt,matchPay,matchName,matchDesc,matchRule,serverId,tableCount,matchProperty,minCount,tableMsg,matchType,currentState,currentCount,maxCount,createdTime,finishedTime) VALUES (#startTime#,#restTable#,#matchExt#,#matchPay#,#matchName#,#matchDesc#,#matchRule#,#serverId#,#tableCount#,#matchProperty#,#minCount#,#tableMsg#,#matchType#,#currentState#,#currentCount#,#maxCount#,#createdTime#,#finishedTime#)
+		<selectKey resultClass="java.lang.Long" keyProperty="keyId">
+			SELECT
+			@@IDENTITY AS keyId
+		</selectKey>
+	</insert>
+	<update id="updateRestTable" parameterClass="java.util.HashMap">
+		UPDATE t_match set restTable=#restTable# WHERE keyId=#matchId#
+	</update>
+	<update id="updateRestTable0" parameterClass="java.util.HashMap">
+		UPDATE t_match set restTable=restTable-1 WHERE keyId=#matchId# and restTable>0
+	</update>
+	<update id="updateUserCount2" parameterClass="java.util.HashMap">
+		UPDATE t_match set currentCount=#currentCount# WHERE keyId=#matchId#
+	</update>
+	<update id="updateUserCount1" parameterClass="java.util.HashMap">
+		UPDATE t_match set currentCount=currentCount+1 WHERE currentCount<![CDATA[< ]]>maxCount and currentState="0" and keyId=#matchId#
+	</update>
+	<update id="updateUserCount0" parameterClass="java.util.HashMap">
+		UPDATE t_match set currentCount=currentCount-1 WHERE currentCount>=1 and currentState="0"  and keyId=#matchId#
+	</update>
+	<update id="updateMatchBeanForStarted" parameterClass="java.util.HashMap">
+		UPDATE t_match set currentState=#currentState#,startTime=#startTime# WHERE currentCount>=minCount and currentState="0" and keyId=#matchId#
+	</update>
+	<update id="updateMatchBean" parameterClass="java.util.HashMap">
+		UPDATE t_match set currentState=#currentState#,finishedTime=#finishedTime# WHERE keyId=#matchId#
+	</update>
+	<update id="updateMatchBean0" parameterClass="java.util.HashMap">
+		UPDATE t_match set currentState=#afterState#,finishedTime=#finishedTime# WHERE keyId=#matchId# and currentState=#beforeState#
+	</update>
+	<insert id="insertMatchUser" parameterClass="com.sy599.game.jjs.bean.MatchUser">
+		insert into t_match_user (reliveCount,userRank,matchType,userId,matchId,currentState,currentNo,currentScore,createdTime,modifiedTime,userAward,awardState) VALUES (#reliveCount#,#userRank#,#matchType#,#userId#,#matchId#,#currentState#,#currentNo#,#currentScore#,#createdTime#,#modifiedTime#,#userAward#,#awardState#)
+		<selectKey resultClass="java.lang.Long" keyProperty="keyId">
+			SELECT
+			@@IDENTITY AS keyId
+		</selectKey>
+	</insert>
+	<delete id="deleteMatchUser" parameterClass="java.util.HashMap">
+		delete from t_match_user where currentState in ("1","0","-1") and matchId=#matchId# and userId=#userId#
+	</delete>
+	<delete id="deleteMatch" parameterClass="java.util.HashMap">
+		delete from t_match where keyId=#matchId#
+	</delete>
+	<select id="selectOneMatchUser" resultClass="com.sy599.game.jjs.bean.MatchUser" parameterClass="java.util.HashMap">
+		select * from t_match_user where matchId=#matchId# and userId=#userId#
+	</select>
+	<select id="selectPlayingMatchUser" resultClass="com.sy599.game.jjs.bean.MatchUser" parameterClass="java.util.HashMap">
+		select * from t_match_user where currentState in ('-1','0','1') and userId=#userId# limit 1
+	</select>
+    <update id="batch_update_match_users_state" parameterClass="java.util.HashMap">
+		UPDATE t_match_user set currentState=#currentState#  WHERE matchId=#matchId#
+	</update>
+
+	<select id="selectMatchUsers" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		select * from t_match_user where matchId=#matchId#
+		<dynamic prepend="">
+			<isPropertyAvailable prepend=" AND" property="currentNo">
+				currentNo=#currentNo#
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+	<select id="selectMatchBean" resultClass="com.sy599.game.jjs.bean.MatchBean" parameterClass="java.util.HashMap">
+		select * from t_match where 1=1
+		<dynamic prepend="">
+			<isPropertyAvailable prepend=" AND" property="matchId">
+				keyId=#matchId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" AND" property="matchType">
+				matchType=#matchType#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" AND" property="currentState">
+				currentState=#currentState#
+			</isPropertyAvailable>
+		</dynamic>
+		order by keyId desc limit 1
+	</select>
+	<select id="selectMatchBean0" resultClass="com.sy599.game.jjs.bean.MatchBean" parameterClass="java.util.HashMap">
+		SELECT * FROM t_match WHERE keyId=#matchId# UNION SELECT * FROM t_match WHERE matchType=#matchType# LIMIT 1
+	</select>
+	<update id="updateMatchUserState" parameterClass="java.util.HashMap">
+		UPDATE t_match_user set currentState=#currentState# where currentState in ("1","0","-1") and matchId=#matchId# and userId=#userId#
+	</update>
+	<update id="updateMatchUser" parameterClass="java.util.HashMap">
+		UPDATE t_match_user set modifiedTime=#modifiedTime#
+		<dynamic prepend="">
+			<isPropertyAvailable prepend="," property="currentState">
+				currentState=#currentState#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="addNo">
+				currentNo=currentNo+#addNo#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="currentNo">
+				currentNo=#currentNo#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="currentScore">
+				currentScore=#currentScore#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="addScore">
+				currentScore=currentScore+#addScore#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="userRank">
+				userRank=#userRank#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="userAward">
+				userAward=#userAward#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="awardState">
+				awardState=#awardState#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="reliveCount">
+				reliveCount=#reliveCount#
+			</isPropertyAvailable>
+		</dynamic>
+		where currentState not in("3","4") and matchId=#matchId# and userId=#userId#
+	</update>
+
+	<update id="updateMatchUser0" parameterClass="java.util.HashMap">
+		UPDATE t_match_user set modifiedTime=#modifiedTime#
+		<dynamic prepend="">
+			<isPropertyAvailable prepend="," property="currentState">
+				currentState=#currentState#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="addNo">
+				currentNo=currentNo+#addNo#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="currentNo">
+				currentNo=#currentNo#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="currentScore">
+				currentScore=#currentScore#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="addScore">
+				currentScore=currentScore+#addScore#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="userRank">
+				userRank=#userRank#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="userAward">
+				userAward=#userAward#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="awardState">
+				awardState=#awardState#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="reliveCount">
+				reliveCount=#reliveCount#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="addReliveCount">
+				reliveCount=reliveCount+#addReliveCount#
+			</isPropertyAvailable>
+		</dynamic>
+		where currentState in("3","4") and matchId=#matchId# and userId=#userId#
+	</update>
+
+	<update id="updateMatchUsers" parameterClass="java.util.HashMap">
+		UPDATE t_match_user set modifiedTime=#modifiedTime#,currentState=#currentState# where matchId=#matchId# and currentState="1"
+	</update>
+
+	<update id="dissMatchUsers" parameterClass="java.util.HashMap">
+		UPDATE t_match_user set modifiedTime=#modifiedTime#,currentState=#currentState# where matchId=#matchId# and currentState="0"
+	</update>
+
+	<select id="selectPlayingMatchBeans" resultMap="MatchBean" parameterClass="java.util.HashMap">
+		select * from t_match where serverId=#serverId# and currentState like "1%"
+	</select>
+	<select id="selectMatchBeans" resultMap="MatchBean" parameterClass="java.util.HashMap">
+		select * from t_match where serverId=#serverId# and matchProperty=#matchProperty#
+		<dynamic prepend="">
+			<isPropertyAvailable prepend=" and " property="currentState">
+				currentState=#currentState#
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+	<select id="selectMatchUsersPage" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		select matchId,matchType,currentNo,createdTime,currentScore,userRank,userAward,awardState from t_match_user where userId=#userId# and userRank>0 and currentState in ("2","4") order by keyId desc limit #startNo#,#pageSize#;
+	</select>
+	<select id="selectMatchNames" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		select DISTINCT matchType,matchName from t_match where matchType in ($types$);
+	</select>
+
+	<select id="selectMatchRankNum" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		select count(*) from t_match_user where userId = #userId# and userRank = #rank#;
+	</select>
+
+</sqlMap>
+
+
+
+
+
+
+

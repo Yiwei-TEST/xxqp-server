@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="baseConfig">
+	<select id="selectAllByType" parameterClass = "java.util.Map"  resultClass="java.util.HashMap">
+		select msgType,msgValue from t_base_config where msgType=#msgType#
+	</select>
+
+	<select id="selectAllByTypes" parameterClass = "java.util.Map"  resultClass="java.util.HashMap">
+		select msgType,msgValue from t_base_config where msgType in ($msgTypes$)
+	</select>
+
+	<select id="selectAll" resultClass="java.util.HashMap">
+		select msgType,msgValue from t_base_config
+	</select>
+</sqlMap>

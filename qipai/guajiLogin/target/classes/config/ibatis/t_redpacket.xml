@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="redpacket">
+
+	 <resultMap class="com.sy.sanguo.game.pdkuai.db.bean.RedPacketRecord" id="RedPacket">
+		<result property="id" column="id"/>
+		<result property="tableId" column="tableId"/>
+		<result property="hbType" column="hbType"/>
+		<result property="userId" column="userId"/>
+		<result property="userName" column="userName"/>
+		<result property="money" column="money"/>
+		<result property="createTime" column="createTime"/>	
+	</resultMap>
+	
+	<resultMap class="com.sy.sanguo.game.pdkuai.db.bean.RedPacketMoneyInfo" id="RedPacketMoneyInfo">
+		<result property="userid" column="userId"/>
+		<result property="shengMoney" column="shengMoney"/>
+		<result property="totalMoney" column="totalMoney"/>
+		<result property="prizeFlag" column="prizeFlag"/>
+	</resultMap>
+	
+ 
+	
+	<!-- 查询用户红包记录 -->
+	<select id="userMoneyInfo" resultMap="RedPacket" parameterClass="java.util.HashMap">
+		select * from hb_fafang_record where hbType=#hbType# and userId=#userId# ORDER BY createTime desc limit 50
+	</select>
+	
+	<!-- 查询所有红包记录 -->
+	<select id="allMoneyInfo" resultMap="RedPacket" parameterClass="java.util.HashMap">
+		SELECT id, a.tableId, userId, userName, hbType, money, createTime FROM hb_fafang_record a join (SELECT tableId from hb_fafang_record where userId=#userId# and tableId > 0 GROUP BY tableId limit 50) b 
+		where a.tableId = b.tableid and hbType=#hbType# ORDER BY createTime desc
+		<!-- select * from hb_fafang_record where hbType=#hbType# and tableId in (SELECT tableId from hb_fafang_record where userId=#userId#) ORDER BY createTime desc -->
+	</select>
+	
+	<!-- 查询用户红包金额 -->
+	<select id="userMoeny" resultMap="RedPacketMoneyInfo" parameterClass="java.util.HashMap">
+		select shengMoney,totalMoney,userId,prizeFlag from user_extendinf where userId=#userId# 
+	</select>
+	
+	<!-- 查询用户红包已兑换金额 -->
+	<select id="notMoney" resultClass="java.lang.Double" parameterClass="java.util.HashMap">
+		select shengMoney from user_extendinf where userId=#userId# 
+	</select>
+	
+	<!-- 兑换红包 -->
+	<update id="updateExchange"  parameterClass="java.util.HashMap">
+		UPDATE user_extendinf set shengMoney=shengMoney+#money#  where userId=#userId#
+	</update>
+	
+	<!-- 添加兑换记录 -->
+	<insert id="addExchange" parameterClass="java.util.HashMap">
+		insert into hb_exchange_record(userId,money,wxname,phone,createTime,state) values (#userId#,#money#,#wxname#,#phone#,#time#,1) 
+	</insert>
+	
+	<!-- 查询已兑换金额 -->
+	<select id="endMoney" parameterClass="java.util.HashMap" resultClass="java.lang.Double">
+		select sum(money) from hb_exchange_record where userId=#userId#
+	</select>
+	
+	<!-- 红包前50排行榜 -->
+	<select id="RedRanking" resultClass="java.util.HashMap">
+		SELECT  userId,name,totalMoney,prizeFlag from user_extendinf where totalMoney>0 order by totalMoney desc limit 0,50
+	</select>
+	
+	<!-- 修改排行榜用户领奖状态 -->
+	<update id="updatePrizeFlag"  parameterClass="java.util.HashMap">
+		UPDATE user_extendinf set prizeFlag=#prizeFlag# where userId=#userId#
+	</update>
+
+	<!-- 添加领奖记录 -->
+	<insert id="addDrawPrize" parameterClass="java.util.HashMap">
+		INSERT INTO  hb_fafang_record (userId, tableId, userName, hbType, money, createTime) VALUES (#userId#,#tableId#,#userName#,#hbType#,#money#,#createTime#)
+	</insert>
+
+	<!-- 查找领奖记录 -->
+	<select id="selectDrawPrizeRecord" parameterClass="java.util.HashMap" resultMap="RedPacket">
+		select * from hb_fafang_record WHERE tableId = #tableId#  AND hbType = #hbType# and createTime <![CDATA[>=]]>#startDate# AND createTime <![CDATA[<=]]>#endDate#
+	</select>
+</sqlMap>
+

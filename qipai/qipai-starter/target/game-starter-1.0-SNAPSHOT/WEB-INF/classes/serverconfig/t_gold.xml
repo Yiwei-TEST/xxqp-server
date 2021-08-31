@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="gold">
+    <resultMap class="com.sy599.game.character.GoldPlayer" id="goldUser">
+        <result property="userId" column="userId"/>
+        <result property="userName" column="userName"/>
+        <result property="userNickName" column="userNickName"/>
+        <result property="headimgurl" column="headimgurl"/>
+        <result property="headimgraw" column="headimgraw"/>
+        <result property="playCount" column="playCount"/>
+        <result property="playCountWin" column="playCountWin"/>
+        <result property="playCountLose" column="playCountLose"/>
+        <result property="playCountEven" column="playCountEven"/>
+        <result property="freeGold" column="freeGold"/>
+        <result property="gold" column="gold"/>
+        <result property="usedGold" column="usedGold"/>
+        <result property="exp" column="exp"/>
+        <result property="vipexp" column="vipexp"/>
+        <result property="extend" column="extend"/>
+        <result property="signature" column="signature"/>
+        <result property="regTime" column="regTime"/>
+        <result property="lastLoginTime" column="lastLoginTime"/>
+        <result property="grade" column="grade"/>
+        <result property="gradeExp" column="gradeExp"/>
+    </resultMap>
+
+    <insert id="insertGoldUser" parameterClass="com.sy599.game.character.GoldPlayer">
+        INSERT INTO t_gold_user (userId, userName, userNickName, sex, headimgurl, headimgraw, playCount, playCountWin, playCountLose
+        , playCountEven, freeGold, gold, usedGold, exp, vipexp, signature, extend,regTime,lastLoginTime,grade,gradeExp) VALUES (#userId#,#userName#,#userNickName#,#sex#,#headimgurl#,
+        #headimgraw#,#playCount#, #playCountWin#,#playCountLose#,#playCountEven#,#freeGold#,#gold#,#usedGold#,#exp#,#vipexp#,#signature#,#extend#,#regTime#,#lastLoginTime#,#grade#,#gradeExp#)
+    </insert>
+
+    <select id="selectGoldUserById" parameterClass="java.lang.Long" resultMap="goldUser">
+        /*FORCE_MASTER*/ SELECT * FROM t_gold_user WHERE userId = #userId#
+    </select>
+
+    <update id="updateGoldUserCount" parameterClass="java.util.HashMap">
+        UPDATE t_gold_user
+        <dynamic prepend="SET">
+            <isPropertyAvailable prepend="," property="playCount">
+                playCount = playCount + #playCount#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="playCountWin">
+                playCountWin = playCountWin + #playCountWin#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="playCountLose">
+                playCountLose = playCountLose + #playCountLose#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="playCountEven">
+                playCountEven = playCountEven + #playCountEven#
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE userId = #userId#
+    </update>
+
+    <update id="updateGoldUser" parameterClass="java.util.HashMap">
+        UPDATE t_gold_user
+        <dynamic prepend="SET">
+            <isPropertyAvailable prepend="," property="nickName">
+                userNickname = #nickName#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="signature">
+                signature=#signature#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="playCount">
+                playCount=#playCount#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="playCountWin">
+                playCountWin=#playCountWin#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="playCountLose">
+                playCountLose=#playCountLose#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="lastLoginTime">
+                lastLoginTime=#lastLoginTime#
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE userId = #userId#
+    </update>
+
+    <insert id="drawRemedy" parameterClass="java.util.HashMap">
+        INSERT INTO t_gold_remedy (userId, drawTime, remedy) VALUES (#userId#,#drawTime#,#remedy#)
+    </insert>
+
+    <select id="selectDrawRemedyCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+        SELECT COUNT(1) FROM t_gold_remedy WHERE userId = #userId# AND drawTime LIKE #drawTime#
+    </select>
+
+    <select id="selectRemedyCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">
+        SELECT COUNT(1) FROM t_gold_remedy WHERE userId = #userId# AND drawTime <![CDATA[>= ]]> #startDate# AND drawTime <![CDATA[<= ]]> #endDate#
+    </select>
+
+    <update id="updateUserGold" parameterClass="java.util.HashMap">
+        UPDATE t_gold_user set
+            gold = gold + #gold#,
+            freeGold = freeGold + #freeGold#
+            <isPropertyAvailable property="usedGold" prepend=",">
+                usedGold = usedGold + #usedGold#
+            </isPropertyAvailable>
+        WHERE
+            userId = #userId#;
+    </update>
+
+    <update id="updateConsumeGold" parameterClass="java.lang.String">
+        $sql$
+    </update>
+
+    <delete id="clear_drawRemedy" parameterClass="java.lang.Integer">
+        DELETE FROM t_gold_remedy WHERE drawTime <![CDATA[< ]]> DATE_SUB(NOW(),INTERVAL #hour# HOUR);
+    </delete>
+
+    <select id="selectGoldPlayerCountRank" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT userId,userName,headimgurl,playCount,(Gold + freeGold) as totalGold FROM t_gold_user where playCount > 0  order by playCount desc, totalGold desc limit #limitNum#;
+    </select>
+
+    <select id="selectGoldPlayerGoldRank" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT userId,userName,headimgurl,playCount,(Gold + freeGold) as totalGold FROM t_gold_user where (Gold + freeGold) > 0  order by totalGold desc, playCount desc limit #limitNum#;
+    </select>
+
+    <select id="selectGoldPlayerJiFen" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT b.userId, b.`name`, b.headimgurl, b.channel, a.msgValue as jifen from t_user_extend a left join user_inf b on (a.userId = b.userId) where if(#pf# = "mangguo", b.channel = "mangguo" or b.channel = "common", b.channel = #pf#) and a.msgType = 103 order by a.msgValue desc limit #limitNum#;
+    </select>
+
+    <update id="updateGoldUserGrade" parameterClass="java.util.HashMap">
+        UPDATE t_gold_user set grade=#grade#,gradeExp=#gradeExp# WHERE userId=#userId#;
+    </update>
+
+    <update id="change_user_gold" parameterClass="java.util.HashMap">
+		UPDATE t_gold_user
+		set
+            gold = gold + #gold#,
+            freeGold = freeGold + #freeGold#
+		WHERE
+		    userId = #userId#
+		    AND gold = #oldGold#
+		    AND freeGold = #oldFreeGold#
+		    AND gold + #gold#<![CDATA[ >= ]]> 0
+		    AND freeGold + #freeGold# <![CDATA[ >= ]]> 0;
+	</update>
+
+    <select id="load_user_gold" resultClass="java.util.HashMap" parameterClass="java.lang.Long">
+        /*FORCE_MASTER*/ SELECT gold,freeGold FROM t_gold_user where userId = #userId#
+    </select>
+
+    <update id="change_user_gold_direct" parameterClass="java.util.HashMap">
+        UPDATE t_gold_user
+        set
+            gold = gold + #gold#,
+            freeGold = freeGold + #freeGold#
+        WHERE
+            userId = #userId#
+            AND gold + #gold#<![CDATA[ >= ]]> 0
+            AND freeGold + #freeGold# <![CDATA[ >= ]]> 0;
+    </update>
+</sqlMap>
+
+
+
+
+
+
+

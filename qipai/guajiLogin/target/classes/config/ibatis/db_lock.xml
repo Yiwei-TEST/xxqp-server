@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="dbLock">
+    <insert id="insertDbLock" parameterClass="java.util.HashMap">
+        insert into db_lock
+        (lockKey, unLockKey, startTime, overTime)
+        VALUES
+        (#lockKey# , #unLockKey# , now() , now())
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+
+	<select id="countLockKey" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ SELECT
+		    COALESCE(COUNT(*),0)
+		FROM
+		    db_lock
+		WHERE
+		    lockKey = #lockKey#
+	</select>
+
+    <update id="lock" parameterClass="java.util.HashMap">
+        update db_lock
+        set
+            unLockKey = #unLockKey#,
+            startTime = now(),
+            overTime = date_add(now(), interval #timeSecond# second)
+		WHERE
+		    lockKey = #lockKey#
+		    AND overTime <![CDATA[ <= ]]> now()
+    </update>
+
+    <update id="unLock" parameterClass="java.util.HashMap">
+        update db_lock
+        set
+            startTime = now(),
+            overTime = now()
+		WHERE
+		    lockKey = #lockKey#
+		    AND unLockKey = #unLockKey#
+    </update>
+
+</sqlMap>

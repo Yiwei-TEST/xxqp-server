@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="activity">
+
+	<resultMap class="com.sy.sanguo.game.bean.Activity" id="Activity">
+		<result property="id" column="id" />
+		<result property="beginTime" column="beginTime" />
+		<result property="endTime" column="endTime" />
+		<result property="them" column="them" />
+		<result property="showContent" column="showContent"/>
+		<result property="extend" column="extend"/>
+	</resultMap>
+
+	<select id="getActivityById" parameterClass="java.lang.Integer"
+		resultMap="Activity">
+		select * from activity where id = #id#
+	</select>
+</sqlMap>
+
+
+
+
+
+
+

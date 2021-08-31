@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="user_relation">
+	<resultMap class="com.sy.sanguo.game.bean.UserRelation" id="UserRelation">
+		<result property="keyId" column="keyId" />
+		<result property="gameCode" column="gameCode" />
+		<result property="userId" column="userId" />
+		<result property="regPf" column="regPf" />
+		<result property="regTime" column="regTime" />
+		<result property="loginPf" column="loginPf" />
+		<result property="loginTime" column="loginTime" />
+	</resultMap>
+
+	<resultMap class="com.sy.sanguo.game.bean.ThirdRelation" id="ThirdRelation">
+		<result property="keyId" column="keyId" />
+		<result property="userId" column="userId" />
+		<result property="thirdPf" column="thirdPf" />
+		<result property="thirdId" column="thirdId" />
+		<result property="currentState" column="currentState" />
+		<result property="createdTime" column="createdTime" />
+		<result property="checkedTime" column="checkedTime" />
+	</resultMap>
+
+	<select id="select_one_user_relation" resultClass="com.sy.sanguo.game.bean.UserRelation" parameterClass="java.util.HashMap">
+		SELECT * FROM t_user_relation WHERE gameCode=#gameCode# AND userId=#userId#
+	</select>
+
+	<select id="select_user_relations_base" resultMap="UserRelation" parameterClass="java.lang.String">
+		SELECT * FROM t_user_relation WHERE userId=#userId# AND gameCode NOT LIKE "%_%"
+	</select>
+
+	<insert id="insert_user_relation" parameterClass="com.sy.sanguo.game.bean.UserRelation">
+		insert into t_user_relation (gameCode,userId,regPf,loginPf,regTime,loginTime) VALUES (#gameCode#,#userId#,#regPf#,#loginPf#,#regTime#,#loginTime#)
+	</insert>
+
+	<update id="update_user_relation" parameterClass="java.util.HashMap">
+		UPDATE t_user_relation SET loginPf=#loginPf#,loginTime=#loginTime# WHERE keyId=#keyId#
+	</update>
+
+	<select id="select_third_relation" resultClass="com.sy.sanguo.game.bean.ThirdRelation" parameterClass="java.util.HashMap">
+		SELECT * FROM t_third_relation WHERE currentState="1"
+		<dynamic prepend="">
+			<isPropertyAvailable prepend=" AND " property="userId">
+				userId=#userId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" AND " property="thirdPf">
+				thirdPf=#thirdPf#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend=" AND " property="thirdId">
+				thirdId=#thirdId#
+			</isPropertyAvailable>
+		</dynamic>
+		limit 1
+	</select>
+
+	<insert id="insert_third_relation" parameterClass="com.sy.sanguo.game.bean.ThirdRelation">
+		insert into t_third_relation (userId,thirdPf,thirdId,currentState,createdTime,checkedTime) VALUES (#userId#,#thirdPf#,#thirdId#,#currentState#,#createdTime#,#checkedTime#)
+	</insert>
+
+	<update id="update_third_relation" parameterClass="java.util.HashMap">
+		UPDATE t_third_relation
+		<dynamic prepend=" SET ">
+			<isPropertyAvailable prepend="," property="userId">
+				userId=#userId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="thirdPf">
+				thirdPf=#thirdPf#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="thirdId">
+				thirdId=#thirdId#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="currentState">
+				currentState=#currentState#
+			</isPropertyAvailable>
+			<isPropertyAvailable prepend="," property="checkedTime">
+				checkedTime=#checkedTime#
+			</isPropertyAvailable>
+		</dynamic>
+		WHERE keyId=#keyId#
+	</update>
+
+</sqlMap>
+
+
+
+
+
+
+

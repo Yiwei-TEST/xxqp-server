@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="lottery">
+
+    <resultMap class="com.sy599.game.db.bean.UserLottery" id="Lottery">
+        <result property="id" column="id"/>
+        <result property="userId" column="userId"/>
+        <result property="prize" column="prize"/>
+        <result property="prizeIndex" column="prizeIndex"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+    <select id="usedLotteryNum" resultClass="java.lang.Integer" parameterClass="java.lang.Long">
+        select coalesce(sum(1),0) from t_lottery where userId=#userId#
+    </select>
+    <select id="prizeSum" resultClass="java.lang.Integer" >
+        select coalesce(sum(1),0) from t_lottery where prizeIndex <![CDATA[<=]]> 7
+    </select>
+    <select id="smashEggPrizeSum" resultClass="java.lang.Integer" >
+        select coalesce(sum(1),0) from t_lottery where prizeIndex <![CDATA[>]]> 7
+    </select>
+    <select id="secondPrizeSum" resultClass="java.lang.Integer" >
+        select coalesce(sum(1),0) from t_lottery where prizeIndex=3
+    </select>
+    <select id="fistPrizeSum" resultClass="java.lang.Integer" >
+        select coalesce(sum(1),0) from t_lottery where prizeIndex=7
+    </select>
+    <select id="getPrizeSum" resultClass="java.lang.Integer" parameterClass="java.lang.Integer">
+        select coalesce(sum(1),0) from t_lottery where prizeIndex=#prizeIndex#
+    </select>
+    <insert id="addPrize" parameterClass="java.util.HashMap">
+        insert into
+        t_lottery(prize,prizeIndex,userId,create_time)
+        values(#prize#,#prizeIndex#,#userId#,sysdate() );
+    </insert>
+</sqlMap>
+

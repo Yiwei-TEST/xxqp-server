@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="userSupport">
+    <insert id="insert" parameterClass="com.sy.sanguo.game.bean.UserSupport">
+		insert into system_support (roleName,roleUid,pf,serverId,type,content,status,createTime,reply)
+		 VALUES(#roleName#,#roleUid#,#pf#,#serverId#,#type#,#content#,#status#,#createTime#,#reply#);
+	</insert>
+</sqlMap>
+
+
+
+
+
+
+

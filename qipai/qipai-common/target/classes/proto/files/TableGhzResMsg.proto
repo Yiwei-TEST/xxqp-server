@@ -1,0 +1,55 @@
+syntax = "proto2";
+import "proto/files/TablePhzResMsg.proto";
+package com.sy599.game.msg.serverPacket;
+//结算
+message ClosingGhzInfoRes{
+     repeated ClosingGhzPlayerInfoRes closingPlayers=1;
+     optional int32 isBreak=2;
+     optional int32 wanfa=3;    
+     repeated string ext=4;//
+     repeated string matchExt=5;//比赛场
+     repeated int32 leftCards=6;//剩下的牌
+     optional int32 tun=7;//囤数
+     optional int32 fan=8;//番数
+	 optional int32 huxi=9;//胡息
+	 optional int32 huSeat=10;//胡的人座位号
+	 optional int32 huCard=11;//胡的牌
+	 optional int32 totalTun=12;//总囤数
+	 repeated int32 fanTypes=13;//番类型
+	 optional int32 isRenew=14;// 是否续费
+     optional int32 renewCount=15;// 续费次数
+     optional string pointRecord=16;// 记分记录
+     repeated int32 startLeftCards=17;//桌面所有底牌
+     optional int32 groupLogId=18;//俱乐部战绩id
+     repeated int32 chouCards=19;//抽掉的牌
+}
+
+//单个玩家结算
+message ClosingGhzPlayerInfoRes{
+	optional string userId=1;//userId
+	optional string name=2;//名字
+	optional int32 point=3;//积分
+	optional int32 totalPoint=4;//总积分
+	optional int32 winCount=5;//赢的次数
+	optional int32 lostCount=6;//输的次数
+	optional int32 maxPoint=7;//最高积分
+	required int32 seat=8;//座位
+	optional int32 sex=9;
+	optional string icon=10;
+	optional int32 bopiPoint=11;//剥皮算分
+	repeated int32 cards=12;//剩余牌
+	optional int32 isShuXing=13;//数醒标示
+	optional int32 renewStatus=14;//续费状态
+    repeated int32 firstCards=15;//初始手牌
+    repeated int32 dahus=16;//大胡 0项项息 1无息平 2对子胡 3黑胡 4黑对子胡 5一点朱 6十三火 7十四火 8十五火 9九对半 10大字胡 11小字胡 12海底 13天胡 14报听
+    repeated int32 dahuCounts=17;//大胡次数  0项项息 1无息平 2对子胡 3黑胡 4黑对子胡 5一点朱 6十三火 7十四火 8十五火 9九对半 10大字胡 11小字胡 12海底 13天胡 14报听 15内圆 16外圆
+    optional int32 neiYuanNum=18;//内圆个数
+    optional int32 waiYuanNum=19;//外圆个数
+    repeated PhzHuCards mcards=20;//牌
+    optional int32 zhuaHao=21;//抓豪个数
+    optional int32 qingHao=22;//清豪个数
+    optional int32 waiHao=23;//外豪个数
+    optional int32 credit=24;//玩家身上的credit
+    optional int64 winLoseCredit=25;//输赢信用分
+    optional int64 commissionCredit=26;//抽水信用分
+}

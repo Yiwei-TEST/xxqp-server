@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap        
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"        
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="itemExchange">
+	<select id="sumItemExchange" parameterClass = "java.util.HashMap"  resultClass="java.lang.Integer">
+		SELECT SUM(itemCount) FROM t_item_exchange where userId=#userId# AND itemType=#itemType# AND createdTime <![CDATA[>= ]]> #begin# AND createdTime <![CDATA[<= ]]> #end#
+		<dynamic prepend=" ">
+			<isPropertyAvailable property="itemId" prepend=" ">
+				and itemId=#itemId#
+			</isPropertyAvailable>
+		</dynamic>
+	</select>
+
+    <select id="selectItemExchangePage" parameterClass = "java.util.HashMap"  resultClass="java.util.HashMap">
+        SELECT * FROM t_item_exchange where userId=#userId#
+        <dynamic prepend=" ">
+            <isPropertyAvailable property="itemType" prepend=" ">
+                AND itemType=#itemType#
+            </isPropertyAvailable>
+            <isPropertyAvailable property="itemId" prepend=" ">
+                AND itemId=#itemId#
+            </isPropertyAvailable>
+        </dynamic>
+        order by keyId desc limit #startNo#,#pageSize#;
+    </select>
+	
+	<insert id="save" parameterClass="java.util.HashMap">
+		insert into t_item_exchange (userId, itemType, itemId,itemName,itemAmount,itemCount,itemGive,itemMsg,createdTime)
+		values (#userId#, #itemType#, #itemId#,#itemName#,#itemAmount#,#itemCount#,#itemGive#,#itemMsg#,#createdTime#)
+		<selectKey resultClass="java.lang.Long" keyProperty="keyId">
+			SELECT @@IDENTITY AS keyId
+		</selectKey>
+	</insert>
+
+    <select id="load_all_goods_item"  resultClass="com.sy599.game.db.bean.GoodsItem">
+        SELECT * FROM t_goods_item
+    </select>
+</sqlMap>

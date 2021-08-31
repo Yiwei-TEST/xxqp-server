@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+        PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="groupGoldRoom">
+    <cacheModel id="code-CacheModel" type="LRU" readOnly="true" serialize="false">
+        <flushInterval minutes="10"/>
+        <property name="cache-size" value="10000"/>
+    </cacheModel>
+
+    <select id="count_team_list" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT COALESCE(COUNT(*),0) FROM
+            t_group_user gu,
+            user_inf u
+        WHERE
+            gu.groupId = #groupId#
+            $andSql$
+            AND u.userId = gu.userId
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="keyWord">
+                    (u.userId=#keyWord# OR u.name LIKE concat('%', #keyWord#, '%'))
+                </isPropertyAvailable>
+            </dynamic>
+    </select>
+
+    <select id="team_list" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            d2.*,
+            ( CASE WHEN d2.promoterId = 0 THEN '本组' ELSE u.name END ) AS teamName,
+            u.headimgurl,
+            u.name,
+            gu.userRole,
+            gu.promoterLevel,
+            gu.ext
+        FROM
+            (
+                SELECT
+                    d1.*,
+                    ( CASE WHEN d1.promoterId = 0 THEN #promoterId# ELSE d1.promoterId END ) AS userId
+                FROM
+                (
+                    SELECT
+                        $groupByKey$ AS promoterId,
+                        count( userId ) AS memberCount
+                    FROM
+                        t_group_user
+                    WHERE
+                        groupId = #groupId#
+                        $andSql$
+                        GROUP BY
+                        $groupByKey$
+                ) d1
+            ) d2,
+            user_inf u,
+            t_group_user gu
+        WHERE
+            u.userId = d2.userId
+            AND gu.groupId = #groupId#
+            AND gu.userId = d2.userId
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" and " property="keyWord">
+                    (u.userId=#keyWord# OR u.name LIKE concat('%', #keyWord#, '%'))
+                </isPropertyAvailable>
+            </dynamic>
+            order by (case when d2.promoterId = 0 then 0 else 1 end) asc , d2.memberCount desc
+            LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="load_gold_commission_config" resultClass="com.sy.sanguo.game.bean.group.GroupGoldCommissionConfig" parameterClass="java.util.HashMap">
+        SELECT
+            *
+        FROM
+            t_group_gold_commission_config
+        WHERE
+            groupId = #groupId#
+            AND userId = #userId#
+        order by seq
+    </select>
+
+    <insert id="insert_gold_commission_config" parameterClass="com.sy.sanguo.game.bean.group.GroupGoldCommissionConfig">
+        INSERT INTO t_group_gold_commission_config
+            ( `groupId`, `userId`, `seq`, `minValue`, `maxValue`, `value`, `leftValue`, `maxLog`, `createdTime`, `lastUpTime`)
+        VALUES
+            (#groupId#, #userId#, #seq#, #minValue#, #maxValue#, #value#, #leftValue#, #maxLog#, #createdTime#, #lastUpTime#);
+        <selectKey resultClass="java.lang.Long" keyProperty="keyId">
+            SELECT
+            @@IDENTITY AS keyId
+        </selectKey>
+    </insert>
+
+    <update id="update_gold_commission_config" parameterClass="java.util.HashMap">
+        update t_group_gold_commission_config
+        set
+            value = #value# ,
+            leftValue = #leftValue# ,
+            maxLog = #maxLog#,
+            lastUpTime = #lastUpTime#
+        where
+            groupId = #groupId#
+            AND userId = #userId#
+            AND seq = #seq#
+    </update>
+
+    <select id="get_user_gold_room_count" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+            COALESCE(COUNT( DISTINCT gru.roomId ),0)
+        FROM
+            t_gold_room_user_freeze gru ,
+            t_gold_room_freeze gr
+        WHERE
+            gru.groupId = #groupId#
+            AND gru.userId IN (
+                SELECT userId FROM t_group_user
+                WHERE
+                    groupId = #groupId#
+                    <isPropertyAvailable prepend=" " property="andSql">
+                        $andSql$
+                    </isPropertyAvailable>
+                    <isPropertyAvailable prepend=" AND " property="queryUserId">
+                        userId = #queryUserId#
+                    </isPropertyAvailable>
+            )
+            AND gru.createdTime <![CDATA[ >= ]]> #startDate#
+            AND gru.createdTime <![CDATA[ <= ]]> #endDate#
+            AND gr.keyId = gru.roomId
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="queryTableId">
+                    gr.tableId = #queryTableId#
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" AND " property="type">
+                    gr.type = #type#
+                </isPropertyAvailable>
+                <isPropertyAvailable prepend=" AND " property="playType">
+                    gr.playType = #playType#
+                </isPropertyAvailable>
+            </dynamic>
+    </select>
+
+    <select id="get_user_gold_room_play_log" resultClass="com.sy.sanguo.game.bean.gold.GoldRoom" parameterClass="java.util.HashMap">
+        SELECT * FROM t_gold_room_freeze
+        WHERE
+            keyId in (
+            SELECT
+                DISTINCT gru.roomId
+            FROM
+                t_gold_room_user_freeze gru,
+                t_gold_room_freeze gr
+            WHERE
+                gru.groupId = #groupId#
+                AND gru.userId IN(
+                    SELECT userId FROM t_group_user
+                    WHERE
+                        groupId = #groupId#
+                        <isPropertyAvailable prepend=" " property="andSql">
+                            $andSql$
+                        </isPropertyAvailable>
+                        <isPropertyAvailable prepend=" AND " property="queryUserId">
+                            userId = #queryUserId#
+                        </isPropertyAvailable>
+                )
+                AND gru.createdTime <![CDATA[ >= ]]> #startDate#
+                AND gru.createdTime <![CDATA[ <= ]]> #endDate#
+                AND gr.keyId = gru.roomId
+                <dynamic prepend="">
+                    <isPropertyAvailable prepend=" AND " property="queryTableId">
+                        gr.tableId = #queryTableId#
+                    </isPropertyAvailable>
+                    <isPropertyAvailable prepend=" AND " property="type">
+                        gr.type = #type#
+                    </isPropertyAvailable>
+                    <isPropertyAvailable prepend=" AND " property="playType">
+                        gr.playType = #playType#
+                    </isPropertyAvailable>
+                </dynamic>
+            )
+        order by modifiedTime desc
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="gold_commission_log" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            d1.* ,
+            u.headimgurl
+        FROM(
+            SELECT
+                gu.userId,
+                gu.userName,
+                gu.userRole,
+                gu.promoterLevel,
+                gu.promoterId,
+                gu.userId as promoterIdKey,
+                CASE WHEN log.gold IS NULL THEN 0 ELSE log.gold END AS gold,
+                CASE WHEN log.commission IS NULL THEN 0 ELSE log.commission END AS commission,
+                CASE WHEN log.commissionCount IS NULL  THEN 0 ELSE log.commissionCount END AS commissionCount,
+                CASE WHEN log.zjsCount IS NULL THEN 0 ELSE log.zjsCount END AS zjsCount
+            FROM
+                t_group_user gu
+                LEFT JOIN (
+                    SELECT * FROM log_group_gold_commission
+                    WHERE
+                        dataDate = #dataDate#
+                        AND groupId = #groupId#
+                ) AS log
+            ON
+                log.userId = gu.userId
+            WHERE
+                gu.groupId = #groupId#
+                $andSql$
+                AND gu.userRole NOT IN ( 2, 90000 )
+            )  d1,
+        user_inf u
+        WHERE
+           u.userId = d1.userId
+    </select>
+
+    <select id="count_rank_list" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+            COUNT(DISTINCT gu.userId)
+        FROM
+            t_group_user gu,
+            (
+                SELECT * FROM log_group_gold_commission
+                WHERE
+                    dataDate <![CDATA[ >= ]]> #startDate#
+                    AND dataDate <![CDATA[ <= ]]> #endDate#
+                    AND groupId = #groupId#
+                    AND selfZjsCount > 0
+            ) AS log
+        WHERE
+            gu.groupId = #groupId#
+            $andSql$
+            AND log.userId = gu.userId
+    </select>
+
+    <select id="gold_rank_list" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            d1.* ,
+            u.headimgurl
+        FROM
+            (
+                SELECT
+                    gu.userId,
+                    gu.userName,
+                    gu.userRole,
+                    gu.promoterId,
+                    sum(log.selfWin + log.selfCommission) AS selfWin,
+                    sum(log.selfCommission) AS selfCommission,
+                    sum(log.selfCommissionCount) AS selfCommissionCount,
+                    sum(log.selfZjsCount) AS selfZjsCount
+                FROM
+                    t_group_user gu,
+                    (
+                        SELECT * FROM log_group_gold_commission
+                        WHERE
+                            dataDate <![CDATA[ >= ]]> #startDate#
+                            AND dataDate <![CDATA[ <= ]]> #endDate#
+                            AND groupId = #groupId#
+                            AND selfZjsCount > 0
+                    ) AS log
+                WHERE
+                    gu.groupId = #groupId#
+                    $andSql$
+                    AND log.userId = gu.userId
+                    GROUP BY log.userId
+            )  d1,
+            user_inf u
+        WHERE
+            u.userId = d1.userId
+            and d1.selfZjsCount > 0
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="keyWord">
+                    (u.userId = #keyWord# OR u.name LIKE concat('%', #keyWord#, '%'))
+                </isPropertyAvailable>
+            </dynamic>
+        $orderBySql$
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="rank_sum" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            sum(d1.selfWin) AS selfWin,
+            sum(d1.selfCommission) AS selfCommission,
+            sum(d1.selfCommissionCount) AS selfCommissionCount,
+            sum(d1.selfZjsCount) AS selfZjsCount
+        FROM(
+            SELECT
+                sum(log.selfWin + log.selfCommission) AS selfWin,
+                sum(log.selfCommission) AS selfCommission,
+                sum(log.selfCommissionCount) AS selfCommissionCount,
+                sum(log.selfZjsCount) AS selfZjsCount
+            FROM
+                t_group_user gu,
+                (
+                    SELECT * FROM log_group_gold_commission
+                    WHERE
+                        dataDate <![CDATA[ >= ]]> #startDate#
+                        AND dataDate <![CDATA[ <= ]]> #endDate#
+                        AND groupId = #groupId#
+                        AND selfZjsCount > 0
+                ) AS log
+            WHERE
+                gu.groupId = #groupId#
+                $andSql$
+                AND log.userId = gu.userId
+            GROUP BY log.userId
+        )  d1
+        WHERE
+            d1.selfZjsCount > 0
+    </select>
+
+    <select id="load_gold_room_table_record" resultClass="java.util.HashMap" parameterClass="java.lang.Long">
+		SELECT * FROM t_gold_room_table_record
+		WHERE
+		    goldRoomId = #goldRoomId#
+        ORDER BY playNo ASC;
+	</select>
+
+    <select id="load_gold_room_user_by_tableId" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+		select
+		    gru.keyId,
+		    gru.roomId,
+		    gru.userId,
+		    gru.gameResult,
+		    u.name
+		from
+		    t_gold_room_user_freeze gru,
+		    user_Inf u
+		where
+		    gru.roomId IN ($roomIds$)
+		    AND u.userId = gru.userId
+	</select>
+
+    <select id="count_gold_commission_log_next_level" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        SELECT
+            COALESCE(COUNT(*),0)
+        FROM
+            t_group_user
+        WHERE
+            groupId = #groupId#
+            $andSql$
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="keyWord">
+                    (userId = #keyWord# OR name LIKE concat('%', #keyWord#, '%'))
+                </isPropertyAvailable>
+            </dynamic>
+    </select>
+
+    <select id="gold_commission_log_next_level" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            d1.* ,
+            u.headimgurl
+        FROM(
+            SELECT
+                gu.userId,
+                gu.userName,
+                gu.userRole,
+                gu.promoterLevel,
+                gu.promoterId,
+                CASE WHEN log.selfWin IS NULL THEN 0 ELSE log.selfWin END AS selfWin,
+                CASE WHEN log.selfCommission IS NULL THEN 0 ELSE log.selfCommission END AS selfCommission,
+                CASE WHEN log.selfCommissionCount IS NULL  THEN 0 ELSE log.selfCommissionCount END AS selfCommissionCount,
+                CASE WHEN log.selfZjsCount IS NULL THEN 0 ELSE  log.selfZjsCount END AS selfZjsCount
+            FROM
+                t_group_user gu
+                LEFT JOIN (
+                    SELECT * FROM log_group_gold_commission
+                    WHERE
+                    dataDate = #dataDate#
+                    AND groupId = #groupId#
+                ) AS log
+                ON
+                    log.userId = gu.userId
+            WHERE
+                gu.groupId = #groupId#
+                $andSql$
+            )  d1,
+            user_inf u
+        WHERE
+            u.userId = d1.userId
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="keyWord">
+                    (u.userId = #keyWord# OR u.userName LIKE concat('%', #keyWord#, '%'))
+                </isPropertyAvailable>
+            </dynamic>
+        ORDER BY d1.userRole
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="count_solo_room_table_record" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select count(log.keyId) from
+        (
+        select keyId from t_solo_room_table_record
+        where
+            winnerId = #userId#
+            AND createdTime <![CDATA[ >= ]]> #startDate#
+            AND createdTime <![CDATA[ <= ]]> #endDate#
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="queryUserId">
+                    loserId = #queryUserId#
+                </isPropertyAvailable>
+            </dynamic>
+        union
+        select keyId from t_solo_room_table_record
+        where
+            loserId = #userId#
+            AND createdTime <![CDATA[ >= ]]> #startDate#
+            AND createdTime <![CDATA[ <= ]]> #endDate#
+            <dynamic prepend="">
+                <isPropertyAvailable prepend=" AND " property="queryUserId">
+                    winnerId = #queryUserId#
+                </isPropertyAvailable>
+            </dynamic>
+        ) as log
+    </select>
+
+    <select id="get_solo_room_table_record" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        SELECT
+            log.*,
+            winner.name as winnerName,
+            loser.name as loserName
+        FROM
+        (
+            SELECT * FROM t_solo_room_table_record
+            WHERE
+                winnerId = #userId#
+                AND createdTime <![CDATA[ >= ]]> #startDate#
+                AND createdTime <![CDATA[ <= ]]> #endDate#
+                <dynamic prepend="">
+                    <isPropertyAvailable prepend=" AND " property="queryUserId">
+                        loserId = #queryUserId#
+                    </isPropertyAvailable>
+                </dynamic>
+            UNION
+            SELECT * FROM t_solo_room_table_record
+            WHERE
+                loserId = #userId#
+                AND createdTime <![CDATA[ >= ]]> #startDate#
+                AND createdTime <![CDATA[ <= ]]> #endDate#
+                <dynamic prepend="">
+                    <isPropertyAvailable prepend=" AND " property="queryUserId">
+                        winnerId = #queryUserId#
+                    </isPropertyAvailable>
+                </dynamic>
+        ) AS log,
+        user_inf as winner,
+        user_inf as loser
+        WHERE
+            winner.userId = log.winnerId
+            AND loser.userId = log.loserId
+        ORDER BY log.keyId desc
+        LIMIT #startNo#,#pageSize#
+    </select>
+</sqlMap>
+
+
+
+
+
+
+

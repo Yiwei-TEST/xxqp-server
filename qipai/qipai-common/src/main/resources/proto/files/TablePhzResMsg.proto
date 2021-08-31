@@ -1,0 +1,102 @@
+syntax = "proto2";
+package com.sy599.game.msg.serverPacket;
+
+//牌组
+message PhzHuCards{
+	required int32 action=1;//动作
+	repeated int32 cards=2;//牌
+	optional int32 huxi=3;//胡息
+}
+
+message PhzHuCardList{
+	required int32 seat = 1;
+	repeated PhzHuCards phzCard = 2;
+}
+
+//结算
+message ClosingPhzInfoRes{
+     repeated ClosingPhzPlayerInfoRes closingPlayers=1;
+     optional int32 isBreak=2;
+     optional int32 wanfa=3;    
+     repeated string ext=4;//
+     repeated string matchExt=5;//比赛场
+     repeated PhzHuCards cards=6;//牌
+     repeated int32 leftCards=7;//剩下的牌
+     optional int32 tun=8;//囤数
+     optional int32 fan=9;//番数
+	 optional int32 huxi=10;//胡息
+	 optional int32 huSeat=11;//胡的人座位号
+	 optional int32 huCard=12;//胡的牌
+	 optional int32 totalTun=13;//总囤数
+	 repeated int32 fanTypes=14;//番类型
+	 optional int32 isRenew=15;// 是否续费
+     optional int32 renewCount=16;// 续费次数
+     optional string pointRecord=17;// 记分记录
+     repeated int32 startLeftCards=18;//桌面所有底牌
+     optional int32 groupLogId=19;//俱乐部战绩id
+     repeated int32 chouCards=20;//抽掉的牌
+     repeated int32 intParams=21;//创房参数
+	 repeated PhzHuCardList allCardsCombo=22;//玩家所有牌型的组合,与赢家展示的牌型一致,这里的顺序与closingPlayer保持一致
+}
+
+//单个玩家结算
+ message ClosingPhzPlayerInfoRes{
+ 	optional string userId=1;//userId
+ 	optional string name=2;//名字
+ 	optional int32 point=3;//积分
+ 	optional int32 totalPoint=4;//总积分
+ 	optional int32 winCount=5;//赢的次数
+ 	optional int32 lostCount=6;//输的次数
+ 	optional int32 maxPoint=7;//最高积分
+ 	required int32 seat=8;//座位
+ 	optional int32 sex=9;
+ 	optional string icon=10;
+ 	optional int32 bopiPoint=11;//剥皮算分
+ 	repeated int32 cards=12;//剩余牌
+ 	optional int32 isShuXing=13;//数醒标示
+ 	optional int32 renewStatus=14;//续费状态
+    repeated int32 firstCards=15;//初始手牌
+ 	repeated string strExt=17;//
+    optional int64 winLoseCredit=18;//输赢信用分
+    optional int64 commissionCredit=19;//抽水信用分
+    optional int32 allHuxi=20;//玩家总胡息
+    optional int32  finalPoint=21;//暂时未用到
+    repeated PhzHuCards moldCards=22;//碰吃煨提了的牌
+    optional int32 goldFlag=23;//金币场结算标记：1 破产2封顶
+ }
+
+message ClosingAhPhzInfoRes{
+	repeated ClosingAhPhzPlayerInfoRes closingPlayers=1;
+	optional int32 isBreak=2;
+	optional int32 wanfa=3;
+	repeated string ext=4;//
+	repeated string matchExt=5;//比赛场
+	repeated PhzHuCards cards=6;//牌
+	repeated int32 leftCards=7;//剩下的牌
+	optional int32 tun=8;//囤数
+	optional int32 fan=9;//番数
+	optional int32 huxi=10;//胡息
+	optional int32 huSeat=11;//胡的人座位号
+	optional int32 huCard=12;//胡的牌
+	optional int32 totalTun=13;//总囤数
+	repeated int32 fanTypes=14;//番类型
+}
+
+//单个玩家结算
+message ClosingAhPhzPlayerInfoRes{
+	optional string userId=1;//userId
+	optional string name=2;//名字
+	optional int32 point=3;//积分
+	optional int32 totalPoint=4;//总积分
+	optional int32 winCount=5;//赢的次数
+	optional int32 lostCount=6;//输的次数
+	optional int32 maxPoint=7;//最高积分
+	required int32 seat=8;//座位
+	optional int32 sex=9;
+	optional string icon=10;
+	optional int32 bopiPoint=11;//剥皮算分
+	repeated int32 cards=12;//剩余牌
+	optional int32 isShuXing=13;//数醒标示
+	repeated int32 outCards=14;//出去的牌
+
+}

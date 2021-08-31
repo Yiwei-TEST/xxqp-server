@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN" "http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+	<package name="userPackage_action" extends="mango-struts-default"
+		namespace="/">
+		<!-- 扩展struts2的结果集StrutsResultSupport -->
+		<result-types>
+			<result-type name="string" class="resultType"></result-type>
+		</result-types>
+
+		<interceptors>
+			<interceptor name="xml-toBean" class="interceptor" />
+		</interceptors>
+
+		<action name="user" class="userAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+
+		<action name="login" class="loginAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+
+		<action name="w360login" class="W360LoginAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+
+		<action name="w360rolevail" class="W360RoleValiAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+
+		<action name="w360pay" class="W360PayAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+
+
+		<action name="pay" class="payAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+
+		<action name="common" class="commonAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+		<action name="pdk" class="pdkAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+		<action name="support" class="supportAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+
+		<action name="qbprice" class="qbpriceAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+
+		<action name="qbpay" class="qbpayAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+
+		<action name="notice" class="noticeAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+
+		<action name="log" class="LogAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+
+		<action name="qipai" class="qipaiAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+		
+		<action name="authorizationAction" class="authorizationAction">
+			<result name="result" type="string">
+				<param name="stringName">result</param>
+			</result>
+		</action>
+
+		<action name="roomCardAction" class="roomCardAction">
+		</action>
+		<action name="groupAction" class="groupAction">
+		</action>
+		<action name="newGroupAction" class="newGroupAction">
+		</action>
+		<action name="dataAction" class="dataStatisticsAction">
+		</action>
+		<action name="redbag" class="redBagReceiveAction">
+		</action>
+
+        <action name="groupCreditAction" class="groupCreditAction">
+        </action>
+        <action name="bjdAction" class="bjdAction">
+        </action>
+        <action name="groupActionNew" class="groupActionNew">
+        </action>
+
+		<!--赛场action-->
+		<action name="competitionAction" class="competitionAction"/>
+		<action name="competitionDeployAction" class="competitionDeployAction"/>
+		<action name="competitionPlaying" class="competitionPlaying"/>
+		<action name="competitionRankAction" class="competitionRankAction"/>
+		<action name="competitionToolAction" class="competitionToolAction"/>
+	</package>
+</struts>
