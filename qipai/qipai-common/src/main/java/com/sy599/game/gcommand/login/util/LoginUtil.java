@@ -486,7 +486,7 @@ public final class LoginUtil {
     }
 
     private static final int minRandomId = 120000;
-    private static final int maxRandomId = 988000;
+    private static final int maxRandomId = 877000;
 
     private static long randomUserId(Random rnd) {
         return minRandomId + rnd.nextInt(maxRandomId);
