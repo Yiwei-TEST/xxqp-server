@@ -161,6 +161,8 @@ public class LdfpfTable extends BaseTable {
     private volatile int timeNum = 0;
     // 首局洗开关;
     private int firstXiPai=0;
+    // 黄庄次数
+    private int huangZhuangTimes=0;
     
     
 	/** 托管1：单局，2：全局 */
@@ -392,6 +394,7 @@ public class LdfpfTable extends BaseTable {
         finishFapai = wrapper.getInt(44,0);
         firstXiPai = wrapper.getInt(45,0);
         finishDaNiao = wrapper.getInt(46,0);
+        huangZhuangTimes = wrapper.getInt(47,0);
     }
 
     @Override
@@ -460,6 +463,7 @@ public class LdfpfTable extends BaseTable {
         wrapper.putInt(44, finishFapai);
         wrapper.putInt(45, firstXiPai);
         wrapper.putInt(46, finishDaNiao);
+        wrapper.putInt(47,huangZhuangTimes);
         return wrapper;
     }
 
@@ -637,6 +641,10 @@ public class LdfpfTable extends BaseTable {
                     sb.append("|").append(seatMap.get(seat).getUserId());
                     sb.append("|").append(lastWinSeat);
                 }
+            }
+            huangZhuangTimes++;
+            if (huangZhuangTimes >= 6){ //黄庄6次就结束
+                isOver = true;
             }
         }
 
@@ -2214,8 +2222,8 @@ public class LdfpfTable extends BaseTable {
         addAction(checkCard.getSeat(), list);
         List<PaohzCard> autoDisList = checkCard.getAutoDisList();
         if (autoDisList != null) {
-			// 不能胡就自动出牌
-            if (!checkCard.isHu()) {
+			// 不能胡就自动出牌 或者能跑时
+            if (!checkCard.isHu() || checkCard.isPao()) {
                 setAutoDisBean(checkCard);
                 return true;
             }

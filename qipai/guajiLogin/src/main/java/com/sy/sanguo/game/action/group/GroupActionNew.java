@@ -3669,18 +3669,27 @@ public class GroupActionNew extends GameStrutsAction {
                     OutputUtil.output(7, LangMsg.getMsg(LangMsg.code_22,7), getRequest(), getResponse(), false);
                     return;
                 }
-                if (!GroupConstants.isHuiZhangOrFuHuiZhang(self.getUserRole())) {
-                    OutputUtil.output(9, LangMsg.getMsg(LangMsg.code_22,8), getRequest(), getResponse(), false);
-                    return;
-                }
                 int ret = 0;
                 if (GroupConstants.isFuHuiZhang(target.getUserRole())) {
+                    if (!GroupConstants.isHuiZhangOrFuHuiZhang(self.getUserRole())) {
+                        OutputUtil.output(9, LangMsg.getMsg(LangMsg.code_22,8), getRequest(), getResponse(), false);
+                        return;
+                    }
                     HashMap<String, Object> map = new HashMap<>(8);
                     map.put("keyId", target.getKeyId());
                     map.put("userRole", GroupConstants.USER_ROLE_ChengYuan);
                     ret = groupDaoNew.updateGroupUserByKeyId(map);
                     sqlList.add(map);
                 } else {
+                    if (!GroupConstants.isHuiZhangOrFuHuiZhang(self.getUserRole()) && !GroupConstants.isZhuGuan(self.getUserRole())) {
+                        OutputUtil.output(10, LangMsg.getMsg(LangMsg.code_22,9), getRequest(), getResponse(), false);
+                        return;
+                    } else if (GroupConstants.isZhuGuan(self.getUserRole())){   //检测被修改玩家是不是自己下面的
+                        if(!GroupConstants.isUnder(self,target)){
+                            OutputUtil.output(11, LangMsg.getMsg(LangMsg.code_22,10), getRequest(), getResponse(), false);
+                            return;
+                        }
+                    }
                     List<GroupUser> list = groupDaoNew.loadGroupUsers(groupId, target.getUserId(), target.getPromoterLevel());
                     // 自己
                     HashMap<String, Object> rootSql = new HashMap<>();

@@ -1105,7 +1105,7 @@ public class LdfpfPlayer extends Player {
                     }
                 }
                 if(check.isHu()) {
-                    check.setPao(false);
+//                    check.setPao(false);      //因为有胡也要自动跑 20210906注释
                 }
                 //是否存在栽提
                 boolean flag=check.isTi()||check.isChouZai()||check.isZai();

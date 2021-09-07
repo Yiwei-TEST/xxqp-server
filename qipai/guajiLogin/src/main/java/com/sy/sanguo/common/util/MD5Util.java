@@ -199,5 +199,12 @@ public class MD5Util {
 
         String pw = "a12345";
         System.out.println("pw|"+pw+"|"+getStringMD5(pw + "sanguo_shangyou_2013"));
+
+		String Svrver1Md5 = com.sy.mainland.util.MD5Util.getMD5String("user.dir:/data/allen/server/pdk_app_s1,networkinterfaces:[eth0:00-16-3e-02-de-58]");
+		System.out.println("Svrver1Md5|"+Svrver1Md5);
+		String Svrver3Md5 = com.sy.mainland.util.MD5Util.getMD5String("user.dir:/data/allen/server/pdk_app_s3,networkinterfaces:[eth0:00-16-3e-02-de-58]");
+		System.out.println("Svrver3Md5|"+Svrver3Md5);
+		String Svrver4Md5 = com.sy.mainland.util.MD5Util.getMD5String("user.dir:/data/allen/server/pdk_app_s4,networkinterfaces:[eth0:00-16-3e-02-de-58]");
+		System.out.println("Svrver4Md5|"+Svrver4Md5);
 	}
 }
