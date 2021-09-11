@@ -97,6 +97,20 @@ public class WebSocketManager {
 		}
 	}
 
+	public static void broadMsg(GeneratedMessage message, int groupId) {
+		if(groupId <= 0){
+			broadMsg(message);
+			return;
+		}
+		for (MyWebSocket socket : webSocketMap.values()) {
+			if(socket.getPlayer().getGroupUser() != null) {
+				if(socket.getPlayer().getGroupUser().getGroupId() == groupId){
+					socket.send(message);
+				}
+			}
+		}
+	}
+
 	public static void shudown(String msg) {
 		ComRes res = SendMsgUtil.buildComRes(WebSocketMsgType.res_code_shutdown, msg).build();
 		for (MyWebSocket socket : webSocketMap.values()) {

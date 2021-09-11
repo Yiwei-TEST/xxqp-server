@@ -1118,6 +1118,15 @@
 		groupId=#groupId#
 		and userId=#userId#
 	</update>
+
+	<select id="loadGroupUserwheel" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	/*FORCE_MASTER*/ select * from t_group_user_wheel where guId = #guId# limit 1;
+	</select>
+
+	<update id="saveGroupUserwheel" parameterClass="java.util.HashMap">
+		insert into t_group_user_wheel (guId,groupId,lastCount,wheelCount) values (#guId#,#groupId#,#lastCount#,#wheelCount#)
+		on duplicate key update lastCount=#lastCount#,wheelCount=wheelCount+#wheelCount#
+	</update>
 </sqlMap>
 
 

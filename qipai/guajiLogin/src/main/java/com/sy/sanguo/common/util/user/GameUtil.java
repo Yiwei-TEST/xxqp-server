@@ -27,6 +27,7 @@ public class GameUtil {
     public static final String notify_type_groupUserLevelUp = "notifyGroupUserLevelUp";
     public static final String notify_type_creditUpdate = "notifyCreditUpdate";
     public static final String notify_type_changeCards = "notifyChangCards";
+	public static final String notify_type_marquee = "marquee";
 
 
 	public static String send(int serverId, Map<String, String> map) {
@@ -384,6 +385,34 @@ public class GameUtil {
         }
     }
 
+	public static void sendNotifyToAllServer(long userId, String type, Map<String, String> data) {
+		Map<String, String> map = new HashMap<>();
+		String time = String.valueOf(System.currentTimeMillis());
+		String md5 = MD5Util.getStringMD5(time + "1M4C0GIZRLYADQEWBNJF762HPTXUO95S8VK3" + userId, "utf-8");
+		map.put("funcType", "1");
+		map.put("type", type);
+		map.put("userId", String.valueOf(userId));
+		if (data != null && data.size() > 0) {
+			map.putAll(data);
+		}
+		map.put("time", time);
+		map.put("sign", md5);
+		Collection<Server> servers = SysInfManager.getInstance().loadServers();
+		try {
+			for(Server server : servers) {
+				if (server.getCheck()==0){
+					continue;
+				}
+				String url = server.getIntranet().replace("qipai/pdk.do", "online/notice.do");
+				HttpUtil res = new HttpUtil(url);
+				String post = res.post(map);
+				GameBackLogger.SYS_LOG.info("sendNotifyToAllServer|succ|" + post);
+			}
+		} catch (Exception e) {
+			GameBackLogger.SYS_LOG.error("sendNotifyToAllServer|error|" + userId + "" + type + "|" + JSON.toJSONString(data), e);
+		}
+	}
+
     public static void notifyChangCards(int serverId, long userId, long cards, long freeCards, boolean saveRecord) {
         Map<String, String> map = new HashMap<>();
         map.put("cards", String.valueOf(cards));
@@ -392,4 +421,23 @@ public class GameUtil {
         sendNotify(serverId, userId, notify_type_changeCards, map);
     }
 
+	/**
+	 * 推送跑马灯
+	 * @param serverId 服务器号 0时为全服推送
+	 * @param userId
+	 * @param message
+	 * @param round		显示轮数
+	 */
+	public static void sendMarquee(int serverId, long userId, long groupId, String message, int round) {
+		Map<String, String> map = new HashMap<>();
+		map.put("groupId", groupId + "");
+		map.put("message", message);
+		map.put("round", round + "");
+		map.put("msgType", "2");
+		if(serverId > 0){
+			sendNotify(serverId, userId, notify_type_marquee, map);
+		} else {
+			sendNotifyToAllServer(userId, notify_type_marquee, map);
+		}
+	}
 }

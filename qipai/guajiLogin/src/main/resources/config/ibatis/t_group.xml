@@ -1416,6 +1416,34 @@
             AND du.userId = #destUserId#
     </update>
 
+	<update id="transferWheelToGroupUserCredit" parameterClass="java.util.HashMap">
+        UPDATE
+            t_group_user gu,
+            t_group_credit_wheel gcw
+        SET
+            gu.credit = gu.credit + #credit#,
+            gcw.creditPool = gcw.creditPool - #credit#
+        WHERE
+            gu.groupId = #groupId#
+            AND gu.userId = #userId#
+            AND gcw.groupId = #groupId#
+            AND gcw.creditPool >= #credit#
+    </update>
+
+	<update id="transferGroupUserCreditToWheel" parameterClass="java.util.HashMap">
+        UPDATE
+            t_group_user gu,
+            t_group_credit_wheel gcw
+        SET
+            gu.credit = gu.credit - #credit#,
+            gcw.creditPool = gcw.creditPool + #credit#
+        WHERE
+            gu.groupId = #groupId#
+            AND gu.userId = #userId#
+            AND gcw.groupId = #groupId#
+            AND gu.credit >= #credit#
+    </update>
+
 
     <select id="sumTeamCredit" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
         select

@@ -221,6 +221,8 @@ public class GroupConstants {
     public static final String groupExtKey_forbiddenDiss = "forbiddenDiss";
     /*** 合伙人洗牌分归属设置***/
     public static final String extKey_xipaiConfig = "xipaiConfig";
+    /*** 幸运转盘，0：关闭，>0：多少局一次抽奖机会***/
+    public static final String groupExtKey_creditWheel = "creditWheel";
 
     public static Object getGroupExt(String extMsg, String key) {
         if (StringUtils.isBlank(extMsg) || StringUtils.isBlank(key)) {

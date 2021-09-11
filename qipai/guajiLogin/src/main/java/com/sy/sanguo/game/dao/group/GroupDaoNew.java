@@ -2,15 +2,7 @@ package com.sy.sanguo.game.dao.group;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.sy.sanguo.common.parent.impl.CommonDaoImpl;
-import com.sy.sanguo.game.bean.group.GroupCommissionConfig;
-import com.sy.sanguo.game.bean.group.GroupInfo;
-import com.sy.sanguo.game.bean.group.GroupReview;
-import com.sy.sanguo.game.bean.group.GroupTable;
-import com.sy.sanguo.game.bean.group.GroupTableConfig;
-import com.sy.sanguo.game.bean.group.GroupUser;
-import com.sy.sanguo.game.bean.group.GroupUserLog;
-import com.sy.sanguo.game.bean.group.GroupUserReject;
-import com.sy.sanguo.game.bean.group.LogGroupUserAlert;
+import com.sy.sanguo.game.bean.group.*;
 import com.sy.sanguo.game.constants.GroupConstants;
 import com.sy599.sanguo.util.SysPartitionUtil;
 import com.sy599.sanguo.util.TimeUtil;
@@ -1563,5 +1555,34 @@ public class GroupDaoNew extends CommonDaoImpl {
 
     public long loadGroupCreditCommission(Map<String,Object> params) throws Exception {
         return (Long) this.getSqlMapClient().queryForObject("groupNew.load_group_commission_creditPurse", params);
+    }
+
+    public HashMap<String, Object> loadGroupUserwheel(long guId) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        map.put("guId", String.valueOf(guId));
+        return (HashMap<String, Object>) this.getSqlMapClient().queryForObject("groupNew.load_group_user_wheel", map);
+    }
+
+    public GroupCreditWheel loadGroupCreditWheel(long groupId) throws Exception {
+        HashMap<String, Object> map = new HashMap<>(8);
+        map.put("groupId", groupId);
+        return (GroupCreditWheel) this.getSqlMapClient().queryForObject("groupNew.load_group_credit_wheel", map);
+    }
+
+    public int updateCreditWheel(Map<String,Object> map) throws Exception {
+        return this.getSqlMapClient().update("groupNew.update_credit_wheel", map);
+    }
+
+    public int updateUserWheelCount(int wheelCount, long groupUserId) throws Exception {
+        HashMap<String, Object> map = new HashMap<>(8);
+        map.put("guId", groupUserId);
+        map.put("wheelCount", wheelCount);
+        return this.getSqlMapClient().update("groupNew.update_user_wheel_count", map);
+    }
+    public long loadCreditWheelPool(long groupId) throws Exception {
+        HashMap<String, Object> map = new HashMap<>(8);
+        map.put("groupId", groupId);
+        Long ret = (Long)this.getSqlMapClient().queryForObject("groupNew.load_credit_wheel_pool", map);
+        return ret == null ? 0 : ret;
     }
 }

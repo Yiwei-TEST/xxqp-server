@@ -71,6 +71,10 @@ public class GroupConstants {
      * 信用分记录类型：零钱包
      */
     public static final int CREDIT_LOG_TYPE_PURSE = 6;
+    /**
+     * 信用分记录类型：幸运转盘
+     */
+    public static final int CREDIT_LOG_TYPE_WHEEL = 7;
 
 
     /**
@@ -804,6 +808,8 @@ public class GroupConstants {
     public static final String groupExtKey_forbiddenDiss = "forbiddenDiss";
     /*** 亲友圈是否开启：禁止踢人限制 0：否，1：是 开启后合伙人踢出的人三天内不能被其他合伙人拉入群***/
     public static final String groupExtKey_forbiddenKickOut = "forbiddenKickOut";
+    /*** 幸运转盘，0：关闭，>0：多少局一次抽奖机会***/
+    public static final String groupExtKey_creditWheel = "creditWheel";
 
 
     public static Object getGroupExt(String extMsg, String key) {

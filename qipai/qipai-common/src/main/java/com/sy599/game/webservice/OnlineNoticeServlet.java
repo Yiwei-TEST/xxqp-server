@@ -915,15 +915,20 @@ public class OnlineNoticeServlet extends HttpServlet {
     public void marquee(HttpServletResponse response, Map<String, String> params) throws Exception {
         String userId = params.get("userId");
         String message = params.get("message");
+        int groupId = Integer.parseInt(params.getOrDefault("groupId","0"));
         if (StringUtils.isNotBlank(message)) {
-            if (CommonUtil.isPureNumber(userId)) {
-                Player player = PlayerManager.getInstance().getPlayer(Long.valueOf(userId));
-                if (player != null) {
-                    MarqueeManager.getInstance().sendMarquee(message, NumberUtils.toInt(params.get("round"), 1), NumberUtils.toInt(params.get("msgType"), 0), player);
-                }
-            } else {
-                MarqueeManager.getInstance().sendMarquee(message, NumberUtils.toInt(params.get("round"), 1), NumberUtils.toInt(params.get("msgType"), 0), null);
-            }
+			if(groupId > 0) {
+				MarqueeManager.getInstance().sendMarquee(message, NumberUtils.toInt(params.get("round"), 1), NumberUtils.toInt(params.get("msgType"), 0), groupId);
+			} else {
+				if (CommonUtil.isPureNumber(userId)) {
+					Player player = PlayerManager.getInstance().getPlayer(Long.valueOf(userId));
+					if (player != null) {
+						MarqueeManager.getInstance().sendMarquee(message, NumberUtils.toInt(params.get("round"), 1), NumberUtils.toInt(params.get("msgType"), 0), player);
+					}
+				} else {
+					MarqueeManager.getInstance().sendMarquee(message, NumberUtils.toInt(params.get("round"), 1), NumberUtils.toInt(params.get("msgType"), 0), null);
+				}
+			}
         }
         writeMsg(response, "1");
     }

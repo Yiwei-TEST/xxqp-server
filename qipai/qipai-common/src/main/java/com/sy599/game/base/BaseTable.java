@@ -1649,8 +1649,25 @@ public abstract class BaseTable {
 							map.put("userId", String.valueOf(player.getUserId()));
 							map.put("count2", 1);
 							GroupDao.getInstance().updateGroupUser(map);
-
 							updatePlayerScore(player, player.loadScore() == maxPoint ? 1 : -1);
+
+							//幸运转盘处理
+							GroupInfo group = GroupDao.getInstance().loadGroupInfo(groupTable.getGroupId());
+							JSONObject json = JSONObject.parseObject(group.getExtMsg());
+							int openWheel = json.getIntValue(GroupConstants.groupExtKey_creditWheel);	//多少局加一次抽奖机会
+							if (openWheel > 0){
+								int curPlayCount = player.getGroupUser().getPlayCount2() + 1;
+								HashMap<String, Object> guWheelMap = GroupDao.getInstance().loadGroupUserwheel(player.getGroupUser().getKeyId());
+
+								if (guWheelMap == null) {
+									GroupDao.getInstance().saveGroupUserwheel(player.getGroupUser().getKeyId(),groupTable.getGroupId(),curPlayCount - 1,0);
+								} else  {
+									int lastCount = (int)guWheelMap.get("lastCount");
+									if(player.getGroupUser().getPlayCount2() + 1 - lastCount >= openWheel)
+										GroupDao.getInstance().saveGroupUserwheel(player.getGroupUser().getKeyId(),groupTable.getGroupId(),curPlayCount,1);
+								}
+							}
+
 						}
 
 						String timeRemoveBindStr = ResourcesConfigsUtil.loadServerPropertyValue("periodRemoveBind");

@@ -2821,6 +2821,52 @@
         configId=#configId#
     </select>
 
+    <select id="load_group_user_wheel" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+	/*FORCE_MASTER*/ select * from t_group_user_wheel where guId = #guId# limit 1;
+	</select>
+
+    <select id="load_group_credit_wheel" resultClass="com.sy.sanguo.game.bean.group.GroupCreditWheel" parameterClass="java.util.HashMap">
+		/*FORCE_MASTER*/ select * from t_group_credit_wheel
+		where
+		    groupId = #groupId#
+		    AND status = 1
+		limit 1
+	</select>
+
+    <update id="update_credit_wheel" parameterClass="java.util.HashMap">
+		UPDATE t_group_credit_wheel
+        <dynamic prepend="SET">
+            <isPropertyAvailable prepend="," property="nextWin">
+                nextWin=#nextWin#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="status">
+                status=#status#
+            </isPropertyAvailable>
+            <isPropertyAvailable prepend="," property="totalPayAdd">
+                totalPay = totalPay + #totalPayAdd#
+            </isPropertyAvailable>
+        </dynamic>
+        WHERE
+        groupId = #groupId#
+	</update>
+
+    <update id="update_user_wheel_count" parameterClass="java.util.HashMap">
+        UPDATE t_group_user_wheel
+        SET
+        wheelCount = #wheelCount#
+        WHERE
+        guId = #guId#
+    </update>
+
+    <select id="load_credit_wheel_pool" resultClass="java.lang.Long" parameterClass="java.util.HashMap">
+        /*FORCE_MASTER*/ SELECT
+            creditPool
+        FROM
+            t_group_credit_wheel
+        WHERE
+            groupId = #groupId# limit 1
+    </select>
+
 </sqlMap>
 
 

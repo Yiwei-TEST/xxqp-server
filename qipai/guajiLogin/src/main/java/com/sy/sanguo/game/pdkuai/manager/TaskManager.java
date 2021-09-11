@@ -101,6 +101,7 @@ public class TaskManager {
             @Override
             public void run() {
 //                refreshGroupLevelData();
+//                initGroupUserWheel();
             }
         }, c0.getTime(), 24 * 60 * 60 * 1000);
 
@@ -522,7 +523,25 @@ public class TaskManager {
     }
 
     /**
-     * 刷新每日下分经验限制
+     * 刷新玩家幸运转盘抽奖次数
+     */
+    private void initGroupUserWheel() {
+        try {
+            try {
+                long startTime = System.currentTimeMillis();
+                String sql = " update t_group_user_wheel set wheelCount = 0;";
+                int count = SqlDao.getInstance().update(sql);
+                LogUtil.i("clearData|TaskManager|1|initGroupUserWheel|" + count + "|" + (System.currentTimeMillis() - startTime) + "|" + startTime + "|sql=" + sql);
+            } catch (Exception e) {
+                LogUtil.e("Exception:" + e.getMessage(), e);
+            }
+        } catch (Exception e) {
+            LogUtil.e("Exception:" + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 每日幸运转盘抽奖次数重置
      */
     private void refreshGroupLevelData() {
         try {

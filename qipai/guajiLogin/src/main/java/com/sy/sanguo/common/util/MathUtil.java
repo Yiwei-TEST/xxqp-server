@@ -1,9 +1,6 @@
 package com.sy.sanguo.common.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class MathUtil {
    
@@ -128,5 +125,72 @@ public class MathUtil {
 		Collections.shuffle(tmp);
 		
 		return tmp.subList(0, m);
+	}
+
+	public static int draw(Map<Integer, Long> map) {
+		if (map != null && !map.isEmpty()) {
+			double total_rate = 0.0D;
+
+			double rate;
+			for(Iterator var5 = map.values().iterator(); var5.hasNext(); total_rate += (double)rate) {
+				rate = (Long)var5.next();
+			}
+
+			double random = Math.random();
+			int i = 0;
+			for(Iterator var7 = map.keySet().iterator(); var7.hasNext(); random -= rate) {
+				int val = (Integer)var7.next();
+				++i;
+				rate = (double)(Long)map.get(val) / total_rate;
+				if (random < rate && rate != 0.0D) {
+					return val;
+				}
+			}
+
+			String val = map.keySet().toArray()[0].toString();
+			return Integer.parseInt(val);
+		} else {
+			return 0;
+		}
+	}
+
+	public static void main(String[] args) {
+		Map<Integer, Long> map = new HashMap<>();
+		map.put(180,2000L);
+		map.put(580,500L);
+		map.put(880,400L);
+		map.put(1800,250L);
+		map.put(8800,100L);
+		map.put(18800,50L);
+		map.put(38800,0L);
+		map.put(88800,0L);
+		map.put(0,6700L);
+		Map<Integer, Integer> rmap = new LinkedHashMap<>();
+		rmap.put(180,0);
+		rmap.put(580,0);
+		rmap.put(880,0);
+		rmap.put(1800,0);
+		rmap.put(8800,0);
+		rmap.put(18800,0);
+		rmap.put(38800,0);
+		rmap.put(88800,0);
+		rmap.put(0,0);
+		long sum = 0;
+		int count = 1000;
+		for(int i = 1; i <= count; i++){
+			Integer p = draw(map);
+			if(rmap.containsKey(p)){
+				rmap.put(p,rmap.get(p)+1);
+			} else {
+				System.out.println("结果不在范围："+p);
+			}
+
+			sum += p;
+		}
+
+		for(Map.Entry<Integer, Integer> set : rmap.entrySet()){
+			System.out.println(set.getKey()/100f + "分：" + set.getValue() + "次");
+		}
+		System.out.println("抽"+count+"一共出分"+sum/100);
 	}
 }

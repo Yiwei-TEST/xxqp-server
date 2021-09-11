@@ -1027,4 +1027,19 @@ public class GroupDao extends BaseDao {
         return this.getSqlLoginClient().update("group.update_group_user_credit_purse", map);
     }
 
+    public HashMap<String, Object> loadGroupUserwheel(long guId) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        map.put("guId", String.valueOf(guId));
+        return (HashMap<String, Object>) this.getSqlLoginClient().queryForObject("group.loadGroupUserwheel", map);
+    }
+
+    public int saveGroupUserwheel(long guId, long groupId, int lastCount, int wheelCount) throws SQLException {
+        Map<String, Object> map = new HashMap<>();
+        map.put("guId", guId);
+        map.put("groupId", groupId);
+        map.put("lastCount", lastCount);
+        map.put("wheelCount", wheelCount);
+        return this.getSqlLoginClient().update("group.saveGroupUserwheel", map);
+    }
+
 }

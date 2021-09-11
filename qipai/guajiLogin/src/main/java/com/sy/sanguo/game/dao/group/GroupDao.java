@@ -1100,6 +1100,40 @@ public class GroupDao extends CommonDaoImpl {
         return this.getSqlMapClient().update("group.transferGroupUserPurseToTempCredit", map);
     }
 
+    /**
+     * 转移信用转盘奖池到玩家信用分接口
+     *
+     * @param userId
+     * @param groupId
+     * @param credit     必须是正数
+     * @return
+     * @throws Exception
+     */
+    public int transferWheelToGroupUserCredit(long userId,  long groupId, int credit) throws Exception {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("userId", userId);
+        map.put("groupId", groupId);
+        map.put("credit", Math.abs(credit));
+        return this.getSqlMapClient().update("group.transferWheelToGroupUserCredit", map);
+    }
+
+    /**
+     * 转移玩家信用分到信用转盘奖池接口
+     *
+     * @param userId
+     * @param groupId
+     * @param credit     必须是正数
+     * @return
+     * @throws Exception
+     */
+    public int transferGroupUserCreditToWheel(long userId,  long groupId, int credit) throws Exception {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("userId", userId);
+        map.put("groupId", groupId);
+        map.put("credit", Math.abs(credit));
+        return this.getSqlMapClient().update("group.transferGroupUserCreditToWheel", map);
+    }
+
 
     public long sumTeamCredit(String groupId, String userGroup) throws Exception {
         HashMap<String, Object> map = new HashMap<>(8);

@@ -38,6 +38,15 @@ public final class Constants {
      */
     public static final int CREDIT_LOG_TYPE_AA = 5;
 
+    /**
+     * 信用分记录类型：零钱包
+     */
+    public static final int CREDIT_LOG_TYPE_PURSE = 6;
+    /**
+     * 信用分记录类型：幸运转盘
+     */
+    public static final int CREDIT_LOG_TYPE_WHEEL = 7;
+
 
     /**
      * 金币记录类型：抽水

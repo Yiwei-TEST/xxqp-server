@@ -64,8 +64,8 @@ public class GroupActionNew extends GameStrutsAction {
 
     private static final Map<String, Object> lockMap = new ConcurrentHashMap<>();
 
-    public Object getUserGroupLock(long groupId, long userId) {
-        String key = groupId + "_" + userId;
+    public Object getGroupLock(long groupId) {
+        String key = groupId + "";
         if (lockMap.containsKey(key)) {
             return lockMap.get(key);
         } else {
@@ -1581,7 +1581,7 @@ public class GroupActionNew extends GameStrutsAction {
             json.put("total", teamCount);
             json.put("pages", (int) Math.ceil(teamCount * 1.0 / pageSize));
             json.put("creditAllotMode", groupInfo.getCreditAllotMode());
-            json.put("totalCredit", groupDaoNew.sumCredit(groupId, target.getPromoterLevel(), target.getUserId()));
+            json.put("totalCredit", groupDaoNew.sumCredit(groupId, target.getPromoterLevel(), target.getUserId()) + groupDaoNew.loadCreditWheelPool(groupId));
             json.put("totalCommissionCredit", groupDaoNew.sumCommissionCredit(groupId, userId));
             OutputUtil.output(0, json, getRequest(), getResponse(), false);
         } catch (Exception e) {
@@ -3479,6 +3479,10 @@ public class GroupActionNew extends GameStrutsAction {
                     case 14:
                         // 禁止解散
                         key = GroupConstants.groupExtKey_forbiddenKickOut;
+                        break;
+                    case 15:
+                        //幸运转盘活动
+                        key = GroupConstants.groupExtKey_creditWheel;
                         break;
                 }
                 if (null == key) {
@@ -5766,6 +5770,220 @@ public class GroupActionNew extends GameStrutsAction {
             LOGGER.info("deleteGroupWarn|params|" + params);
         } catch (Exception e) {
             LOGGER.error("deleteGroupWarn|error|" + JSON.toJSONString(params), e.getMessage(), e);
+            OutputUtil.output(1, LangMsg.getMsg(LangMsg.code_4), getRequest(), getResponse(), false);
+        }
+    }
+
+    /**
+     * 设置新运转盘
+     */
+    public void setCreditWheel() {
+        try {
+            Map<String, String> params = UrlParamUtil.getParameters(getRequest());
+            LOGGER.info("setCreditWheel|params:{}", params);
+            if (!checkSign(params)) {
+                OutputUtil.output(-1, LangMsg.getMsg(LangMsg.code_1), getRequest(), getResponse(), false);
+                return;
+            }
+            long userId = NumberUtils.toLong(params.get("userId"), -1);
+            RegInfo user = checkSessCodeNew(userId, params.get("sessCode"));
+            if (user == null) {
+                OutputUtil.output(-2, LangMsg.getMsg(LangMsg.code_2), getRequest(), getResponse(), false);
+                return;
+            }
+            long groupId = NumberUtils.toLong(params.get("groupId"), -1);
+            if (groupId <= 0) {
+                OutputUtil.output(1, "groupId错误", getRequest(), getResponse(), false);
+                return;
+            }
+            GroupUser self = groupDaoNew.loadGroupUser(groupId, userId);
+            if (self == null) {
+                OutputUtil.output(3, LangMsg.getMsg(LangMsg.code_11), getRequest(), getResponse(), false);
+                return;
+            }
+            if (!GroupConstants.isHuiZhang(self.getUserRole())) {
+                OutputUtil.output(4, LangMsg.getMsg(LangMsg.code_8), getRequest(), getResponse(), false);
+                return;
+            }
+            int opType = NumberUtils.toInt(params.get("opType"), -1);
+            synchronized(getGroupLock(groupId)) {
+                if (opType == 1) {     //增减奖池
+                    int credit = NumberUtils.toInt(params.get("credit"), 0);
+                    long creditPool = groupDaoNew.loadCreditWheelPool(groupId);
+                    int ret = 0;
+                    if (credit > 0) {     //增加
+                        if (self.getCredit() < credit) {
+                            OutputUtil.output(5, LangMsg.getMsg(LangMsg.code_15), getRequest(), getResponse(), false);
+                            return;
+                        }
+                        ret = groupDao.transferGroupUserCreditToWheel(userId,groupId,credit);
+                    } else {
+                        if (creditPool < Math.abs(credit)){
+                            OutputUtil.output(6, "奖池剩余分不足", getRequest(), getResponse(), false);
+                            return;
+                        }
+                        ret = groupDao.transferWheelToGroupUserCredit(userId,groupId,Math.abs(credit));
+                    }
+                    if (ret == 2){
+                        // 写入日志
+                        HashMap<String, Object> logFrom = new HashMap<>();
+                        logFrom.put("groupId", groupId);
+                        logFrom.put("optUserId", userId);
+                        logFrom.put("userId", userId);
+                        logFrom.put("tableId", 0);
+                        logFrom.put("credit", -1 * credit);
+                        logFrom.put("type", GroupConstants.CREDIT_LOG_TYPE_WHEEL);
+                        logFrom.put("flag", 1);
+                        logFrom.put("userGroup", 0);
+                        logFrom.put("mode", 1);
+                        groupDaoNew.insertGroupCreditLog(logFrom);
+                        if (user.getEnterServer() > 0) {
+                            GameUtil.sendCreditUpdate(user.getEnterServer(), userId, groupId);
+                        }
+                    }
+                    OutputUtil.output(0, creditPool + credit, getRequest(), getResponse(), false);
+                } else if (opType == 2) {      //设置下次必抽大奖
+                    HashMap<String, Object> wheelMap = new HashMap<>();
+                    wheelMap.put("groupId", groupId);
+                    wheelMap.put("nextWin", 1);
+                    groupDaoNew.updateCreditWheel(wheelMap);
+                    OutputUtil.output(0, LangMsg.getMsg(LangMsg.code_0), getRequest(), getResponse(), false);
+                } else {
+                    OutputUtil.output(4, LangMsg.getMsg(LangMsg.code_3), getRequest(), getResponse(), false);
+                    return;
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("Exception:" + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 幸运转盘
+     */
+    public void creditWheel() {
+        Map<String, String> params = null;
+        try {
+            params = UrlParamUtil.getParameters(getRequest());
+            LOGGER.debug("creditWheel|params:{}", params);
+            if (!checkSign(params)) {
+                OutputUtil.output(1, LangMsg.getMsg(LangMsg.code_1), getRequest(), getResponse(), false);
+                return;
+            }
+            long userId = NumberUtils.toLong(params.get("userId"), 0);
+            RegInfo user = checkSessCodeNew(userId, params.get("sessCode"));
+            if (user == null) {
+                OutputUtil.output(2, LangMsg.getMsg(LangMsg.code_2), getRequest(), getResponse(), false);
+                return;
+            }
+            long groupId = NumberUtils.toLong(params.get("groupId"), -1);
+            int opType = NumberUtils.toInt(params.get("opType"), 1);
+
+            RegInfo regInfo = this.userDao.getUser(userId);
+            if (regInfo == null) {
+                OutputUtil.output(8, "玩家不存在", getRequest(), getResponse(), false);
+                return;
+            }
+            GroupInfo group = groupDaoNew.loadGroupInfo(groupId);
+            if (group == null) {
+                OutputUtil.output(3, LangMsg.getMsg(LangMsg.code_5), getRequest(), getResponse(), false);
+                return;
+            }
+            JSONObject extJson = JSONObject.parseObject(group.getExtMsg());
+            int openWheel = extJson.getIntValue(GroupConstants.groupExtKey_creditWheel);
+            if (openWheel <= 0) {
+                OutputUtil.output(4, "活动未开启！", getRequest(), getResponse(), false);
+                return;
+            }
+            GroupUser groupUser = groupDaoNew.loadGroupUser(groupId, userId);
+            if (groupUser == null) {
+                OutputUtil.output(5, LangMsg.getMsg(LangMsg.code_14), getRequest(), getResponse(), false);
+                return;
+            }
+            HashMap<String, Object> guWheelMap = groupDaoNew.loadGroupUserwheel(groupUser.getKeyId());
+            if(opType == 1){        //打开活动面板
+                int lastCount = guWheelMap == null ? groupUser.getPlayCount1() : (int)guWheelMap.get("lastCount");
+                int needPlayCount = guWheelMap == null ? openWheel : (groupUser.getPlayCount2()-lastCount) % openWheel;
+                if (needPlayCount == 0)
+                    needPlayCount = openWheel;
+                JSONObject json = new JSONObject();
+                json.put("groupId", groupId);
+                json.put("wheelCount", guWheelMap != null ? guWheelMap.get("wheelCount") : 0);
+                json.put("needPlayCount", needPlayCount);
+                json.put("creditPool", groupDaoNew.loadCreditWheelPool(groupId));
+                OutputUtil.output(0, json, getRequest(), getResponse(), false);
+            } else if (opType == 2) { //抽奖
+                int wheelCount = guWheelMap == null ? 0 :(int)guWheelMap.get("wheelCount");
+                if(wheelCount <= 0){
+                    OutputUtil.output(6, "没有抽奖资格", getRequest(), getResponse(), false);
+                    return;
+                }
+                boolean needSendMarquee = false;
+                int prize = 0;
+                synchronized(getGroupLock(groupId)){
+                    GroupCreditWheel gcw = groupDaoNew.loadGroupCreditWheel(groupId);
+                    if(gcw == null){
+                        OutputUtil.output(7, "活动未开启", getRequest(), getResponse(), false);
+                        return;
+                    }
+                    boolean resetNextWin = false;
+                    if(gcw.getNextWin() == 1 && gcw.getBiggestPrize() <= gcw.getCreditPool()){      //直接中最大奖
+                        prize = gcw.getBiggestPrize();
+                        resetNextWin = true;
+                    } else {        //摇奖
+                        prize = MathUtil.draw(gcw.getDrawMap());
+                        if(prize > gcw.getCreditPool()){  //超过奖池的直接谢谢惠顾
+                            prize = 0;
+                        }
+                    }
+                    int transferResult = 0;
+                    if(prize > 0) {
+                        transferResult = groupDao.transferWheelToGroupUserCredit(userId, groupId, prize);
+                        if( transferResult == 2) {
+                            // 写入日志
+                            HashMap<String, Object> logFrom = new HashMap<>();
+                            logFrom.put("groupId", groupId);
+                            logFrom.put("optUserId", userId);
+                            logFrom.put("userId", userId);
+                            logFrom.put("tableId", 0);
+                            logFrom.put("credit", prize);
+                            logFrom.put("type", GroupConstants.CREDIT_LOG_TYPE_WHEEL);
+                            logFrom.put("flag", 1);
+                            logFrom.put("userGroup", 0);
+                            logFrom.put("mode", 1);
+                            groupDaoNew.insertGroupCreditLog(logFrom);
+                            if (regInfo.getEnterServer() > 0) {
+                                GameUtil.sendCreditUpdate(regInfo.getEnterServer(), userId, groupId);
+                            }
+
+                            HashMap<String, Object> wheelMap = new HashMap<>();
+                            wheelMap.put("groupId", groupId);
+                            wheelMap.put("totalPayAdd", prize);
+                            if(resetNextWin){       //重置nextWin
+                                wheelMap.put("nextWin", 0);
+                            }
+                            groupDaoNew.updateCreditWheel(wheelMap);
+                            if (prize == gcw.getBiggestPrize())
+                            {
+                                needSendMarquee = true;     //大奖推送跑马灯
+                            }
+                        } else {
+                            OutputUtil.output(9, "抽奖出错！！", getRequest(), getResponse(), false);
+                            return;
+                        }
+                    }
+                    groupDaoNew.updateUserWheelCount(wheelCount-1, groupUser.getKeyId());
+                    OutputUtil.output(0, prize, getRequest(), getResponse(), false);
+                }
+                if(needSendMarquee) {    //推送跑马灯
+                    GameUtil.sendMarquee(0, userId, groupId, "恭喜玩家" + regInfo.getName() + "在幸运转盘中抽到大奖" + prize / 100 + "分！", 1);
+                }
+
+            }
+
+            LOGGER.info("creditWheel|params|" + params);
+        } catch (Exception e) {
+            LOGGER.error("creditWheel|error|" + JSON.toJSONString(params), e.getMessage(), e);
             OutputUtil.output(1, LangMsg.getMsg(LangMsg.code_4), getRequest(), getResponse(), false);
         }
     }

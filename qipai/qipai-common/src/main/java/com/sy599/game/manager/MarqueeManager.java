@@ -116,6 +116,26 @@ public class MarqueeManager {
 		}
 	}
 
+	/**
+	 * 发送跑马灯
+	 *
+	 * @param content 消息内容
+	 * @param round 次数
+	 * @param type 类型0房间外1房间内2房间内和外3金币场房间内
+	 * @param groupId 给哪个联盟推送
+	 */
+	public void sendMarquee(String content, int round, int type, int groupId) {
+		MarqueeMsg msg = new MarqueeMsg();
+		msg.setContent(content);
+		msg.setRound(round);
+		msg.setType(type);
+
+		List<MarqueeMsg> list = new ArrayList<>(1);
+		list.add(msg);
+		ComRes.Builder builder = SendMsgUtil.buildComRes(WebSocketMsgType.res_code_marquee, JacksonUtil.writeValueAsString(list));
+		WebSocketManager.broadMsg(builder.build(), groupId);
+	}
+
 	public void sendMarquee(MarqueeMsg msg) {
 		List<MarqueeMsg> list = new ArrayList<>(1);
 		list.add(msg);

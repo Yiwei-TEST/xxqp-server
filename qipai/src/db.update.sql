@@ -2632,3 +2632,26 @@ ADD COLUMN `curCreditPurse` bigint(20) NULL DEFAULT 0 COMMENT '操作后零钱�
 
 -------------------20210811-------------
 ALTER TABLE `t_group_table` ADD INDEX `idx_currentState_groupId` (`currentState`, `groupId`);
+
+
+------------------20210911 新增俱乐部幸运转盘--------
+CREATE TABLE `t_group_credit_wheel` (
+  `keyId` bigint(20) NOT NULL AUTO_INCREMENT,
+  `groupId` bigint(20) DEFAULT '0' COMMENT '俱乐部id',
+  `creditPool` bigint(20) DEFAULT '0' COMMENT '信用分奖池',
+  `prize` varchar(128) NOT NULL COMMENT '奖品分  ,隔开',
+  `rate` varchar(128) NOT NULL COMMENT '奖品分对应的概率  ,隔开',
+  `nextWin` int(11) DEFAULT '0' COMMENT '下次必中',
+  `status` int(11) NOT NULL DEFAULT '1' COMMENT '是否生效',
+  `totalPay` bigint(20) DEFAULT '0' COMMENT '累积发放奖金',
+  PRIMARY KEY (`keyId`),
+  KEY `idx_groupId` (`groupId`,`status`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='联盟积分转盘配置表 需要手动insert';
+
+CREATE TABLE `t_group_user_wheel` (
+  `guId` bigint(19) NOT NULL COMMENT 'groupUserId',
+  `groupId` bigint(20) NOT NULL DEFAULT '0' COMMENT '俱乐部id',
+  `lastCount` int(9) DEFAULT '0' COMMENT '上次获得抽奖次数时的玩的累积局数',
+  `wheelCount` int(9) DEFAULT '0' COMMENT '抽奖次数',
+  PRIMARY KEY (`guId`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='联盟玩家积分转盘表';
