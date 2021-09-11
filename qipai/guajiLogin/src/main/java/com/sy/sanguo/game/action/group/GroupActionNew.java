@@ -1581,7 +1581,7 @@ public class GroupActionNew extends GameStrutsAction {
             json.put("total", teamCount);
             json.put("pages", (int) Math.ceil(teamCount * 1.0 / pageSize));
             json.put("creditAllotMode", groupInfo.getCreditAllotMode());
-            json.put("totalCredit", groupDaoNew.sumCredit(groupId, target.getPromoterLevel(), target.getUserId()) + groupDaoNew.loadCreditWheelPool(groupId));
+            json.put("totalCredit", groupDaoNew.sumCredit(groupId, target.getPromoterLevel(), target.getUserId()) + ((GroupConstants.isHuiZhang(target.getUserRole()) && targetUserId == userId) ? groupDaoNew.loadCreditWheelPool(groupId) : 0));
             json.put("totalCommissionCredit", groupDaoNew.sumCommissionCredit(groupId, userId));
             OutputUtil.output(0, json, getRequest(), getResponse(), false);
         } catch (Exception e) {
@@ -1673,7 +1673,7 @@ public class GroupActionNew extends GameStrutsAction {
             json.put("total", userCount);
             json.put("pages", (int) Math.ceil(userCount * 1.0 / pageSize));
             json.put("creditAllotMode", groupInfo.getCreditAllotMode());
-            json.put("totalCredit", groupDaoNew.sumCredit(groupId, target.getPromoterLevel(), target.getUserId()));
+            json.put("totalCredit", groupDaoNew.sumCredit(groupId, target.getPromoterLevel(), target.getUserId()) + (GroupConstants.isHuiZhang(target.getUserRole()) && userId == targetUserId ? groupDaoNew.loadCreditWheelPool(groupId) : 0));
             json.put("totalCommissionCredit", groupDaoNew.sumCommissionCredit(groupId, userId));
             OutputUtil.output(0, json, getRequest(), getResponse(), false);
         } catch (Exception e) {
