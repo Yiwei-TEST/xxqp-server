@@ -5903,7 +5903,7 @@ public class GroupActionNew extends GameStrutsAction {
             HashMap<String, Object> guWheelMap = groupDaoNew.loadGroupUserwheel(groupUser.getKeyId());
             if(opType == 1){        //打开活动面板
                 int lastCount = guWheelMap == null ? groupUser.getPlayCount1() : (int)guWheelMap.get("lastCount");
-                int needPlayCount = guWheelMap == null ? openWheel : (groupUser.getPlayCount2()-lastCount) % openWheel;
+                int needPlayCount = guWheelMap == null ? openWheel : openWheel - ((groupUser.getPlayCount2()-lastCount) % openWheel);
                 if (needPlayCount == 0)
                     needPlayCount = openWheel;
                 JSONObject json = new JSONObject();
