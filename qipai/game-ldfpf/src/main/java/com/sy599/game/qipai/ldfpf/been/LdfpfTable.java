@@ -2222,8 +2222,8 @@ public class LdfpfTable extends BaseTable {
         addAction(checkCard.getSeat(), list);
         List<PaohzCard> autoDisList = checkCard.getAutoDisList();
         if (autoDisList != null) {
-			// 不能胡就自动出牌 或者能跑时
-            if (!checkCard.isHu() || checkCard.isPao()) {
+			// 不能胡就自动出牌
+            if (!checkCard.isHu()) {
                 setAutoDisBean(checkCard);
                 return true;
             }
