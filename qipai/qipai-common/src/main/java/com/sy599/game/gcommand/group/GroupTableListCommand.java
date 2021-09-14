@@ -159,14 +159,19 @@ public class GroupTableListCommand extends BaseCommand {
                     for (TableMsg msg : cacheList) {
                         if ("1".equals(msg.getCurrentState())) {
 //                            if (hasTableNum >= tableNum) {            20210330 去掉一开局桌子显示数限制
-//                                continue;
+                                continue;
 //                            }
-                            hasTableNum++;
+//                            hasTableNum++;
                         }
                         msgList.add(msg);
                     }
                 } else {
-                    msgList = new ArrayList<>(cacheList);
+                    for (TableMsg tmp : cacheList) {
+                        if ("1".equals(tmp.getCurrentState())) {
+                            continue;
+                        }
+                        msgList.add(tmp);
+                    }
                 }
             }
         } else if (optType == 1) {
@@ -176,6 +181,9 @@ public class GroupTableListCommand extends BaseCommand {
             if (cacheList != null && cacheList.size() > 0) {
                 for (TableMsg tmp : cacheList) {
                     if (tmp.getConfigId() == configId) {
+                        if ("1".equals(tmp.getCurrentState())) {
+                            continue;
+                        }
                         msgList.add(tmp);
                     }
                 }
