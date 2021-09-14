@@ -5,7 +5,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GroupCreditWheel implements Serializable {
 
@@ -100,7 +102,7 @@ public class GroupCreditWheel implements Serializable {
     }
 
     public Map<Integer, Long> getDrawMap() {
-        Map<Integer, Long> drawMap = new HashMap<>();
+        Map<Integer, Long> drawMap = new LinkedHashMap<>();
         if(prize.isEmpty() || rate.isEmpty())
             return drawMap;
         String[] prizes = prize.split(",");

@@ -2867,6 +2867,38 @@
             groupId = #groupId# limit 1
     </select>
 
+    <select id="loadGroupCreditWheelLog" resultClass="java.util.HashMap" parameterClass="java.util.HashMap">
+        select
+        log.userId,
+        log.createdTime,
+        log.credit,
+        u.name as userName
+        from
+        t_group_credit_log$gpSeq$ log force index(idx_gId_time_uId_type),
+        user_inf u
+        where
+        log.groupId = #groupId#
+        AND log.createdTime <![CDATA[ >= ]]> #startDate#
+        AND log.createdTime <![CDATA[ <= ]]> #endDate#
+        AND log.type = 7
+        AND u.userId = log.userId
+        ORDER BY
+        log.keyId desc
+        LIMIT #startNo#,#pageSize#
+    </select>
+
+    <select id="countGroupCreditWheelLog" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+        select
+        COALESCE(count(log.keyId),0)
+        from
+        t_group_credit_log$gpSeq$ log force index(idx_gId_time_uId_type)
+        where
+        log.groupId = #groupId#
+        AND log.createdTime <![CDATA[ >= ]]> #startDate#
+        AND log.createdTime <![CDATA[ <= ]]> #endDate#
+        AND log.type = 7
+    </select>
+
 </sqlMap>
 
 

@@ -1585,4 +1585,13 @@ public class GroupDaoNew extends CommonDaoImpl {
         Long ret = (Long)this.getSqlMapClient().queryForObject("groupNew.load_credit_wheel_pool", map);
         return ret == null ? 0 : ret;
     }
+
+    public List<HashMap<String, Object>> loadGroupCreditWheelLog(Map<String, Object> map) throws Exception {
+        map.put("gpSeq", SysPartitionUtil.getGroupSeqForRead(Long.valueOf(String.valueOf(map.get("groupId")))));
+        return (List<HashMap<String, Object>>) this.getSqlMapClient().queryForList("groupNew.loadGroupCreditWheelLog", map);
+    }
+
+    public int countGroupCreditWheelLog(Map<String, Object> map) throws Exception {
+        return (Integer) this.getSqlMapClient().queryForObject("groupNew.countGroupCreditWheelLog", map);
+    }
 }

@@ -5927,8 +5927,32 @@ public class GroupActionNew extends GameStrutsAction {
                         return;
                     }
                     boolean resetNextWin = false;
-                    if(gcw.getNextWin() == 1 && gcw.getBiggestPrize() <= gcw.getCreditPool()){      //直接中最大奖
-                        prize = gcw.getBiggestPrize();
+                    if(gcw.getNextWin() == 1 && gcw.getBiggestPrize() <= gcw.getCreditPool()){      //中指定概率大奖
+                        String config = ResourcesConfigsUtil.loadServerPropertyValue("wheel_nextwin_group" + groupId);
+                        if(StringUtils.isEmpty(config)){        //没配置直接中大奖
+                            prize = gcw.getBiggestPrize();
+                        } else {
+                            String[] configArray = config.split(",");
+                            if (configArray.length % 2 != 0) {
+                                prize = gcw.getBiggestPrize();
+                            } else {
+                                Map<Integer, Long> prizeMap = gcw.getDrawMap();
+                                Map<Integer, Long> bigPrizeMap = new HashMap<>();
+                                for (int i = 1; i <= configArray.length; i += 2) {
+                                    if (i % 2 == 1) {
+                                        Integer prizeV = Integer.parseInt(configArray[i - 1]);
+                                        if (prizeMap.containsKey(prizeV)) {
+                                            bigPrizeMap.put(prizeV, Long.parseLong(configArray[i]));
+                                        }
+                                    }
+                                }
+                                if (bigPrizeMap.size() > 0) {
+                                    prize = MathUtil.draw(bigPrizeMap);
+                                } else {
+                                    prize = gcw.getBiggestPrize();
+                                }
+                            }
+                        }
                         resetNextWin = true;
                     } else {        //摇奖
                         prize = MathUtil.draw(gcw.getDrawMap());
@@ -5963,9 +5987,9 @@ public class GroupActionNew extends GameStrutsAction {
                                 wheelMap.put("nextWin", 0);
                             }
                             groupDaoNew.updateCreditWheel(wheelMap);
-                            if (prize == gcw.getBiggestPrize())
+                            if (prize >= ResourcesConfigsUtil.loadServerConfigIntegerValue("wheel_marquee_group"+groupId, gcw.getBiggestPrize()))
                             {
-                                needSendMarquee = true;     //大奖推送跑马灯
+                                needSendMarquee = true;     //大于指定分，推送跑马灯
                             }
                         } else {
                             OutputUtil.output(9, "抽奖出错！！", getRequest(), getResponse(), false);
@@ -5985,6 +6009,71 @@ public class GroupActionNew extends GameStrutsAction {
         } catch (Exception e) {
             LOGGER.error("creditWheel|error|" + JSON.toJSONString(params), e.getMessage(), e);
             OutputUtil.output(1, LangMsg.getMsg(LangMsg.code_4), getRequest(), getResponse(), false);
+        }
+    }
+
+
+    /**
+     * 幸运转盘日志
+     */
+    public void loadCreditWheelLog() {
+        try {
+            Map<String, String> params = UrlParamUtil.getParameters(getRequest());
+            LOGGER.info("loadCreditWheelLog|params:{}", params);
+            if (!checkSign(params)) {
+                OutputUtil.output(-1, LangMsg.getMsg(LangMsg.code_1), getRequest(), getResponse(), false);
+                return;
+            }
+            long userId = NumberUtils.toInt(params.get("userId"), 0);
+            RegInfo user = checkSessCodeNew(userId, params.get("sessCode"));
+            if (user == null) {
+                OutputUtil.output(-2, LangMsg.getMsg(LangMsg.code_2), getRequest(), getResponse(), false);
+                return;
+            }
+
+            int groupId = NumberUtils.toInt(params.get("groupId"), -1);
+            int pageNo = NumberUtils.toInt(params.get("pageNo"), 1);
+            int pageSize = NumberUtils.toInt(params.get("pageSize"), 30);
+            String startDate = params.get("startDate"); // 日期格式：2019-08-01 00:00:01
+            String endDate = params.get("endDate"); // 日期格式：2019-08-01 23:59:59
+            if (!TimeUtil.checkDateFormat(startDate) || !TimeUtil.checkDateFormat(endDate)) {
+                OutputUtil.output(2, "日期格式错误：" + startDate + "," + endDate, getRequest(), getResponse(), false);
+                return;
+            }
+
+            GroupUser self = groupDao.loadGroupUser(userId, groupId);
+            if (self == null) {
+                OutputUtil.output(3, LangMsg.getMsg(LangMsg.code_9), getRequest(), getResponse(), false);
+                return;
+            }
+            if (!GroupConstants.isHuiZhang(self.getUserRole())) {
+                OutputUtil.output(4, LangMsg.getMsg(LangMsg.code_8), getRequest(), getResponse(), false);
+                return;
+            }
+
+            Map<String, Object> map = new HashMap<>(8);
+            map.put("groupId", groupId);
+            map.put("startNo", (pageNo - 1) * pageSize);
+            map.put("pageSize", pageSize);
+            map.put("startDate", startDate);
+            map.put("endDate", endDate);
+            int count = 0;
+            List<HashMap<String, Object>> resList = Collections.emptyList();
+            count = this.groupDaoNew.countGroupCreditWheelLog(map);
+            if (count > 0) {
+                resList = this.groupDaoNew.loadGroupCreditWheelLog(map);
+            }
+
+            JSONObject json = new JSONObject();
+            json.put("pageNo", pageNo);
+            json.put("pageSize", pageSize);
+            json.put("list", resList);
+            json.put("pages", (int) Math.ceil(count * 1.0 / pageSize));
+            json.put("total", count);
+            OutputUtil.output(0, json, getRequest(), getResponse(), false);
+        } catch (Exception e) {
+            LOGGER.error("loadCreditWheelLog|error|" + e.getMessage(), e);
+            OutputUtil.output(-1, LangMsg.getMsg(LangMsg.code_4), getRequest(), getResponse(), false);
         }
     }
 
