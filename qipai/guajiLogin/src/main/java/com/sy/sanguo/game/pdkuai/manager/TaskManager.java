@@ -102,6 +102,7 @@ public class TaskManager {
             public void run() {
 //                refreshGroupLevelData();
 //                initGroupUserWheel();
+                clearPlayWithSpy();
             }
         }, c0.getTime(), 24 * 60 * 60 * 1000);
 
@@ -535,6 +536,20 @@ public class TaskManager {
             } catch (Exception e) {
                 LogUtil.e("Exception:" + e.getMessage(), e);
             }
+        } catch (Exception e) {
+            LogUtil.e("Exception:" + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 清除玩家和杀猪号对局次数信息
+     */
+    private void clearPlayWithSpy() {
+        try {
+            String delSql;
+            String delName = "clearPlayWithSpy";
+            delSql = "delete from t_play_with_spy";
+            deleteDataForLogin(delName, delSql, delLimit);
         } catch (Exception e) {
             LogUtil.e("Exception:" + e.getMessage(), e);
         }

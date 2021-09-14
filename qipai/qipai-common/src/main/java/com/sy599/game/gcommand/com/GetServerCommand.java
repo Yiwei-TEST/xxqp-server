@@ -144,6 +144,7 @@ public class GetServerCommand extends BaseCommand {
             }
         } else if (tableId <= 0 && modeId > 0) {
             // ---------军团、俱乐部、亲友圈房-----------
+            GroupUser gu = GroupDao.getInstance().loadGroupUser(userId,gId);
             try {
                 if (gId > 0) {
                     // 俱乐部快速加入
@@ -154,7 +155,11 @@ public class GetServerCommand extends BaseCommand {
                         return;
                     }
                     try {
-                        groupTable = GroupDao.getInstance().loadRandomSameModelTable(modeId, gId);
+                        if(gu != null && gu.getIsSpy() ==2){
+                            groupTable = GroupDao.getInstance().loadRandomSameModelTableforSpy(modeId, gId);
+                        } else {
+                            groupTable = GroupDao.getInstance().loadRandomSameModelTable(modeId, gId);
+                        }
                     } catch (Throwable th) {
                         LogUtil.e("get server err-->userId:" + player.getUserId() + ",modeId:" + modeId);
                     }

@@ -2655,3 +2655,14 @@ CREATE TABLE `t_group_user_wheel` (
   `wheelCount` int(9) DEFAULT '0' COMMENT '抽奖次数',
   PRIMARY KEY (`guId`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='联盟玩家积分转盘表';
+
+
+----------------20210914 新增玩家与杀猪号匹配记录表--------
+CREATE TABLE `t_play_with_spy` (
+  `guId` bigint(19) NOT NULL COMMENT 'groupUserId',
+  `groupId` int(10) NOT NULL COMMENT '军团id',
+  `userId` bigint(19) NOT NULL COMMENT '玩家id',
+  `playCount` int(9) NOT NULL DEFAULT '0' COMMENT '和spy打的局数',
+  PRIMARY KEY (`guId`) USING BTREE,
+  KEY `idx_groupId` (`groupId`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

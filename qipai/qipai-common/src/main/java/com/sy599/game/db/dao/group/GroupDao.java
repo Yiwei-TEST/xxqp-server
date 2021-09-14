@@ -158,6 +158,13 @@ public class GroupDao extends BaseDao {
         return (GroupTable) this.getSqlLoginClient().queryForObject("group.one_group_table_same_model", map);
     }
 
+    public GroupTable loadRandomSameModelTableforSpy(long modeId, int groupId) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        map.put("groupId", groupId);
+        map.put("configId", modeId > 0 ? String.valueOf(modeId) : "0");
+        return (GroupTable) this.getSqlLoginClient().queryForObject("group.one_group_table_same_model_spy", map);
+    }
+
     public GroupTable loadGroupTableByKeyId(String keyId) throws Exception {
         return (GroupTable) this.getSqlLoginClient().queryForObject("group.one_group_table_keyId", keyId);
     }
@@ -1040,6 +1047,15 @@ public class GroupDao extends BaseDao {
         map.put("lastCount", lastCount);
         map.put("wheelCount", wheelCount);
         return this.getSqlLoginClient().update("group.saveGroupUserwheel", map);
+    }
+
+    public int savePlayWithSpy(long guId, long groupId, long userId, int playCount) throws SQLException {
+        Map<String, Object> map = new HashMap<>();
+        map.put("guId", guId);
+        map.put("groupId", groupId);
+        map.put("userId", userId);
+        map.put("playCount", playCount);
+        return this.getSqlLoginClient().update("group.savePlayWithSpy", map);
     }
 
 }

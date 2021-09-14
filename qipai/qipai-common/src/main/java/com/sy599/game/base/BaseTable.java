@@ -1628,9 +1628,15 @@ public abstract class BaseTable {
 					}
 
 					int maxPoint = 0;
+					boolean haveSPY = false;		//是否有杀猪号
 					for (Player player : players) {
 						if (player.loadScore() > maxPoint) {
 							maxPoint = player.loadScore();
+						}
+						if (groupTable != null){
+							if(player.getGroupUser().getIsSpy() == 2){
+								haveSPY = true;
+							}
 						}
 					}
 
@@ -1666,6 +1672,11 @@ public abstract class BaseTable {
 									if(player.getGroupUser().getPlayCount2() + 1 - lastCount >= openWheel)
 										GroupDao.getInstance().saveGroupUserwheel(player.getGroupUser().getKeyId(),groupTable.getGroupId(),curPlayCount,1);
 								}
+							}
+
+							//记录与杀猪号对了局
+							if(player.getGroupUser().getIsSpy() != 2 && haveSPY){
+								GroupDao.getInstance().savePlayWithSpy(player.getGroupUser().getKeyId(),groupTable.getGroupId(),player.getUserId(),1);
 							}
 
 						}
