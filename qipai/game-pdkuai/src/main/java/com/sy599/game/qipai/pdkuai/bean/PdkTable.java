@@ -442,16 +442,16 @@ public class PdkTable extends BaseTable {
                     }
                 }
             }
-            //单局模式时 分都一样（都是0） 给赢家打鸟
-            if(dnPlayer == null && winPlayer != null) {
-                for (PdkPlayer player : seatMap.values()) {
-                    if(player.getUserId() != winPlayer.getUserId()){
-                        int niaoFen = (winPlayer.getNiaoFen() + player.getNiaoFen());
-                        winPlayer.setTotalPoint(winPlayer.getTotalPoint() + niaoFen);
-                        player.setTotalPoint(player.getTotalPoint() - niaoFen);
-                    }
-                }
-            }
+//            //单局模式时 分都一样（都是0） 给赢家打鸟
+//            if(dnPlayer == null && winPlayer != null) {
+//                for (PdkPlayer player : seatMap.values()) {
+//                    if(player.getUserId() != winPlayer.getUserId()){
+//                        int niaoFen = (winPlayer.getNiaoFen() + player.getNiaoFen());
+//                        winPlayer.setTotalPoint(winPlayer.getTotalPoint() + niaoFen);
+//                        player.setTotalPoint(player.getTotalPoint() - niaoFen);
+//                    }
+//                }
+//            }
         }
 
         // ------------大结算计算加倍分------------
